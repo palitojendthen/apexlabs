@@ -5,6 +5,7 @@ import os
 # load .env
 load_dotenv()
 SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")
+# print(SUPABASE_DB_URL)
 engine = create_engine(SUPABASE_DB_URL)
 
 # create table
