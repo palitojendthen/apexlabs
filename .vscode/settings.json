@@ -1,21 +1,45 @@
+// {
+//     "python.defaultInterpreterPath": "C:\\Users\\PalitoE\\Anaconda3\\python.exe",
+//     "python.pythonPath": "C:\\Users\\PalitoE\\Anaconda3\\python.exe",
+//     "python.linting.enabled": true,
+//     "python.linting.pylintEnabled": true,
+//     "python.linting.flake8Enabled": false,
+//     "python.linting.mypyEnabled": false,
+//     "python.formatting.provider": "black",
+//     // "editor.formatOnSave": true,
+//     "editor.codeActionsOnSave": {
+//         "source.organizeImports": "explicit"
+//     },
+//     "python.analysis.typeCheckingMode": "basic",
+//     "editor.formatOnSave": true,
+//     "[html]": {
+//         "editor.defaultFormatter": "esbenp.prettier-vscode"
+//     },
+//     "[jinja-html]": {
+//         "editor.defaultFormatter": "HookyQR.beautify"
+//   }
+// }
+
 {
     "python.defaultInterpreterPath": "C:\\Users\\PalitoE\\Anaconda3\\python.exe",
     "python.pythonPath": "C:\\Users\\PalitoE\\Anaconda3\\python.exe",
+    "terminal.integrated.env.windows": {
+        "PATH": "C:\\Users\\PalitoE\\Anaconda3\\Scripts;C:\\Users\\PalitoE\\Anaconda3;${env:PATH}"
+    },
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,
     "python.linting.flake8Enabled": false,
     "python.linting.mypyEnabled": false,
     "python.formatting.provider": "black",
-    // "editor.formatOnSave": true,
+    "python.analysis.typeCheckingMode": "basic",
+    "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit"
     },
-    "python.analysis.typeCheckingMode": "basic",
-    "editor.formatOnSave": true,
     "[html]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[jinja-html]": {
         "editor.defaultFormatter": "HookyQR.beautify"
-  }
+    }
 }
