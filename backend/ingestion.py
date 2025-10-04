@@ -1,31 +1,31 @@
-# from sqlalchemy import create_engine, text
-# from dotenv import load_dotenv
-# import os
+import pandas as pd
+from google.cloud import bigquery
+from dotenv import load_dotenv
+import os
 
-# # load .env
-# load_dotenv()
-# SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")
-# # print(SUPABASE_DB_URL)
-# engine = create_engine(SUPABASE_DB_URL)
+load_dotenv()
 
-# # create table
-# create_table_sql = """
-# create table if not exists ohlcv (
-#     symbol text not null,
-#     interval text not null,
-#     open_time timestamp not null,
-#     open numeric,
-#     high numeric,
-#     low numeric,
-#     close numeric,
-#     volume numeric,
-#     primary ley (symbol, interval, open_time)
-# );
-# """
+project_id = os.getenv("PROJECT_ID")
+dataset_id = os.getenv("DATASET_ID")
+table_id = os.getenv("TABLE_ID")
+table_ref = f"{project_id}.{dataset_id}.{table_id}"
 
-# # execute sql
-# with engine.connect() as conn:
-#     conn.execute(text(create_table_sql))
-#     conn.commit()
+client = bigquery.Client(project=project_id)
 
-# print("table 'ohlcv' ensured in Supabase/PostgreSQL")
+df_path os.getenv("DF_PATH")
+df = pd.read_parquet(df_path, engine="fastparquet")
+
+numeric_cols = ["open", "high", "low", "close", "volume"]
+for col in numeric_cols:
+    df[col] = pd.to_numeric(df[col], errors="coerce")
+
+df["open_time"] = pd.to_datetime(df["open_time"], errors="coerce")
+
+job_config = bigquery.LoadJobConfig(
+    write_disposition="WRITE_APPEND"
+)
+
+job = client.load_table_from_dataframe(df, table_ref, job_config=job_config)
+job.result()
+
+print(f"sucesffully ingest {df.shape[0]} rows into {table_ref}")
