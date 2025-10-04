@@ -120,7 +120,7 @@ def fetch_historic_data(symbol, intervals, start_date="2018-01-01", save_dir="da
 
 
 # create connection
-path = r"./key.json"
+path = "./key.json"
 cred = get_key(path)
 
 api_key = cred.get('api_key')
@@ -144,8 +144,8 @@ ms_interval = {
 
 
 # get ticker
-path = r"./binance_ticker.xlsx"
-save_path = r"./historical_data"
+path = "./binance_ticker.xlsx"
+save_path = "./historical_data"
 
 ticker = pd.read_excel(open(path, 'rb'), sheet_name='Sheet1', engine='openpyxl')
 
