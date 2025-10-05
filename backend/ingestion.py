@@ -12,7 +12,7 @@ table_ref = f"{project_id}.{dataset_id}.{table_id}"
 
 client = bigquery.Client(project=project_id)
 
-df_path os.getenv("DF_PATH")
+df_path = os.getenv("DF_PATH")
 df = pd.read_parquet(df_path, engine="fastparquet")
 
 numeric_cols = ["open", "high", "low", "close", "volume"]
