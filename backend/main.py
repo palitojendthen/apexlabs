@@ -23,7 +23,7 @@ def health():
 
 @app.post("/api/backtest")
 def backtest(req: BacktestRequest):
-    # placeholder response;
+    # placeholder response-will change to retrieve directly database and applied strategy later;
     data = [{"idx": i, "equity": 100 + i*0.2} for i in range(120)]
     metrics = {"pnl": "12.8%", "sharpe": "1.32", "winrate": "54.1%", "mdd": "14.7%"}
     return {"data": data, "metrics": metrics}
