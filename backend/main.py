@@ -1,10 +1,11 @@
+# load library
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="APEXLABS API")
 
-# allow local next.js during dev
+# allow local next.js during development
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
