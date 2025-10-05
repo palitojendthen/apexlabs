@@ -10,10 +10,10 @@ export default function Navbar() {
           <span className="font-semibold tracking-wide">ApexQuantLabs</span>
         </div>
         <nav className="hidden sm:flex items-center gap-6 text-sm text-slate-500 dark:text-slate-300">
-          <a href="#">Backtest</a>
-          <a href="#">Research</a>
-          <a href="#">Dashboard</a>
-          <a href="#">Docs</a>
+          <a href="#">About</a>
+          <a href="#">Features</a>
+          <a href="#">Resources</a>
+          <a href="#">Pricing</a>
         </nav>
         <ThemeToggle />
       </div>
