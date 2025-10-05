@@ -1,8 +1,10 @@
+# load library
 import pandas as pd
 from google.cloud import bigquery
 from dotenv import load_dotenv
 import os
 
+# load env
 load_dotenv()
 
 project_id = os.getenv("PROJECT_ID")
@@ -10,8 +12,10 @@ dataset_id = os.getenv("DATASET_ID")
 table_id = os.getenv("TABLE_ID")
 table_ref = f"{project_id}.{dataset_id}.{table_id}"
 
+# create connection
 client = bigquery.Client(project=project_id)
 
+# retrieve historical data
 df_path = os.getenv("DF_PATH")
 df = pd.read_parquet(df_path, engine="fastparquet")
 
@@ -21,6 +25,7 @@ for col in numeric_cols:
 
 df["open_time"] = pd.to_datetime(df["open_time"], errors="coerce")
 
+# ingestion
 job_config = bigquery.LoadJobConfig(
     write_disposition="WRITE_APPEND"
 )
