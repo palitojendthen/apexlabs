@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ApexQuantLabs — Research & Backtest</title>
+    <meta name="color-scheme" content="light dark" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="container nav-inner">
+        <div class="brand">
+          <img src="assets/img/logo.svg" alt="" class="logo" />
+          <span class="brand-name">ApexQuantLabs</span>
+        </div>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#">Backtest</a>
+          <a href="#">Research</a>
+          <a href="#">Dashboard</a>
+          <a href="#">Docs</a>
+        </nav>
+        <div class="nav-actions">
+          <button id="theme-toggle" class="btn ghost" aria-label="Toggle theme" aria-pressed="false">
+            <span class="theme-icon" aria-hidden="true">🌙</span>
+            <span class="theme-text">Dark</span>
+          </button>
+          <a class="btn ghost" href="#">Log in</a>
+          <a class="btn primary" href="#">Sign up</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="wave-bg" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <h1 class="hero-title">Quantitative Research. Backtesting. Automated.</h1>
+        <p class="hero-sub">Run a quick backtest right from the landing page — no setup required.</p>
+        <div class="hero-cta">
+          <a href="#demo" class="btn primary">Try a Demo Backtest</a>
+          <a href="#features" class="btn ghost">Explore Features</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main content -->
+    <main id="main" class="container space-y">
+      <section id="demo" class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Quick Backtest</h2>
+          <p class="muted small">This is a static placeholder. We’ll wire it to your API later.</p>
+        </div>
+        <form class="grid form-grid" onsubmit="return false;">
+          <label class="field">
+            <span class="label">Ticker</span>
+            <input class="input" type="text" placeholder="e.g., BTCUSDT" value="BTCUSDT" />
+          </label>
+          <label class="field">
+            <span class="label">Timeframe</span>
+            <select class="input">
+              <option>1D</option>
+              <option>4H</option>
+              <option>1H</option>
+            </select>
+          </label>
+          <label class="field">
+            <span class="label">Strategy</span>
+            <select class="input">
+              <option>Percentile Moving Average (PMA)</option>
+              <option>ADX Trend Filter</option>
+              <option>Long / Short</option>
+            </select>
+          </label>
+          <button class="btn primary stretch">Run Backtest</button>
+        </form>
+
+        <div class="grid results-grid">
+          <div class="card">
+            <div class="card-title">Equity Curve</div>
+            <div class="chart-placeholder">
+              <div class="chart-grid"></div>
+              <div class="chart-line"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Metrics</div>
+            <div class="metrics">
+              <div><span class="muted small">PnL</span><strong>+12.8%</strong></div>
+              <div><span class="muted small">Sharpe</span><strong>1.32</strong></div>
+              <div><span class="muted small">Winrate</span><strong>54.1%</strong></div>
+              <div><span class="muted small">Max DD</span><strong>14.7%</strong></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="grid features-grid">
+        <div class="feature card">
+          <div class="feature-name">Backtesting</div>
+          <p class="muted small">Event-driven engine with slippage & fees.</p>
+        </div>
+        <div class="feature card">
+          <div class="feature-name">Research</div>
+          <p class="muted small">Signals, feature engineering, notebooks.</p>
+        </div>
+        <div class="feature card">
+          <div class="feature-name">Live Dashboard</div>
+          <p class="muted small">Streaming PnL and risk monitoring.</p>
+        </div>
+        <div class="feature card">
+          <div class="feature-name">API Access</div>
+          <p class="muted small">Programmatic control & integrations.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="muted small">© <span id="year"></span> ApexQuantLabs — Built for systematic traders.</p>
+      </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
