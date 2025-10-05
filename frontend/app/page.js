@@ -33,7 +33,11 @@ export default function HomePage() {
                   <span className="text-sm text-slate-500 dark:text-slate-400">Timeframe</span>
                   <select className="rounded-xl border px-3 py-2 bg-white dark:bg-slate-800 border-black/10 dark:border-white/10">
                     <option>1D</option>
+                    <option>1W</option>
+                    <option>12H</option>
+                    <option>6H</option>
                     <option>4H</option>
+                    <option>2H</option>
                     <option>1H</option>
                   </select>
                 </label>
@@ -41,9 +45,9 @@ export default function HomePage() {
                 <label className="grid gap-1">
                   <span className="text-sm text-slate-500 dark:text-slate-400">Strategy</span>
                   <select className="rounded-xl border px-3 py-2 bg-white dark:bg-slate-800 border-black/10 dark:border-white/10">
-                    <option>PMA</option>
-                    <option>ADX Filter</option>
-                    <option>Long/Short</option>
+                    <option>Moving Average</option>
+                    <option>Bollinger Band</option>
+                    <option>RSI</option>
                   </select>
                 </label>
               </div>
