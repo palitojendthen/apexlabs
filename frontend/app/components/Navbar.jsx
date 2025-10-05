@@ -3,7 +3,7 @@ import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-20 border-b border-white/10 bg-white/60 dark:bg-slate-900/60 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-white/10 bg-white/80 dark:bg-slate-900/60 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <div className="h-6 w-6 rounded-md border border-teal-400" />
