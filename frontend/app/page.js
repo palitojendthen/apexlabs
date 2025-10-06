@@ -73,7 +73,7 @@ export default function HomePage() {
       </main>
 
       <footer className="border-t border-black/10 dark:border-white/10 py-8 text-center text-slate-500 dark:text-slate-400">
-        © {new Date().getFullYear()} ApexQuantLabs
+        © {new Date().getFullYear()} ApexQuantLabs — Built for systematic traders
       </footer>
     </div>
   );
