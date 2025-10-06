@@ -110,9 +110,9 @@ export default function Home() {
 
         {/* Right — Chart area */}
         <div className="lg:col-span-2 bg-white/5 rounded-2xl p-6 backdrop-blur-md border border-white/10 flex flex-col items-center justify-center">
-          <div className="text-neutral-400 mb-4">[ Chart will render here ]</div>
+          <div className="text-neutral-400 mb-4">Symbol + Timeframe + Indicator + Period </div>
           <div
-            className={`w-full h-[5px] rounded-lg border ${
+            className={`w-full h-[590px] rounded-lg border ${
               dark ? "border-white/10" : "border-gray-300"
             } flex items-center justify-center text-neutral-400`}
           >
