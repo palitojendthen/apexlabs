@@ -14,7 +14,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="rounded-xl border px-3 py-2 text-sm hover:border-teal-400"
+      className="rounded-xl border px-1 py-1 text-sm hover:border-red-400"
       aria-pressed={isDark}
       title="Toggle theme"
     >

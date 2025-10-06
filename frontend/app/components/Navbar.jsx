@@ -1,22 +1,119 @@
 "use client";
+import Image from "next/image";
+import Link from "next/link";
+import { useRef, useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const closeTimeout = useRef(null);
+
+  const handleEnter = () => {
+    clearTimeout(closeTimeout.current);
+    setOpen(true);
+  };
+  const handleLeave = () => {
+    closeTimeout.current = setTimeout(() => setOpen(false), 150);
+  };
+  const toggleMenu = () => setOpen((o) => !o);
+
   return (
-    <header className="sticky top-0 z-20 border-b border-white/10 bg-white/80 dark:bg-slate-900/60 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded-md border border-teal-400" />
-          <span className="font-semibold tracking-wide">ApexQuantLabs</span>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black text-white border-b border-neutral-800">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+        {/* LHS: Logo + Navigation */}
+        <div className="flex items-center gap-8">
+          {/* Logo + Brand */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <Image
+              src="/dummy_logo.png"
+              alt="ApexQuantLabs"
+              width={40}
+              height={40}
+              className="object-contain"
+              priority
+            />
+            <span className="font-semibold text-[20px] tracking-wide">
+              ApexQuantLabs
+            </span>
+          </Link>
+
+          {/* Navigation links */}
+          <nav className="hidden sm:flex items-center gap-6 text-[16px] text-neutral-300 relative">
+            <Link
+              href="/about"
+              className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-red-400 transition-all"
+            >
+              About
+            </Link>
+
+            {/* Features */}
+            <div
+              className="relative"
+              onMouseEnter={handleEnter}
+              onMouseLeave={handleLeave}
+            >
+              <button
+                onClick={toggleMenu}
+                className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-red-400 transition-all focus:outline-none flex items-center gap-1"
+              >
+                Features <span className="text-xs">▾</span>
+              </button>
+
+              {open && (
+                <div
+                  className="absolute left-0 mt-2 w-56 rounded-md bg-neutral-900 border border-neutral-700 shadow-lg"
+                  onMouseEnter={handleEnter}
+                  onMouseLeave={handleLeave}
+                >
+                  <Link
+                    href="/"
+                    className="block px-4 py-2 text-[15px] hover:bg-neutral-800 hover:text-red-400 transition-all"
+                  >
+                    Backtest
+                  </Link>
+                  <Link
+                    href="/features/live-strategies"
+                    className="block px-4 py-2 text-[15px] hover:bg-neutral-800 hover:text-red-400 transition-all"
+                  >
+                    Live Strategies
+                  </Link>
+                  <Link
+                    href="/features/portfolio-management"
+                    className="block px-4 py-2 text-[15px] hover:bg-neutral-800 hover:text-red-400 transition-all"
+                  >
+                    Portfolio Management
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <Link
+              href="/resources"
+              className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-red-400 transition-all"
+            >
+              Resources
+            </Link>
+            <Link
+              href="/pricing"
+              className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-red-400 transition-all"
+            >
+              Pricing
+            </Link>
+          </nav>
         </div>
-        <nav className="hidden sm:flex items-center gap-6 text-sm text-slate-500 dark:text-slate-300">
-          <a href="#">About</a>
-          <a href="#">Features</a>
-          <a href="#">Resources</a>
-          <a href="#">Pricing</a>
-        </nav>
-        <ThemeToggle />
+
+        {/* RHS: Login + Themes */}
+        <div className="flex items-center gap-5">
+          <Link
+            href="/login"
+            className="px-3 py-1.5 rounded-md text-[16px] text-neutral-300 hover:bg-neutral-800 hover:text-red-400 transition-all"
+          >
+            Login
+          </Link>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );
 }
+
