@@ -1,15 +1,3 @@
-// /** @type {import('tailwindcss').Config} */
-// module.exports = {
-//   darkMode: "class",
-//   content: [
-//     "./app/**/*.{js,ts,jsx,tsx}",
-//     "./components/**/*.{js,ts,jsx,tsx}",
-//   ],
-//   theme: { extend: {} },
-//   plugins: [],
-// };
-
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: "class",
@@ -22,13 +10,13 @@ module.exports = {
     extend: {
       colors: {
         surface: {
-          DEFAULT: "rgb(10,10,10)",        // dark base
-          light: "rgb(245,246,248)",       // light base
+          DEFAULT: "rgb(10,10,10)",
+          light: "rgb(245,246,248)",
         },
         text: {
           primary: {
-            DEFAULT: "rgb(245,245,245)",   // dark mode text
-            light: "rgb(25,25,28)",        // light mode text
+            DEFAULT: "rgb(245,245,245)",
+            light: "rgb(25,25,28)",
           },
           secondary: {
             DEFAULT: "rgb(160,160,160)",
