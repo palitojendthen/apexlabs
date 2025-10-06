@@ -75,7 +75,7 @@ export default function Navbar() {
                     href="/features/live-strategies"
                     className="block px-4 py-2 text-[15px] hover:bg-neutral-800 hover:text-red-400 transition-all"
                   >
-                    Strategies
+                    Live Strategies
                   </Link>
                   <Link
                     href="/features/portfolio-management"
