@@ -62,10 +62,16 @@ export default function Home() {
               <option>Kaufman Adaptive Moving Average 🏷️</option>
             </select>
 
-            {/* Strategy selection */}
+            {/* Indicator selection */}
             <select className="p-2 rounded bg-white border border-gray-300 text-gray-800 
                               dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
-              <option> 🏷️</option>
+              <option>SMA 🏷️</option>
+              <option>EMA 🏷️</option>
+              <option>ADX 🏷️</option>
+              <option>RSI 🏷️</option>
+              <option>Donchian Channel 🏷️</option>
+              <option>Predictive Moving Average 🏷️</option>
+              <option>Kaufman Adaptive Moving Average 🏷️</option>
             </select>
 
             {/* Placeholder for dynamic params (expand later) */}
