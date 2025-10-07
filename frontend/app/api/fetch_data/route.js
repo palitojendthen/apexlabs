@@ -7,13 +7,13 @@ import path from "path";
 function makeBQ() {
   const projectId = process.env.PROJECT_ID;
 
-  // 1️⃣ Prefer JSON credentials from env (secure on Vercel / local)
+  // Prefer JSON credentials from env (secure on Vercel / local)
   if (process.env.GCP_SERVICE_ACCOUNT) {
     const creds = JSON.parse(process.env.GCP_SERVICE_ACCOUNT);
     return new BigQuery({ projectId, credentials: creds });
   }
 
-  // 2️⃣ Otherwise fall back to a key file
+  // Otherwise fall back to a key file
   const key = process.env.GOOGLE_APPLICATION_CREDENTIALS;
   if (key) {
     const abs = path.isAbsolute(key) ? key : path.resolve(process.cwd(), key);
@@ -23,7 +23,7 @@ function makeBQ() {
     }
   }
 
-  // 3️⃣ Last resort: Application Default Credentials
+  // Last resort: Application Default Credentials
   return new BigQuery({ projectId });
 }
 
