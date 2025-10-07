@@ -4,7 +4,9 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import BackgroundFX from "./components/BackgroundFX";
 
-const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
+const Plot = dynamic(() => import("react-plotly.js").then((mod) => mod.default), {
+  ssr: false,
+});
 
 export default function Home() {
   const { resolvedTheme } = useTheme();
