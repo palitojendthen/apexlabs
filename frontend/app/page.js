@@ -203,13 +203,15 @@
 
 "use client";
 import { useTheme } from "next-themes";
+import BackgroundFX from "./components/BackgroundFX";
 
 export default function Home() {
   const { resolvedTheme } = useTheme();
   const dark = resolvedTheme === "dark";
 
   return (
-    <main className="min-h-screen pt-24 px-6 bg-white text-black dark:bg-gradient-to-b dark:from-black dark:to-slate-950 dark:text-white transition-colors duration-300">
+    <main className="min-h-screen pt-24 px-6 bg-white text-black dark:bg-gradient-to-b dark:from-black dark:to-slate-950 dark:text-white transition-colors duration-300 opacity-80">
+      <BackgroundFX></BackgroundFX>
       {/* ---------- HEADER ---------- */}
       <div className="text-center mb-10">
         <h1 className="text-4xl font-semibold mb-2">Research & Backtest</h1>
