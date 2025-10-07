@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* === background noise / grain effect === */
+/* background noise/grain effect */
 body::before {
   content: "";
   position: fixed;
