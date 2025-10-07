@@ -221,7 +221,7 @@ export default function Home() {
       {/* ---------- MAIN FLEX ---------- */}
       <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row gap-10 items-stretch justify-between">
         {/* LEFT — CONFIGURATION */}
-        <div className="flex-1 max-w-[420px] bg-white/5 rounded-2xl p-6 backdrop-blur-md border border-white/10 flex flex-col">
+        <div className="flex-1 max-w-[420px] dark:bg-white/5 rounded-2xl p-6 backdrop-blur-md border dark:border-white/10 flex flex-col">
           <h2 className="text-lg font-semibold mb-4">Configuration</h2>
 
           <form className="flex flex-col gap-4 flex-grow">
@@ -267,23 +267,23 @@ export default function Home() {
               className="p-2 rounded bg-neutral-200 border border-gray-300 text-gray-500 cursor-not-allowed
                          dark:bg-neutral-800 dark:border-neutral-700 dark:text-gray-600"
             >
-              <option>🔒 Unlock premium indicators</option>
+              <option>🔒 Unlock more indicators</option>
             </select>
 
             <div className="bg-white/10 dark:bg-neutral-800 rounded-md p-3 border border-white/10 text-sm">
               <p className="text-neutral-400 mb-1">Indicator Parameters</p>
               <input
-                placeholder="alpha = ..."
+                placeholder="n/lookback period = e.g. 14"
                 className="w-full p-2 mb-2 rounded bg-white border border-gray-300 text-gray-800 
                            dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
               />
               <input
-                placeholder="n = ..."
+                placeholder="high-pass period = e.g 48"
                 className="w-full p-2 mb-2 rounded bg-white border border-gray-300 text-gray-800 
                            dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
               />
               <input
-                placeholder="high-pass period = ..."
+                placeholder="alpha = e.g. .5"
                 className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
                            dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
               />
@@ -291,20 +291,25 @@ export default function Home() {
 
             <select className="p-2 rounded bg-white border border-gray-300 text-gray-800 
                               dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+              <option>Stop-Loss: 1%</option>
               <option>Stop-Loss: 3%</option>
               <option>Stop-Loss: 5%</option>
+              <option>Stop-Loss: 8%</option>
+              <option>Stop-Loss: 10%</option>
               <option>Stop-Loss: ATR × 1.5</option>
               <option>Stop-Loss: ATR × 2.0</option>
+              <option>Stop-Loss: ATR × 2.5</option>
+              <option>Stop-Loss: ATR × 3.0</option>
             </select>
 
             <div className="flex gap-2">
               <input
-                placeholder="Start (2018-01-01)"
+                placeholder="Start e.g. '2018-12-31'"
                 className="w-1/2 p-2 rounded bg-white border border-gray-300 text-gray-800 
                            dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
               />
               <input
-                placeholder="End (2024-12-31)"
+                placeholder="End e.g. '2024-12-31'"
                 className="w-1/2 p-2 rounded bg-white border border-gray-300 text-gray-800 
                            dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
               />
@@ -317,7 +322,7 @@ export default function Home() {
         </div>
 
         {/* RIGHT — CHART */}
-        <div className="flex-[1.4] bg-white/5 rounded-2xl p-6 backdrop-blur-md border border-white/10 flex flex-col justify-between">
+        <div className="flex-[1.4] dark:bg-white/5 rounded-2xl p-6 backdrop-blur-md border dark:border-white/10 flex flex-col justify-between">
           <div className="text-neutral-400 mb-4 text-sm text-center">
             Symbol × Timeframe × Indicator(s)
           </div>
@@ -334,11 +339,11 @@ export default function Home() {
       </div>
 
       {/* ---------- RESULTS SECTION (PERF + EQUITY) ---------- */}
-      <section className="max-w-[1600px] mx-auto mt-10 bg-white/5 dark:bg-white/5 rounded-2xl backdrop-blur-md border border-white/10 flex flex-col lg:flex-row overflow-hidden">
+      <section className="max-w-[1600px] mx-auto mt-10 dark:bg-white/5 dark:bg-white/5 rounded-2xl backdrop-blur-md border dark:border-white/10 flex flex-col lg:flex-row overflow-hidden">
         {/* PERFORMANCE TABLE */}
-        <div className="flex-1 border-b lg:border-b-0 lg:border-r border-white/10 p-6">
+        <div className="flex-1 dark:border-b lg:border-b-0 lg:border-r dark:border-white/10 p-6">
           <h2 className="text-lg font-semibold mb-4">Performance Metrics</h2>
-          <div className="grid grid-cols-2 gap-y-4 text-center">
+          <div className="grid grid-cols-2 gap-x-2 gap-y-10 text-center">
             <div>
               <p className="text-neutral-400 text-sm">PnL</p>
               <p className="text-xl font-semibold text-teal-400">+1 114 USD</p>
@@ -346,6 +351,14 @@ export default function Home() {
             <div>
               <p className="text-neutral-400 text-sm">Total Trades</p>
               <p className="text-xl font-semibold text-teal-400">142</p>
+            </div>
+            <div>
+              <p className="text-neutral-400 text-sm">Long</p>
+              <p className="text-xl font-semibold text-teal-400">20x</p>
+            </div>
+            <div>
+              <p className="text-neutral-400 text-sm">Short</p>
+              <p className="text-xl font-semibold text-teal-400">14x</p>
             </div>
             <div>
               <p className="text-neutral-400 text-sm">Sharpe</p>
@@ -376,7 +389,7 @@ export default function Home() {
 
         {/* EQUITY CURVE */}
         <div className="flex-[2.8] p-6 flex items-center justify-center">
-          <div className="w-full h-[480px] rounded-lg border border-white/10 flex items-center justify-center text-neutral-400">
+          <div className="w-full h-[480px] rounded-lg border dark:border-white/10 flex items-center justify-center text-neutral-400">
             [ Equity Curve Chart Placeholder ]
           </div>
         </div>
