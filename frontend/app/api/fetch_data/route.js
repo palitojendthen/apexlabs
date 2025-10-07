@@ -3,7 +3,7 @@ import fs from "fs";
 import { NextResponse } from "next/server";
 import path from "path";
 
-/** ---------- Build BigQuery Client ---------- */
+/** build bigquery client */
 function makeBQ() {
   const projectId = process.env.PROJECT_ID;
 
@@ -13,7 +13,7 @@ function makeBQ() {
     return new BigQuery({ projectId, credentials: creds });
   }
 
-  // Otherwise fall back to a key file
+  // otherwise fall back to a key file
   const key = process.env.GOOGLE_APPLICATION_CREDENTIALS;
   if (key) {
     const abs = path.isAbsolute(key) ? key : path.resolve(process.cwd(), key);
@@ -23,11 +23,11 @@ function makeBQ() {
     }
   }
 
-  // Last resort: Application Default Credentials
+  // last resort: application default credentials
   return new BigQuery({ projectId });
 }
 
-/** ---------- API Route ---------- */
+/** API Route */
 export async function POST(req) {
   const bq = makeBQ();
 
@@ -70,11 +70,11 @@ export async function POST(req) {
       LIMIT 5000
     `;
 
-    // --- Debug log ---
+    // debug log 
     console.log("[DEBUG FINAL QUERY]", query.replace(/\s+/g, " ").trim());
     console.log("[DEBUG PARAMS]", params);
 
-    // --- Execute ---
+    // execute
     const [rows] = await bq.query({ query, params });
 
     console.log("[/api/fetch_data] rowCount:", rows?.length ?? 0);
