@@ -41,7 +41,7 @@ export default function Navbar() {
           <nav className="hidden sm:flex items-center gap-6 text-[16px] text-neutral-300 relative">
             <Link
               href="/about"
-              className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-red-400 transition-all"
+              className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-teal-400 transition-all"
             >
               About
             </Link>
@@ -54,7 +54,7 @@ export default function Navbar() {
             >
               <button
                 onClick={toggleMenu}
-                className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-red-400 transition-all focus:outline-none flex items-center gap-1"
+                className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-teal-400 transition-all focus:outline-none flex items-center gap-1"
               >
                 Features <span className="text-xs">▾</span>
               </button>
@@ -67,19 +67,19 @@ export default function Navbar() {
                 >
                   <Link
                     href="/"
-                    className="block px-4 py-2 text-[15px] hover:bg-neutral-800 hover:text-red-400 transition-all"
+                    className="block px-4 py-2 text-[15px] hover:bg-neutral-800 hover:text-teal-400 transition-all"
                   >
                     Backtest
                   </Link>
                   <Link
                     href="/features/live-strategies"
-                    className="block px-4 py-2 text-[15px] hover:bg-neutral-800 hover:text-red-400 transition-all"
+                    className="block px-4 py-2 text-[15px] hover:bg-neutral-800 hover:text-teal-400 transition-all"
                   >
                     Live Strategies
                   </Link>
                   <Link
                     href="/features/portfolio-management"
-                    className="block px-4 py-2 text-[15px] hover:bg-neutral-800 hover:text-red-400 transition-all"
+                    className="block px-4 py-2 text-[15px] hover:bg-neutral-800 hover:text-teal-400 transition-all"
                   >
                     Portfolio Management
                   </Link>
@@ -89,13 +89,13 @@ export default function Navbar() {
 
             <Link
               href="/resources"
-              className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-red-400 transition-all"
+              className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-teal-400 transition-all"
             >
               Resources
             </Link>
             <Link
               href="/pricing"
-              className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-red-400 transition-all"
+              className="px-2 py-1 rounded-md hover:bg-neutral-800 hover:text-teal-400 transition-all"
             >
               Pricing
             </Link>
@@ -106,7 +106,7 @@ export default function Navbar() {
         <div className="flex items-center gap-5">
           <Link
             href="/login"
-            className="px-3 py-1.5 rounded-md text-[16px] text-neutral-300 hover:bg-neutral-800 hover:text-red-400 transition-all"
+            className="px-3 py-1.5 rounded-md text-[16px] text-neutral-300 hover:bg-neutral-800 hover:text-teal-400 transition-all"
           >
             Login
           </Link>
