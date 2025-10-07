@@ -20,9 +20,9 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black text-white border-b border-neutral-800">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-        {/* LHS: Logo + Navigation */}
+        {/* lhs: logo + navigation */}
         <div className="flex items-center gap-8">
-          {/* Logo + Brand */}
+          {/* logo + brand */}
           <Link href="/" className="flex items-center gap-3 group">
             <Image
               src="/dummy_logo.png"
@@ -37,7 +37,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Navigation links */}
+          {/* navigation links */}
           <nav className="hidden sm:flex items-center gap-6 text-[16px] text-neutral-300 relative">
             <Link
               href="/about"
@@ -46,7 +46,7 @@ export default function Navbar() {
               About
             </Link>
 
-            {/* Features */}
+            {/* features */}
             <div
               className="relative"
               onMouseEnter={handleEnter}
@@ -102,7 +102,7 @@ export default function Navbar() {
           </nav>
         </div>
 
-        {/* RHS: Login + Themes */}
+        {/* rhs: login + themes */}
         <div className="flex items-center gap-5">
           <Link
             href="/login"
