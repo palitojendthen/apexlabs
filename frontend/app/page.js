@@ -203,11 +203,13 @@
 
 "use client";
 import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
 import BackgroundFX from "./components/BackgroundFX";
 
 export default function Home() {
   const { resolvedTheme } = useTheme();
   const dark = resolvedTheme === "dark";
+  const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
   return (
     <main className="min-h-screen pt-24 px-6 bg-white text-black dark:bg-gradient-to-b dark:from-black dark:to-slate-950 dark:text-white transition-colors duration-300 opacity-80">

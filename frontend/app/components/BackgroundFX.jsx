@@ -6,7 +6,7 @@ export default function BackgroundFX() {
         className="fixed inset-0 -z-10 pointer-events-none"
         style={{
           backgroundImage:
-            "radial-gradient(60% 60% at 20% 10%, rgba(59,130,246,0.15), rgba(0,0,0,0)), radial-gradient(50% 50% at 80% 80%, rgba(45,212,191,0.12), rgba(0,0,0,0))",
+            "radial-gradient(30% 30% at 20% 10%, rgba(59,130,246,0.15), rgba(0,0,0,0)), radial-gradient(50% 50% at 80% 80%, rgba(45,212,191,0.12), rgba(0,0,0,0))",
         }}
       />
       {/* fine grain */}
