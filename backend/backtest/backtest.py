@@ -335,8 +335,10 @@ def main():
         signal_cols.append(sig_col)
 
         if idx == 0 and name.upper() in OVERLAY_INDICATORS:
+            out_col = lower_name
             plots.append({
                 "name": out_col,
+                "display_name": name.upper(),
                 "signal_col": sig_col,
                 "color_up": "rgba(0,200,0,0.7)",
                 "color_down": "rgba(200,0,0,0.7)"

@@ -1439,28 +1439,62 @@ export default function Home() {
     })();
   }, []);
 
+  // async function handleRun(e) {
+  //   e.preventDefault();
+  //   const t = e.currentTarget;
+  //   const conf = {
+  //     symbol: t.symbol.value.trim().toUpperCase(),
+  //     timeframe: t.timeframe.value.trim().toLowerCase(),
+  //     startDate: t.start.value.trim(),
+  //     endDate: t.end.value.trim(),
+  //   };
+  //   setFormState((s) => ({
+  //     ...s,
+  //     symbol: conf.symbol,
+  //     timeframe: conf.timeframe,
+  //     start: conf.startDate,
+  //     end: conf.endDate,
+  //     ind1: t.ind1.value,
+  //     ind2: t.ind2.value,
+  //     params: t.params.value,
+  //     stop: t.stop.value,
+  //   }));
+  //   const rows = await fetchData(conf);
+  //   if (rows) await runBacktest(rows);
+  // }
+
   async function handleRun(e) {
-    e.preventDefault();
-    const t = e.currentTarget;
-    const conf = {
-      symbol: t.symbol.value.trim().toUpperCase(),
-      timeframe: t.timeframe.value.trim().toLowerCase(),
-      startDate: t.start.value.trim(),
-      endDate: t.end.value.trim(),
-    };
-    setFormState((s) => ({
-      ...s,
-      symbol: conf.symbol,
-      timeframe: conf.timeframe,
-      start: conf.startDate,
-      end: conf.endDate,
-      ind1: t.ind1.value,
-      ind2: t.ind2.value,
-      params: t.params.value,
-      stop: t.stop.value,
-    }));
-    const rows = await fetchData(conf);
-    if (rows) await runBacktest(rows);
+  e.preventDefault();
+
+  // 🔹 Reset states immediately (prevents stale overlay / frozen config)
+  setChartData(null);
+  setBackendResult(null);
+  setLoading(true);
+
+  const t = e.currentTarget;
+  const conf = {
+    symbol: t.symbol.value.trim().toUpperCase(),
+    timeframe: t.timeframe.value.trim().toLowerCase(),
+    startDate: t.start.value.trim(),
+    endDate: t.end.value.trim(),
+  };
+
+  setFormState((s) => ({
+    ...s,
+    symbol: conf.symbol,
+    timeframe: conf.timeframe,
+    start: conf.startDate,
+    end: conf.endDate,
+    ind1: t.ind1.value,
+    ind2: t.ind2.value,
+    params: t.params.value,
+    stop: t.stop.value,
+  }));
+
+  // 🔹 Fetch new dataset and rerun backtest cleanly
+  const rows = await fetchData(conf);
+  if (rows) await runBacktest(rows);
+  setLoading(false);
   }
 
   const borderColor = dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.2)";
@@ -1649,7 +1683,8 @@ export default function Home() {
                       type: "scatter",
                       mode: "lines",
                       line: { width: 2, color: p.color_up },
-                      name: `${p.name.toUpperCase()} (Long)`,
+                      // name: `${p.name.toUpperCase()} (Long)`,
+                      name: `${p.display_name || p.name.toUpperCase()} (Long)`,
                     };
 
                     const shortLine = {
@@ -1658,7 +1693,8 @@ export default function Home() {
                       type: "scatter",
                       mode: "lines",
                       line: { width: 2, color: p.color_down },
-                      name: `${p.name.toUpperCase()} (Short)`,
+                      // name: `${p.name.toUpperCase()} (Short)`,
+                      name: `${p.display_name || p.name.toUpperCase()} (Short)`,
                     };
 
                     return [longLine, shortLine];
