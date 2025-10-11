@@ -82,7 +82,7 @@ export async function POST(req) {
       interval: itv,
       start,
       end,
-      limit: FREE_MAX_BARS, // server-side cap
+      limit: FREE_MAX_BARS,
     };
 
     console.log("[DEBUG FINAL QUERY]", query.replace(/\s+/g, " ").trim());
