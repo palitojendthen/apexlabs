@@ -25,7 +25,7 @@
 // }
 
 // /* ===========================================================
-//    ⬇️ PARAM VALIDATION LAYER (typed) + helpers
+//    PARAM VALIDATION LAYER (typed) + helpers
 // =========================================================== */
 
 // const indicatorSchemas = {
@@ -159,7 +159,7 @@
 // function toPct(x) { return (x * 100).toFixed(2) + " %"; }
 // function fmt(x, d = 2) { return Number(x).toFixed(d); }
 
-// /** ⬇️ UPDATED: returns { equity, metrics, indicator, markers } */
+// /** UPDATED: returns { equity, metrics, indicator, markers } */
 // function backtestMA(data, tf, maType, maParams, stopLossText) {
 //   const source = maType === "EMA" ? (maParams.source_ema || "close") : (maParams.source_sma || "close");
 //   const n = maType === "EMA" ? (maParams.n_ema || 14) : (maParams.n_sma || 14);
@@ -271,7 +271,7 @@
 // }
 
 // /* ===========================================================
-//    ⬆️ PARAM VALIDATION LAYER END
+//    PARAM VALIDATION LAYER END
 // =========================================================== */
 
 // export default function Home() {
