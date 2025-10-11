@@ -5,14 +5,14 @@ import sys
 import importlib.util
 from pathlib import Path
 import os
-
-import warnings
-warnings.filterwarnings("ignore")
-import sys
-sys.stderr = open(os.devnull, "w")  # silence unwanted stderr logs
 import traceback
+import warnings
 
-OVERLAY_INDICATORS = {"SMA", "EMA", "PMA", "KAMA", "DEMA", "TEMA"}
+warnings.filterwarnings("ignore")
+sys.stderr = open(os.devnull, "w")
+
+
+OVERLAY_INDICATORS = {"SMA", "EMA", "PMA", "KAMA", "DEMA", "TEMA", "ITREND"}
 
 # Helpers
 def compute_metrics(equity, returns, trades):
@@ -109,11 +109,6 @@ def main():
         if lower_name in ("sma", "ema"):
             if "n" in params and f"n_{lower_name}" not in params:
                 params[f"n_{lower_name}"] = params.pop("n")
-
-        # series = func(df[src_col], **params)
-        # out_col = lower_name
-        # df[out_col] = pd.Series(series).reset_index(drop=True)
-        # indicator_cols.append(out_col)
 
         import inspect
         sig = inspect.signature(func)
