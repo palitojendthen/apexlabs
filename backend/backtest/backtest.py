@@ -10,6 +10,7 @@ import warnings
 warnings.filterwarnings("ignore")
 import sys
 sys.stderr = open(os.devnull, "w")  # silence unwanted stderr logs
+import traceback
 
 OVERLAY_INDICATORS = {"SMA", "EMA", "PMA", "KAMA", "DEMA", "TEMA"}
 
@@ -109,9 +110,20 @@ def main():
             if "n" in params and f"n_{lower_name}" not in params:
                 params[f"n_{lower_name}"] = params.pop("n")
 
+        # series = func(df[src_col], **params)
+        # out_col = lower_name
+        # df[out_col] = pd.Series(series).reset_index(drop=True)
+        # indicator_cols.append(out_col)
+
+        import inspect
+        sig = inspect.signature(func)
+        valid_params = set(sig.parameters.keys())
+        params = {k: v for k, v in params.items() if k in valid_params}
+
         series = func(df[src_col], **params)
         out_col = lower_name
         df[out_col] = pd.Series(series).reset_index(drop=True)
+        df[out_col] = pd.to_numeric(df[out_col], errors="coerce").fillna(method="ffill").fillna(method="bfill")
         indicator_cols.append(out_col)
 
         sig_col = f"sig_{out_col}"
@@ -200,7 +212,8 @@ def main():
         "plots": plots
     }
 
-    json_str = json.dumps(result, ensure_ascii=False, default=str)
+    # json_str = json.dumps(result, ensure_ascii=False, default=str)
+    json_str = json.dumps(result, ensure_ascii=False, allow_nan=True, default=str)
     sys.stdout.write(json_str)
     sys.stdout.flush()
 
@@ -208,5 +221,6 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
+        traceback.print_exc()
         sys.stderr.write(f"[BACKTEST ERROR] {e}\n")
         sys.exit(1)

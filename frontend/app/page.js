@@ -781,7 +781,7 @@ const indicatorSchemas = {
   },
   EMA: {
     n_ema: { default: 14, type: "int", min: 1, max: 500 },
-    alpha: { default: 0.5, type: "float", min: 0, max: 1 },
+    alpha_ema: { default: 0.14, type: "float", min: 0, max: 1 },
     source_ema: { default: "close", type: "string" },
   },
   ADX: {
