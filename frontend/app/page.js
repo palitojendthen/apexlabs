@@ -23,7 +23,7 @@ function parseParams(s) {
     }, {});
 }
 
-/* PARAM VALIDATION LAYER + HELPERS */
+/* params validation layer + helpers */
 const indicatorSchemas = {
   SMA: {
     n_sma: { default: 14, type: "int", min: 1, max: 500 },
@@ -97,7 +97,7 @@ function validateParams(input, ind1, ind2) {
   return { params1: result1, params2: result2, warnings };
 }
 
-/* MAIN COMPONENT */
+/* main component */
 export default function Home() {
   const { resolvedTheme } = useTheme();
   const dark = resolvedTheme === "dark";
@@ -121,7 +121,7 @@ export default function Home() {
     return `${formState.symbol} • ${formState.timeframe} • ${formState.ind1}`;
   }, [formState]);
 
-  // Fetch Data
+  // fetch Data
   async function fetchData(conf) {
     setLoading(true);
     setChartData(null);
@@ -154,7 +154,7 @@ export default function Home() {
     }
   }
 
-  // Run Backtest (backend call)
+  // run backtest (backend call)
   // async function runBacktest(dataRows) {
   //   try {
   //     const { params1 } = validateParams(formState.params, formState.ind1, formState.ind2);
@@ -176,6 +176,7 @@ export default function Home() {
   //   }
   // }
 
+  // run backtest (backend call)
   async function runBacktest(dataRows, conf) {
     try {
       const { params1 } = validateParams(conf.params, conf.ind1, conf.ind2);
@@ -252,7 +253,7 @@ export default function Home() {
   e.preventDefault();
   const t = e.currentTarget;
 
-  // Build fresh config directly from user input
+  // build fresh config directly from user input
   const conf = {
     symbol: t.symbol.value.trim().toUpperCase(),
     timeframe: t.timeframe.value.trim().toLowerCase(),
@@ -264,14 +265,14 @@ export default function Home() {
     stop: t.stop.value,
   };
 
-  // Immediately update the UI
+  // immediately update ui
   setFormState(conf);
 
-  // Clear previous results before fetching new
+  // clear previous results before fetching new
   setChartData(null);
   setBackendResult(null);
 
-  // Fetch and run using latest config (no delay)
+  // fetch and run using latest config
   const rows = await fetchData(conf);
   if (rows) await runBacktest(rows, conf);
   }
@@ -279,7 +280,7 @@ export default function Home() {
   const borderColor = dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.2)";
   const gridColor = dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)";
 
-  // Extract data from backendResult
+  // extract data from backend result
   const metrics = backendResult?.metrics ?? null;
   const plots = backendResult?.plots ?? [];
   const markers = backendResult?.markers ?? { long: [], short: [] };
@@ -288,13 +289,13 @@ export default function Home() {
     y: d.equity ?? null,
   })) ?? [];
 
-  // Marker coordinates
+  // marker coordinates
   const entryX = markers.long.map((m) => m.x);
-  const entryY = markers.long.map((m) => m.y * 1.005); // offset above
+  const entryY = markers.long.map((m) => m.y * 1.005);
   const exitX = markers.short.map((m) => m.x);
-  const exitY = markers.short.map((m) => m.y * 0.995); // offset below
+  const exitY = markers.short.map((m) => m.y * 0.995);
 
-  // Render
+  // render
   return (
     <main className="min-h-screen pt-24 px-6 bg-white text-black dark:bg-gradient-to-b dark:from-black dark:to-slate-950 dark:text-white transition-colors duration-300 opacity-80">
       <BackgroundFX />
@@ -305,7 +306,7 @@ export default function Home() {
       </div>
 
       <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row gap-10 items-stretch justify-between">
-        {/* LEFT CONFIG */}
+        {/* left config */}
         <div className="flex-1 max-w-[420px] dark:bg-white/5 rounded-2xl p-6 backdrop-blur-md border dark:border-white/10 flex flex-col">
           <h2 className="text-lg font-semibold mb-4">Configuration</h2>
           <form className="flex flex-col gap-4 flex-grow" onSubmit={handleRun}>
@@ -337,7 +338,7 @@ export default function Home() {
               <option disabled>KAMA 🔒</option>
               <option disabled>Instantaneous Trendline 🔒</option>
             </select>
-            {/* Locked premium slot */}
+            {/* locked premium slot */}
             <select
               disabled
               className="p-2 rounded bg-neutral-200 border border-gray-300 text-gray-500 cursor-not-allowed
@@ -347,7 +348,7 @@ export default function Home() {
               <option>🔒 Unlock more indicators</option>
             </select>
 
-            {/* Indicator Parameter Input */}
+            {/* indicator parameter Input */}
             <div className="bg-white/10 dark:bg-neutral-800 rounded-md p-3 border border-white/10 text-sm">
               <p className="text-neutral-400 mb-1">
                 Refer indicator parameter to the Resources page! (e.g.{" "}
@@ -362,7 +363,7 @@ export default function Home() {
               />
             </div>
 
-            {/* Stop-loss */}
+            {/* stop-loss */}
             <select
               name="stop"
               defaultValue={formState.stop}
@@ -380,7 +381,7 @@ export default function Home() {
               <option>Stop-Loss: ATR × 3.0</option>
             </select>
 
-            {/* Dates */}
+            {/* dates slicing */}
             <div className="flex gap-2">
               <input
                 name="start"
@@ -398,14 +399,14 @@ export default function Home() {
               />
             </div>
             
-            {/* Run backtest */}
+            {/* run backtest */}
             <button type="submit" className="mt-1 bg-gradient-to-r from-teal-400 to-cyan-500 text-black font-semibold py-2 rounded-md hover:opacity-90 transition">
               {loading ? "Loading..." : "Run Backtest"}
             </button>
           </form>
         </div>
 
-        {/* RIGHT — CHART */}
+        {/* right - chart */}
         <div className="flex-[1.4] dark:bg-white/5 rounded-2xl p-6 backdrop-blur-md border dark:border-white/10 flex flex-col justify-between">
           <div className="text-neutral-300 dark:text-neutral-400 mb-3 text-sm text-center">{chartTitle}</div>
           <div className={`flex-grow rounded-lg border ${dark ? "border-white/10" : "border-gray-300"} flex items-center justify-center text-neutral-400`}>
@@ -430,7 +431,7 @@ export default function Home() {
                     name: "Price",
                   },
 
-              // Overlay indicators (always visible)
+              // overlay indicators (always visible)
               ...(backendResult?.plots?.length
                 ? backendResult.plots.map((p) => {
                     const df = backendResult.df ?? [];
@@ -465,7 +466,7 @@ export default function Home() {
                   }).flat()
                 : []),
 
-                  // Entry markers
+                  // entry markers
                   ...(entryX.length
                     ? [{
                         x: entryX,
@@ -476,7 +477,8 @@ export default function Home() {
                         name: "Long",
                       }]
                     : []),
-                  // Exit markers
+                  
+                  // exit markers
                   ...(exitX.length
                     ? [{
                         x: exitX,
@@ -509,9 +511,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* RESULTS SECTION */}
+      {/* resutls section */}
       <section className="max-w-[1600px] mx-auto mt-10 dark:bg-white/5 rounded-2xl backdrop-blur-md border dark:border-white/10 flex flex-col lg:flex-row overflow-hidden">
-        {/* METRICS TABLE */}
+        {/* metrics table */}
         <div className="flex-1 dark:border-b lg:border-b-0 lg:border-r dark:border-white/10 p-6">
           <h2 className="text-lg font-semibold mb-4">Performance Metrics</h2>
           {!metrics ? (
@@ -528,7 +530,7 @@ export default function Home() {
           )}
         </div>
 
-        {/* EQUITY CURVE */}
+        {/* equity curve */}
         <div className="flex-[2.8] p-6 flex items-center justify-center">
         <div className="w-full h-[480px] rounded-lg border dark:border-white/10 flex items-center justify-center text-neutral-400">
             {!equity?.length ? (
@@ -571,7 +573,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- FOOTER ---------- */}
+      {/* footer */}
       <footer className="mt-16 text-center text-sm text-neutral-500 pb-8">
         {/* © {new Date().getFullYear()} ApexQuantLabs — Built for systematic traders. */}
         © 2025 ApexQuantLabs — Built for systematic traders.
