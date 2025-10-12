@@ -42,7 +42,7 @@ const indicatorSchemas = {
     n_rsi: { default: 14, type: "int", min: 1, max: 500 },
     source_rsi: { default: "close", type: "string" },
   },
-  "Donchian Channel": {
+  Donchian_Channel: {
     n_dc: { default: 20, type: "int", min: 1, max: 500 },
     source_dc: { default: "close", type: "string" },
   },
@@ -155,20 +155,44 @@ export default function Home() {
   }
 
   // Run Backtest (backend call)
-  async function runBacktest(dataRows) {
+  // async function runBacktest(dataRows) {
+  //   try {
+  //     const { params1 } = validateParams(formState.params, formState.ind1, formState.ind2);
+  //     const payload = {
+  //       data: dataRows,
+  //       indicators: [{ name: formState.ind1, params: params1 }],
+  //       stop_loss: formState.stop,
+  //       capital: 1000,
+  //     };
+  //     const res = await fetch("/api/run_backtest", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(payload),
+  //     });
+  //     const result = await res.json();
+  //     setBackendResult(result);
+  //   } catch (err) {
+  //     console.error("Backtest failed:", err);
+  //   }
+  // }
+
+  async function runBacktest(dataRows, conf) {
     try {
-      const { params1 } = validateParams(formState.params, formState.ind1, formState.ind2);
+      const { params1 } = validateParams(conf.params, conf.ind1, conf.ind2);
+
       const payload = {
         data: dataRows,
-        indicators: [{ name: formState.ind1, params: params1 }],
-        stop_loss: formState.stop,
+        indicators: [{ name: conf.ind1, params: params1 }],
+        stop_loss: conf.stop,
         capital: 1000,
       };
+
       const res = await fetch("/api/run_backtest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+
       const result = await res.json();
       setBackendResult(result);
     } catch (err) {
@@ -190,38 +214,66 @@ export default function Home() {
     })();
   }, []);
 
+  // async function handleRun(e) {
+  // e.preventDefault();
+
+  // // Reset states immediately (prevents stale overlay/frozen config)
+  // setChartData(null);
+  // setBackendResult(null);
+  // setLoading(true);
+
+  // const t = e.currentTarget;
+  // const conf = {
+  //   symbol: t.symbol.value.trim().toUpperCase(),
+  //   timeframe: t.timeframe.value.trim().toLowerCase(),
+  //   startDate: t.start.value.trim(),
+  //   endDate: t.end.value.trim(),
+  // };
+
+  // setFormState((s) => ({
+  //   ...s,
+  //   symbol: conf.symbol,
+  //   timeframe: conf.timeframe,
+  //   start: conf.startDate,
+  //   end: conf.endDate,
+  //   ind1: t.ind1.value,
+  //   ind2: t.ind2.value,
+  //   params: t.params.value,
+  //   stop: t.stop.value,
+  // }));
+
+  // // Fetch new dataset and rerun backtest cleanly
+  // const rows = await fetchData(conf);
+  // if (rows) await runBacktest(rows);
+  // setLoading(false);
+  // }
+
   async function handleRun(e) {
   e.preventDefault();
-
-  // Reset states immediately (prevents stale overlay/frozen config)
-  setChartData(null);
-  setBackendResult(null);
-  setLoading(true);
-
   const t = e.currentTarget;
+
+  // Build fresh config directly from user input
   const conf = {
     symbol: t.symbol.value.trim().toUpperCase(),
     timeframe: t.timeframe.value.trim().toLowerCase(),
     startDate: t.start.value.trim(),
     endDate: t.end.value.trim(),
-  };
-
-  setFormState((s) => ({
-    ...s,
-    symbol: conf.symbol,
-    timeframe: conf.timeframe,
-    start: conf.startDate,
-    end: conf.endDate,
     ind1: t.ind1.value,
     ind2: t.ind2.value,
     params: t.params.value,
     stop: t.stop.value,
-  }));
+  };
 
-  // Fetch new dataset and rerun backtest cleanly
+  // Immediately update the UI
+  setFormState(conf);
+
+  // Clear previous results before fetching new
+  setChartData(null);
+  setBackendResult(null);
+
+  // Fetch and run using latest config (no delay)
   const rows = await fetchData(conf);
-  if (rows) await runBacktest(rows);
-  setLoading(false);
+  if (rows) await runBacktest(rows, conf);
   }
 
   const borderColor = dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.2)";

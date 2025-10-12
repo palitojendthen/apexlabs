@@ -7,6 +7,7 @@ from pathlib import Path
 import os
 import traceback
 import warnings
+import inspect
 
 warnings.filterwarnings("ignore")
 sys.stderr = open(os.devnull, "w")
@@ -103,6 +104,7 @@ def main():
     for col in ["open", "high", "low", "close", "volume"]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
+    
     if "open_time" in df.columns:
         df["open_time"] = pd.to_datetime(df["open_time"], errors="coerce")
 
@@ -124,7 +126,6 @@ def main():
             if "n" in params and f"n_{lower_name}" not in params:
                 params[f"n_{lower_name}"] = params.pop("n")
 
-        import inspect
         sig = inspect.signature(func)
         valid_params = set(sig.parameters.keys())
         params = {k: v for k, v in params.items() if k in valid_params}
