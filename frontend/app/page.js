@@ -327,6 +327,7 @@ export default function Home() {
               <option>EMA</option>
               <option>ADX</option>
               <option>RSI</option>
+              <option>MACD</option>
               <option>Donchian Channel</option>
               <option disabled>KAMA 🔒</option>
               <option disabled>Instantaneous Trendline 🔒</option>
@@ -336,6 +337,7 @@ export default function Home() {
               <option>RSI</option>
               <option>SMA</option>
               <option>EMA</option>
+              <option>MACD</option>
               <option>Donchian Channel</option>
               <option disabled>KAMA 🔒</option>
               <option disabled>Instantaneous Trendline 🔒</option>

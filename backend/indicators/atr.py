@@ -1,30 +1,29 @@
-def atr(src, periods = 10):
+import pandas as pd
+import numpy as np
+
+def atr(source_atr: pd.DataFrame, n_atr=10) -> pd.Series:
     """
     technical analysis indicator:
-    return average true range
-    on a given time-series data
+    return average true range, over a given dataframe
     reference: https://www.investopedia.com/terms/a/atr.asp
     params:
-    @src: series, time-series input data
-    @periods: integer, n loockback period
-    @return_df: boolean, whether to return include input dataframe or result only
-    example:
-    >>> technical_indicator.atr(df, return_df = True)
+    @source_atr: DataFrame, ohlc input data
+    @n_atr: integer, loockback period (default 10)
     """
-    src = src.dropna()
-    n = len(src)
+    _src = source_atr.copy()
+    n = len(_src)
     
-    if n < periods:
+    if n < n_atr:
         raise ValueError('Periods cant be greater than data length')
 
-    src['hl'] = src['high']-src['low']
-    src['hc1'] = src['high']-src['close'].shift(1)
-    src['lc1'] = src['low']-src['close'].shift(1)
-    src['tr'] = .00
+    _src['hl'] = _src['high']-_src['low']
+    _src['hc1'] = _src['high']-_src['close'].shift(1)
+    _src['lc1'] = _src['low']-_src['close'].shift(1)
+    _src['tr'] = .00
 
-    for i in range(0, len(src)):
-        src['tr'][i] = np.max([src['hl'][i], src['hc1'][i], src['lc1'][i]], axis=0)
+    for i in range(0, n):
+        _src.iloc[i, _src.columns.get_loc('tr')] = np.max([_src.iloc[i, _src.columns.get_loc('hl')], _src.iloc[i, _src.columns.get_loc('hc1')], _src.iloc[i, _src.columns.get_loc('lc1')]], axis=0)
     
-    src['atr'] = src['tr'].rolling(window=periods).mean()
+    _['atr'] = src['tr'].rolling(window=periods).mean()
     
     return src[['tr', 'atr']]
