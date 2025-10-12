@@ -19,19 +19,20 @@ def compute_metrics(equity, returns, trades):
     equity = np.asarray(equity, dtype=float)
     if equity.size == 0:
         return {
-            "Total PnL": "0.00 %", 
+            "Final Equity": "0.00", 
             "PnL %":"0.00 %", 
             "WinRate": "0.00 %", 
             "Profit Factor": "0.00",
             "Sharpe": "0.00",
             "MaxDD": "0.00 %",
             "Total Trades": "0",
+            "Buy & Hold": "0.00 %",
             "Largest Loss %": "0.00 %",
-            "Buy & Hold": "0.00 %"
+            "SL Hit": "0"
         }
 
     trades = [t for t in trades if t.get("pnl") is not None]
-    pnl = (equity[-1]-equity[0])
+    pnl = equity[-1]
     pnl_pct = (equity[-1]/equity[0]-1)*100.0
     ret_arr = np.asarray(returns, dtype=float)
     sd = ret_arr.std(ddof=1) if ret_arr.size > 1 else 0.0
@@ -53,15 +54,16 @@ def compute_metrics(equity, returns, trades):
         max_dd = min(max_dd, dd)
 
     return {
-        "Total PnL": f"{pnl:.2f}",
+        "Final Equity": f"{pnl:.2f}",
         "PnL %": f"{pnl_pct:.2f} %",
         "WinRate": f"{win_rate:.1f} %",
         "Profit Factor": "∞" if profit_factor == np.inf else f"{profit_factor:.2f}",
         "Sharpe": f"{sharpe:.2f}",
         "MaxDD": f"{max_dd * 100:.2f} %",
         "Total Trades": 0,
+        "Buy & Hold": 0.00,
         "Largest Loss %": 0.00,
-        "Buy & Hold": 0.00
+        "SL Hit": "0 x"
     }
 
 def ensure_derived_sources(df: pd.DataFrame, source: str) -> str:
