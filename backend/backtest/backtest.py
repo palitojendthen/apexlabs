@@ -166,6 +166,9 @@ def main():
         except Exception:
             sl_pct = None
 
+    # position mode
+    mode = body.get("mode","long").lower()
+
     cash = capital
     position = 0.0
     entry_price = None
@@ -177,6 +180,7 @@ def main():
         sig = int(df.loc[i, "final_signal"])
         prev = int(df.loc[i - 1, "final_signal"])
 
+        
         if sig == 1 and prev == 0 and cash > 0:
             position = cash / px
             entry_price = px

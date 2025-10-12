@@ -390,6 +390,7 @@ export default function Home() {
               className="p-2 rounded bg-white border border-gray-300 text-gray-800 
                          dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
               <option value="long">Long Only</option>
+              <option value="short">Short Only</option>
               <option value="longshort">Long-Short</option>
             </select>
             {/* </div> */}
