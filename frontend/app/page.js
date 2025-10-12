@@ -381,6 +381,17 @@ export default function Home() {
               <option>Stop-Loss: ATR × 3.0</option>
             </select>
 
+            {/* mode toggle */}
+            {/* <div className="flex justify-between items-center text-sm font-medium text-gray-700 dark:text-gray-300"> */}
+              {/* <span>Mode:</span> */}
+            <select name="mode" defaultValue={formState.mode || "long"}
+              className="p-2 rounded bg-white border border-gray-300 text-gray-800 
+                         dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+              <option value="long">Long Only</option>
+              <option value="longshort">Long-Short</option>
+            </select>
+            {/* </div> */}
+
             {/* dates slicing */}
             <div className="flex gap-2">
               <input
@@ -466,7 +477,7 @@ export default function Home() {
                   }).flat()
                 : []),
 
-                  // entry markers
+                  // long markers
                   ...(entryX.length
                     ? [{
                         x: entryX,
@@ -478,7 +489,7 @@ export default function Home() {
                       }]
                     : []),
                   
-                  // exit markers
+                  // short markers
                   ...(exitX.length
                     ? [{
                         x: exitX,
