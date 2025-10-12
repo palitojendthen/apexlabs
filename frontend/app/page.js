@@ -388,7 +388,7 @@ export default function Home() {
             {/* mode toggle */}
             {/* <div className="flex justify-between items-center text-sm font-medium text-gray-700 dark:text-gray-300"> */}
               {/* <span>Mode:</span> */}
-            <select name="mode" defaultValue={formState.mode || "long"}
+            <select name="mode" defaultValue={formState.mode || "longshort"}
               className="p-2 rounded bg-white border border-gray-300 text-gray-800 
                          dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
               <option value="long">Long Only</option>

@@ -28,22 +28,62 @@ export async function POST(req) {
         return reject(new Error(stderr || `Python exited with code ${code}`));
       }
 
-      try {
-        const clean = stdout.trim();
 
-        // find first "{" and last "}"
-        const first = clean.indexOf("{");
-        const last = clean.lastIndexOf("}");
-        if (first === -1 || last === -1) throw new Error("No JSON braces found");
+      
+      // try {
+      //   const clean = stdout.trim();
 
-        const jsonCandidate = clean.slice(first, last + 1);
-        const parsed = JSON.parse(jsonCandidate);
+      //   // find first "{" and last "}"
+      //   const first = clean.indexOf("{");
+      //   const last = clean.lastIndexOf("}");
+      //   if (first === -1 || last === -1) throw new Error("No JSON braces found");
 
-        resolve(parsed);
-      } catch (err) {
-        console.error("[JSON Parse ERROR]", stdout);
-        reject(new Error("Invalid JSON returned from Python:\n" + stdout));
-      }
+      //   const jsonCandidate = clean.slice(first, last + 1);
+      //   const parsed = JSON.parse(jsonCandidate);
+
+      //   resolve(parsed);
+      // } catch (err) {
+      //   console.error("[JSON Parse ERROR]", stdout);
+      //   reject(new Error("Invalid JSON returned from Python:\n" + stdout));
+      // }
+
+
+
+      // try {
+      //   const clean = stdout.trim();
+
+      //   // remove any line prefixes like "DEBUG", "INFO", etc.
+      //   const jsonStart = clean.indexOf("{");
+      //   const jsonEnd = clean.lastIndexOf("}");
+      //   if (jsonStart === -1 || jsonEnd === -1) {
+      //     throw new Error("No JSON braces found in Python output:\n" + clean);
+      //   }
+
+      //   let jsonCandidate = clean.slice(jsonStart, jsonEnd + 1);
+
+      //   // 🧹 fix possible duplicated trailing '}]}' pattern (Python double-write)
+      //   const lastBrace = jsonCandidate.lastIndexOf("}");
+      //   if (lastBrace !== jsonCandidate.length - 1) {
+      //     jsonCandidate = jsonCandidate.slice(0, lastBrace + 1);
+      //   }
+
+      //   const parsed = JSON.parse(jsonCandidate);
+      //   resolve(parsed);
+      // } catch (err) {
+      //   console.error("[JSON Parse ERROR]", stdout);
+      //   reject(new Error("Invalid JSON returned from Python:\n" + stdout));
+      // }
+
+    try {
+      const parsed = JSON.parse(stdout.trim());
+      resolve(parsed);
+    } catch (err) {
+      console.error("[JSON Parse ERROR]", stdout);
+      reject(new Error("Invalid JSON returned from Python:\n" + stdout));
+    }
+    
+
+
     });
   });
 
