@@ -112,7 +112,7 @@ export default function Home() {
     start: "",
     end: "",
     ind1: "SMA",
-    ind2: "ADX",
+    ind2: "Select Indicator",
     params: "n_sma=14,source_sma=close",
     stop: "3%",
   });
@@ -335,10 +335,10 @@ export default function Home() {
             </select>
             <select name="ind2" defaultValue={formState.ind2} className="p-2 rounded bg-white border border-gray-300 text-gray-800 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
               <option>Select Indicator</option>
-              <option>ADX</option>
-              <option>RSI</option>
               <option>SMA</option>
               <option>EMA</option>
+              <option>ADX</option>
+              <option>RSI</option>
               <option>MACD</option>
               <option>Donchian Channel</option>
               <option disabled>KAMA 🔒</option>
