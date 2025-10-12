@@ -368,19 +368,19 @@ export default function Home() {
             {/* stop-loss */}
             <select
               name="stop"
-              defaultValue={formState.stop}
+              defaultValue={formState.stop || "3%"}
               className="p-2 rounded bg-white border border-gray-300 text-gray-800 
                          dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
             >
-              <option>Stop-Loss: 1%</option>
-              <option>Stop-Loss: 3%</option>
-              <option>Stop-Loss: 5%</option>
-              <option>Stop-Loss: 8%</option>
-              <option>Stop-Loss: 10%</option>
-              <option>Stop-Loss: ATR × 1.5</option>
-              <option>Stop-Loss: ATR × 2.0</option>
-              <option>Stop-Loss: ATR × 2.5</option>
-              <option>Stop-Loss: ATR × 3.0</option>
+              <option value="1%">Stop-Loss: 1%</option>
+              <option value="3%">Stop-Loss: 3%</option>
+              <option value="5%">Stop-Loss: 5%</option>
+              <option value="8%">Stop-Loss: 8%</option>
+              <option value="10%">Stop-Loss: 10%</option>
+              <option value="1.5">Stop-Loss: ATR × 1.5</option>
+              <option value="2.0">Stop-Loss: ATR × 2.0</option>
+              <option value="2.5">Stop-Loss: ATR × 2.5</option>
+              <option value="3.0">Stop-Loss: ATR × 3.0</option>
             </select>
 
             {/* mode toggle */}
