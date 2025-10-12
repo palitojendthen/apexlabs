@@ -24,6 +24,6 @@ def atr(source_atr: pd.DataFrame, n_atr=10) -> pd.Series:
     for i in range(0, n):
         _src.iloc[i, _src.columns.get_loc('tr')] = np.max([_src.iloc[i, _src.columns.get_loc('hl')], _src.iloc[i, _src.columns.get_loc('hc1')], _src.iloc[i, _src.columns.get_loc('lc1')]], axis=0)
     
-    _['atr'] = src['tr'].rolling(window=periods).mean()
+    _src['atr'] = _src['tr'].rolling(window=n_atr).mean()
     
-    return src[['tr', 'atr']]
+    return _src[['tr', 'atr']]
