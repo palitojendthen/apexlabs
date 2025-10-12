@@ -324,6 +324,7 @@ export default function Home() {
             </select>
             <select name="ind1" defaultValue={formState.ind1} className="p-2 rounded bg-white border border-gray-300 text-gray-800 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
               <option>SMA</option>
+              <option>Select Indicator</option>
               <option>EMA</option>
               <option>ADX</option>
               <option>RSI</option>
@@ -333,6 +334,7 @@ export default function Home() {
               <option disabled>Instantaneous Trendline 🔒</option>
             </select>
             <select name="ind2" defaultValue={formState.ind2} className="p-2 rounded bg-white border border-gray-300 text-gray-800 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+              <option>Select Indicator</option>
               <option>ADX</option>
               <option>RSI</option>
               <option>SMA</option>
