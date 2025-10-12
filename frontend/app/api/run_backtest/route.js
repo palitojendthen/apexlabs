@@ -28,31 +28,6 @@ export async function POST(req) {
         return reject(new Error(stderr || `Python exited with code ${code}`));
       }
 
-      // try {
-      //   const clean = stdout.trim();
-
-      //   // find first "{" and last "}"
-      //   const first = clean.indexOf("{");
-      //   const last = clean.lastIndexOf("}");
-      //   if (first === -1 || last === -1) throw new Error("No JSON braces found");
-
-      //   const jsonCandidate = clean.slice(first, last + 1);
-      //   const parsed = JSON.parse(jsonCandidate);
-
-      //   resolve(parsed);
-      // } catch (err) {
-      //   console.error("[JSON Parse ERROR]", stdout);
-      //   reject(new Error("Invalid JSON returned from Python:\n" + stdout));
-      // }
-
-    // try {
-    //   const parsed = JSON.parse(stdout.trim());
-    //   resolve(parsed);
-    // } catch (err) {
-    //   console.error("[JSON Parse ERROR]", stdout);
-    //   reject(new Error("Invalid JSON returned from Python:\n" + stdout));
-    // }
-
     try {
       const clean = stdout.trim();
 
@@ -81,8 +56,6 @@ export async function POST(req) {
       console.error("[JSON Parse ERROR]", stdout);
       reject(new Error("Invalid JSON returned from Python:\n" + stdout));
     }
-
-
 
     });
   });
