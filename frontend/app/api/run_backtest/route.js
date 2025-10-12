@@ -45,13 +45,44 @@ export async function POST(req) {
       //   reject(new Error("Invalid JSON returned from Python:\n" + stdout));
       // }
 
+    // try {
+    //   const parsed = JSON.parse(stdout.trim());
+    //   resolve(parsed);
+    // } catch (err) {
+    //   console.error("[JSON Parse ERROR]", stdout);
+    //   reject(new Error("Invalid JSON returned from Python:\n" + stdout));
+    // }
+
     try {
-      const parsed = JSON.parse(stdout.trim());
+      const clean = stdout.trim();
+
+      // find first '{' and last '}'
+      const first = clean.indexOf("{");
+      const last = clean.lastIndexOf("}");
+
+      if (first === -1 || last === -1) {
+        throw new Error("No JSON braces found in Python output");
+      }
+
+      const jsonCandidate = clean.slice(first, last + 1);
+
+      // validate before parsing
+      let parsed;
+      try {
+        parsed = JSON.parse(jsonCandidate);
+      } catch (innerErr) {
+        console.error("[JSON Parse Inner ERROR]", innerErr);
+        console.error("[JSON Candidate Snippet]", jsonCandidate.slice(0, 300));
+        throw new Error("Invalid JSON structure returned from Python");
+      }
+
       resolve(parsed);
     } catch (err) {
       console.error("[JSON Parse ERROR]", stdout);
       reject(new Error("Invalid JSON returned from Python:\n" + stdout));
     }
+
+
 
     });
   });
