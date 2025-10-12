@@ -31,7 +31,8 @@ def compute_metrics(equity, returns, trades):
         }
 
     trades = [t for t in trades if t.get("pnl") is not None]
-    pnl_pct = (equity[-1] / equity[0] - 1) * 100.0
+    pnl = (equity[-1]-equity[0])
+    pnl_pct = (equity[-1]/equity[0]-1)*100.0
     ret_arr = np.asarray(returns, dtype=float)
     sd = ret_arr.std(ddof=1) if ret_arr.size > 1 else 0.0
     sharpe = 0.0 if sd == 0 else (ret_arr.mean() / sd) * np.sqrt(252)
@@ -52,7 +53,7 @@ def compute_metrics(equity, returns, trades):
         max_dd = min(max_dd, dd)
 
     return {
-        "Total PnL": 0.00,
+        "Total PnL": f"{pnl:.2f}",
         "PnL %": f"{pnl_pct:.2f} %",
         "WinRate": f"{win_rate:.1f} %",
         "Profit Factor": "∞" if profit_factor == np.inf else f"{profit_factor:.2f}",
@@ -68,13 +69,13 @@ def ensure_derived_sources(df: pd.DataFrame, source: str) -> str:
     if s in df.columns:
         return s
     if s == "hl2":
-        df["hl2"] = (df["high"] + df["low"]) / 2.0
+        df["hl2"] = (df["high"]+df["low"])/2.0
         return "hl2"
     if s == "hlc3":
-        df["hlc3"] = (df["high"] + df["low"] + df["close"]) / 3.0
+        df["hlc3"] = (df["high"]+df["low"]+df["close"])/3.0
         return "hlc3"
     if s == "ohlc4":
-        df["ohlc4"] = (df["open"] + df["high"] + df["low"] + df["close"]) / 4.0
+        df["ohlc4"] = (df["open"]+df["high"]+df["low"]+df["close"])/4.0
         return "ohlc4"
     return "close"
 
