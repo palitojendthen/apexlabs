@@ -398,7 +398,7 @@ warnings.filterwarnings("ignore")
 OVERLAY_INDICATORS = {"SMA", "EMA", "PMA", "KAMA", "DEMA", "TEMA", "ITREND"}
 
 
-# hel
+# utility function
 def compute_metrics(equity, returns, trades):
     equity = np.asarray(equity, dtype=float)
     if equity.size == 0:
@@ -449,7 +449,6 @@ def compute_metrics(equity, returns, trades):
         "SL Hit": "Nx"
     }
 
-
 def ensure_derived_sources(df, source):
     s = (source or "close").lower()
     if s in df.columns:
@@ -465,7 +464,6 @@ def ensure_derived_sources(df, source):
         return "ohlc4"
     return "close"
 
-
 def import_indicator(module_basename):
     base = module_basename.replace(" ", "_").lower()
     module_path = Path(__file__).resolve().parents[1] / "indicators" / f"{base}.py"
@@ -476,8 +474,7 @@ def import_indicator(module_basename):
     spec.loader.exec_module(module)
     return getattr(module, base)
 
-
-# ---------------------- SIGNAL GENERATION ----------------------
+# signal generation
 def apply_technicals(df, indicators, user_tier="free"):
     """
     Apply indicator-based trading signals dynamically.
@@ -490,13 +487,13 @@ def apply_technicals(df, indicators, user_tier="free"):
         name = str(ind.get("name", "")).strip().lower().replace(" ", "_")
         sig_col = f"sig_{name}_{idx}"
 
-        # --- FREE PLAN LIMIT ---
+        # free plan limit
         if user_tier == "free" and idx == 3:
             df[sig_col] = np.nan
             signal_cols.append(sig_col)
             continue
 
-        # --- SMA rule ---
+        # sma
         if name == "sma" and "sma" in df.columns:
             df[sig_col] = np.where(df["close"] > df["sma"], 1, 0)
             # df[sig_col] = np.where(
@@ -510,7 +507,7 @@ def apply_technicals(df, indicators, user_tier="free"):
             # )
             # df[sig_col] = df[sig_col].ffill().fillna(0)
         
-        # --- EMA rule ---
+        # ema
         elif name == "ema" and "ema" in df.columns:
             df[sig_col] = np.where(df["close"] > df["ema"], 1, 0)
             # df[sig_col] = np.where(
@@ -524,17 +521,17 @@ def apply_technicals(df, indicators, user_tier="free"):
             # )
             # df[sig_col] = df[sig_col].ffill().fillna(0)
 
-        # --- ADX rule ---
+        # adx
         elif name == "adx" and "adx" in df.columns:
             df[sig_col] = np.where(df["adx"] > 20, 1, 0)
 
-        # --- fallback ---
+        # fallback
         else:
             df[sig_col] = 0
 
         signal_cols.append(sig_col)
 
-    # --- Final combined signal ---
+    # final combined signal
     active_sigs = [c for c in signal_cols if df[c].notna().any()]
     if not active_sigs:
         df["final_signal"] = 0
@@ -546,7 +543,7 @@ def apply_technicals(df, indicators, user_tier="free"):
     return df
 
 
-# ---------------------- STRATEGY ENGINES ----------------------
+# strategy engines
 def run_long(df, start_idx, use_atr, atr_mult, sl_pct, capital):
     cash, position, entry = capital, 0.0, None
     equity, trades, long_m, short_m = [], [], [], []
@@ -583,7 +580,6 @@ def run_long(df, start_idx, use_atr, atr_mult, sl_pct, capital):
 
     return equity, trades, long_m, short_m
 
-
 def run_short(df, start_idx, use_atr, atr_mult, sl_pct, capital):
     cash, position, entry = capital, 0.0, None
     equity, trades, short_m, cover_m = [], [], [], []
@@ -619,7 +615,6 @@ def run_short(df, start_idx, use_atr, atr_mult, sl_pct, capital):
         equity.append(cash + position * (2 * entry - px if entry else px))
 
     return equity, trades, cover_m, short_m
-
 
 def run_longshort(df, start_idx, use_atr, atr_mult, sl_pct, capital):
     cash, position, entry, side = capital, 0.0, None, None
@@ -696,7 +691,7 @@ def run_longshort(df, start_idx, use_atr, atr_mult, sl_pct, capital):
     return equity, trades, long_m, short_m
 
 
-# ---------------------- MAIN FUNCTION ----------------------
+# main function
 def main():
     body = json.load(sys.stdin)
     df = pd.DataFrame(body["data"]).reset_index(drop=True)
@@ -746,7 +741,7 @@ def main():
                 "color_down": "rgba(200,0,0,0.7)"
             })
 
-    # new signal generation
+    # apply technical/signal generated
     df = apply_technicals(df, indicators, user_tier="free")
 
     start_idx = max(lookbacks) if lookbacks else 1
