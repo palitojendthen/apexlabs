@@ -186,6 +186,7 @@ export default function Home() {
         indicators: [{ name: conf.ind1, params: params1 }],
         stop_loss: conf.stop,
         capital: 1000,
+        mode: conf.mode,
       };
 
       const res = await fetch("/api/run_backtest", {
@@ -263,6 +264,7 @@ export default function Home() {
     ind2: t.ind2.value,
     params: t.params.value,
     stop: t.stop.value,
+    mode: t.mode.value || "long",
   };
 
   // immediately update ui
