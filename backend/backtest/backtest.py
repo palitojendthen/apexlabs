@@ -259,7 +259,7 @@ warnings.filterwarnings("ignore")
 
 OVERLAY_INDICATORS = {"SMA", "EMA", "PMA", "KAMA", "DEMA", "TEMA", "ITREND"}
 
-# ---------- Helper: Metrics ----------
+# helper metrics 
 def compute_metrics(equity, returns, trades):
     equity = np.asarray(equity, dtype=float)
     if equity.size == 0:
@@ -313,7 +313,7 @@ def compute_metrics(equity, returns, trades):
     }
 
 
-# ---------- Helper: Derived Sources ----------
+# helper derived sources 
 def ensure_derived_sources(df: pd.DataFrame, source: str) -> str:
     s = (source or "close").lower()
     if s in df.columns:
@@ -330,7 +330,7 @@ def ensure_derived_sources(df: pd.DataFrame, source: str) -> str:
     return "close"
 
 
-# ---------- Helper: Import Indicator ----------
+# helper import indicator
 def import_indicator(module_basename: str):
     base = module_basename.replace(" ", "_").lower()
     module_path = Path(__file__).resolve().parents[1] / "indicators" / f"{base}.py"
@@ -342,7 +342,7 @@ def import_indicator(module_basename: str):
     return getattr(module, base)
 
 
-# ---------- Core Backtest ----------
+# core backtest
 def main():
     body = json.load(sys.stdin)
     df = pd.DataFrame(body["data"]).reset_index(drop=True)
@@ -361,7 +361,7 @@ def main():
     indicator_cols, signal_cols, plots = [], [], []
     lookbacks = []
 
-    # --- Load indicators dynamically ---
+    # load indicators dynamically
     for idx, ind in enumerate(indicators):
         name = str(ind.get("name", "")).strip()
         if not name:
@@ -408,7 +408,7 @@ def main():
 
     df["final_signal"] = df[signal_cols].all(axis=1).astype(int)
 
-    # --- Stop-loss type ---
+    # stop-loss type
     use_atr, atr_mult, sl_pct = False, None, None
     if "atr" in stop_loss_text.lower() or "x" in stop_loss_text.lower():
         try:
@@ -427,7 +427,7 @@ def main():
         atr_df = atr_mod(df, n_atr=10)
         df = df.join(atr_df[["tr", "atr"]])
 
-    # --- Initialize ---
+    # initialize
     cash = capital
     position = 0.0
     entry_price = None
@@ -436,13 +436,13 @@ def main():
 
     start_idx = max(lookbacks) if lookbacks else 1
 
-    # --- Backtest Loop ---
+    # backtest loop
     for i in range(start_idx, len(df)):
         px = float(df.loc[i, "close"])
         sig = int(df.loc[i, "final_signal"])
         prev = int(df.loc[i - 1, "final_signal"])
 
-        # ENTRY
+        # entry
         if sig == 1 and prev == 0 and cash > 0:
             position = cash / px
             entry_price = px
@@ -450,7 +450,7 @@ def main():
             trades.append({"entry": px, "exit": None, "pnl": None, "side": "long"})
             long_markers.append({"x": str(df.loc[i, "open_time"]), "y": float(df.loc[i, "low"]) * 0.98})
 
-        # STOP LOSS
+        # stop-loss
         elif position > 0 and entry_price is not None:
             if use_atr and "atr" in df.columns:
                 atr_val = float(df.loc[i, "atr"])
@@ -468,7 +468,7 @@ def main():
                 position, entry_price = 0.0, None
                 continue
 
-        # LONG → SHORT FLIP
+        # long-short flip
         elif mode == "longshort" and sig == 0 and prev == 1 and position > 0:
             exit_px = px
             cash = position * exit_px
@@ -479,7 +479,7 @@ def main():
             entry_price = px
             trades.append({"entry": px, "exit": None, "pnl": None, "side": "short"})
 
-        # LONG ONLY EXIT
+        # long only exit
         elif mode == "long" and sig == 0 and prev == 1 and position > 0:
             exit_px = px
             cash = position * exit_px
@@ -490,13 +490,7 @@ def main():
 
         equity_curve.append(cash + position * px)
 
-    # # --- Finalize Equity ---
-    # pad_len = start_idx
-    # padded_equity = [capital] * pad_len + equity_curve
-    # padded_equity = padded_equity[:len(df)]
-    # df["equity"] = padded_equity
-
-    # --- Finalize Equity ---
+    # finalize equity
     pad_len = start_idx
     # build full equity vector (same length as full df)
     full_equity = [capital] * start_idx + equity_curve
@@ -516,7 +510,7 @@ def main():
     rets = df["equity"].pct_change().fillna(0.0).values
     metrics = compute_metrics(df["equity"].values, rets, trades)
 
-    # --- Output ---
+    # output
     result = {
         "df": df.to_dict(orient="records"),
         "metrics": metrics,
