@@ -17,7 +17,7 @@ export default function LoginPage() {
     setErr("");
     try {
       await signInWithEmailAndPassword(auth, email, pw);
-      router.replace("/"); // back to landing/backtest
+      router.replace("/");
     } catch (e) {
       setErr("Invalid email or password");
     }
