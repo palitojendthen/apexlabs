@@ -1,3 +1,129 @@
+// "use client";
+// import { useTheme } from "next-themes";
+// import { useRouter } from "next/navigation";
+// import { useState } from "react";
+// import BackgroundFX from "../components/BackgroundFX";
+
+
+// export default function SignupPage() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [loading, setLoading] = useState(false);
+//   const router = useRouter();
+//   const { resolvedTheme, setTheme } = useTheme();
+
+// //   useEffect(() => {
+// //     // force restore last used theme immediately
+// //     if (resolvedTheme === "light" && window.localStorage.getItem("theme") === "dark") {
+// //       setTheme("dark");
+// //     }
+// //   }, [resolvedTheme, setTheme]);
+
+//   const handleSignup = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+
+//     // mock sign up – replace with Firebase/FastAPI signup + BigQuery insert
+//     setTimeout(() => {
+//       setLoading(false);
+//       router.push("/");
+//     }, 1000);
+//   };
+
+//   return (
+//     <main className="min-h-screen flex flex-col items-center justify-center pt-14 px-16 bg-white text-black dark:bg-gradient-to-b dark:from-black dark:to-slate-950 dark:text-white transition-colors duration-300 opacity-80">
+//       <BackgroundFX />
+
+//       <div className="w-full max-w-sm p-8 rounded-2xl bg-white/5 dark:bg-white/5 border dark:border-white/10 backdrop-blur-md shadow-xl">
+//         <h1 className="text-[1.65rem] font-semibold text-center mb-3">
+//           Create an Account!
+//         </h1>
+//         <p className="text-neutral-400 text-center mb-6 text-sm">
+//             subscribe to use full features
+//         </p>
+
+//         <form onSubmit={handleSignup} className="space-y-4">
+        
+//           {/* email */}
+//           <input
+//             type="email"
+//             placeholder="Email address"
+//             value={email}
+//             onChange={(e) => setEmail(e.target.value)}
+//             className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+//                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
+//             required
+//           />
+          
+//           {/* encrypted password */}
+//           <input
+//             type="password"
+//             placeholder="Create password"
+//             value={password}
+//             onChange={(e) => setPassword(e.target.value)}
+//             className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+//                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
+//             required
+//           />
+
+//           {/* fullname */}
+//           <input
+//             type="fullname"
+//             placeholder="Fullname"
+//             value={password}
+//             onChange={(e) => setFullname(e.target.value)}
+//             className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+//                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
+//           />
+
+//           {/* Plan */}
+//           <input
+//             type="plan"
+//             placeholder="Plan"
+//             value={password}
+//             onChange={(e) => setFullname(e.target.value)}
+//             className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+//                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
+//           />
+
+//           {/* fullname */}
+//           <input
+//             type="background"
+//             placeholder="Background"
+//             value={password}
+//             onChange={(e) => setFullname(e.target.value)}
+//             className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+//                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
+//           />
+
+//           <button
+//             type="submit"
+//             disabled={loading}
+//             className="w-full py-2 rounded-md bg-gradient-to-r from-teal-400 to-cyan-500 
+//                        text-black font-semibold hover:opacity-90 transition disabled:opacity-50"
+//           >
+//             {loading ? "Creating..." : "Create"}
+//           </button>
+//         </form>
+
+//         <p className="text-center text-neutral-400 text-sm mt-6">
+//           Already have an account?{" "}
+//           <a href="/login" className="text-teal-400 hover:underline">
+//             Log in
+//           </a>
+//         </p>
+//       </div>
+
+//       {/* footer */}
+//       <footer className="mt-16 text-center text-sm text-neutral-500 pb-8">
+//         © 2025 ApexQuantLabs — Built for systematic traders.
+//       </footer>
+//     </main>
+//   );
+// }
+
+
+
 "use client";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
