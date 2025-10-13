@@ -1,111 +1,117 @@
 "use client";
-import BackgroundFX from "@/app/components/BackgroundFX";
-import ThemeToggle from "@/app/components/ThemeToggle";
-import Image from "next/image";
+import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import BackgroundFX from "../components/BackgroundFX";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
-  const [pw, setPw] = useState("");
-  const [err, setErr] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { resolvedTheme, setTheme } = useTheme();
 
-  const handleSubmit = (e) => {
+  // fix: ensure dark theme persists when navigating from dark pages
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) setTheme(savedTheme);
+  }, [setTheme]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (!email || !pw) {
-      setErr("Please fill in all fields");
-      return;
-    }
-    setErr("");
-    // TODO: connect real Firebase login
-    router.replace("/");
+    setLoading(true);
+
+    // mock login – replace with Firebase/FastAPI auth later
+    setTimeout(() => {
+      setLoading(false);
+      router.push("/"); // redirect to Research & Backtest after login
+    }, 1000);
   };
 
   return (
-    <main className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0e0e0f] to-[#1a1a1d] text-gray-200">
-      {/* shared background */}
+    <main className="min-h-screen flex flex-col items-center justify-center px-6 bg-white text-black dark:bg-gradient-to-b dark:from-black dark:to-slate-950 dark:text-white transition-colors duration-300 opacity-80">
       <BackgroundFX />
 
-      {/* theme toggle in corner */}
-      <div className="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
+      <div className="w-full max-w-sm p-8 rounded-2xl bg-white/5 dark:bg-white/5 border dark:border-white/10 backdrop-blur-md shadow-xl">
+        <h1 className="text-2xl font-semibold text-center mb-2">
+          Welcome Back!
+        </h1>
 
-      {/* login container */}
-      <div className="w-full max-w-md px-8 py-10 rounded-2xl bg-neutral-900/70 border border-neutral-700 shadow-xl backdrop-blur-md flex flex-col items-center">
-        {/* centered logo */}
-        <div className="flex flex-col items-center mb-6">
-          <Image
-            src="/dummy_logo.png"
-            alt="ApexQuantLabs"
-            width={56}
-            height={56}
-            className="object-contain mb-2"
+        <form onSubmit={handleLogin} className="space-y-4 mt-4">
+          <input
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+                       dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
+            required
           />
-          <h1 className="text-2xl font-semibold tracking-wide text-white">
-            ApexQuantLabs
-          </h1>
-        </div>
-
-        {/* form */}
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 rounded-md bg-[#1a1a1d] border border-neutral-700 focus:outline-none focus:border-teal-400"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Password</label>
-            <input
-              type="password"
-              value={pw}
-              onChange={(e) => setPw(e.target.value)}
-              className="w-full px-3 py-2 rounded-md bg-[#1a1a1d] border border-neutral-700 focus:outline-none focus:border-teal-400"
-              required
-            />
-          </div>
-
-          {err && <p className="text-red-400 text-sm text-center">{err}</p>}
-
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+                       dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
+            required
+          />
           <button
             type="submit"
-            className="mt-2 w-full py-2.5 rounded-md font-semibold text-black bg-gradient-to-r from-teal-400 to-cyan-500 hover:opacity-90 transition"
+            disabled={loading}
+            className="w-full py-2 rounded-md bg-gradient-to-r from-teal-400 to-cyan-500 
+                       text-black font-semibold hover:opacity-90 transition disabled:opacity-50"
           >
-            Log In
+            {loading ? "Logging in..." : "Continue"}
           </button>
         </form>
 
-        {/* alt options */}
-        <div className="text-center text-sm text-gray-400 mt-6">or</div>
-
-        {/* social buttons (placeholders for now) */}
-        <div className="w-full mt-3 flex flex-col gap-2">
-          <button className="w-full py-2 border border-neutral-700 rounded-md hover:bg-[#1e1e20] transition">
-            Continue with Google
-          </button>
-          <button className="w-full py-2 border border-neutral-700 rounded-md hover:bg-[#1e1e20] transition">
-            Continue with Microsoft
-          </button>
-          <button className="w-full py-2 border border-neutral-700 rounded-md hover:bg-[#1e1e20] transition">
-            Continue with Apple
-          </button>
-        </div>
-
-        {/* footer text */}
-        <p className="text-center text-gray-400 text-sm mt-8">
+        <p className="text-center text-neutral-400 text-sm mt-6">
           Don’t have an account?{" "}
-          <a href="/pricing" className="text-teal-400 hover:underline">
+          <a href="/signup" className="text-teal-400 hover:underline">
             Sign up
           </a>
         </p>
+
+        <div className="my-6 flex items-center gap-3">
+          <div className="flex-grow border-t border-white/10" />
+          <span className="text-neutral-400 text-xs">OR</span>
+          <div className="flex-grow border-t border-white/10" />
+        </div>
+
+        {/* Social login buttons with transparent icons */}
+        <div className="flex flex-col gap-2">
+          <button className="flex items-center justify-center gap-2 border border-neutral-700 py-2 rounded hover:bg-neutral-800 transition text-sm">
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google"
+              className="w-5 h-5"
+            />
+            Continue with Google
+          </button>
+          <button className="flex items-center justify-center gap-2 border border-neutral-700 py-2 rounded hover:bg-neutral-800 transition text-sm">
+            <img
+              src="https://www.svgrepo.com/show/452062/microsoft.svg"
+              alt="Microsoft"
+              className="w-5 h-5"
+            />
+            Continue with Microsoft
+          </button>
+          <button className="flex items-center justify-center gap-2 border border-neutral-700 py-2 rounded hover:bg-neutral-800 transition text-sm">
+            <img
+              src="https://www.svgrepo.com/show/508761/apple.svg"
+              alt="Apple"
+              className="w-5 h-5"
+            />
+            Continue with Apple
+          </button>
+        </div>
       </div>
+
+      {/* footer */}
+      <footer className="mt-16 text-center text-sm text-neutral-500 pb-8">
+        © 2025 ApexQuantLabs — Built for systematic traders.
+      </footer>
     </main>
   );
 }
