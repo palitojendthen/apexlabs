@@ -33,8 +33,8 @@ export default function SignupPage() {
     <main className="min-h-screen flex flex-col items-center justify-center px-16 bg-white text-black dark:bg-gradient-to-b dark:from-black dark:to-slate-950 dark:text-white transition-colors duration-300 opacity-80">
       <BackgroundFX />
 
-      <div className="w-full max-w-sm p-8 rounded-2xl bg-white/5 dark:bg-white/5 border dark:border-white/10 backdrop-blur-md shadow-xl">
-        <h1 className="text-2xl font-semibold text-center mb-2">
+      <div className="w-full max-w-lg p-11 rounded-2xl bg-white/5 dark:bg-white/5 border dark:border-white/10 backdrop-blur-md shadow-xl">
+        <h1 className="text-[2rem] font-semibold text-center mb-2">
           Create an Account!
         </h1>
         <p className="text-neutral-400 text-center mb-6 text-sm">
@@ -48,7 +48,7 @@ export default function SignupPage() {
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+            className="w-full p-3 rounded bg-white border border-gray-300 text-gray-800 
                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
             required
           />
@@ -59,7 +59,7 @@ export default function SignupPage() {
             placeholder="Create password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+            className="w-full p-3 rounded bg-white border border-gray-300 text-gray-800 
                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
             required
           />
@@ -70,7 +70,7 @@ export default function SignupPage() {
             placeholder="Full name"
             value={fullname}
             onChange={(e) => setFullname(e.target.value)}
-            className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+            className="w-full p-3 rounded bg-white border border-gray-300 text-gray-800 
                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
           />
 
@@ -78,7 +78,7 @@ export default function SignupPage() {
           <select
             name="plan"
             defaultValue="Essentials"
-            className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+            className="w-full p-3 rounded bg-white border border-gray-300 text-gray-800 
                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
           >
             <option value="Essentials">Essentials</option>
@@ -91,7 +91,7 @@ export default function SignupPage() {
           <select
             name="background"
             defaultValue=""
-            className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+            className="w-full p-3 rounded bg-white border border-gray-300 text-gray-800 
                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
           >
             <option value="">Select your background</option>

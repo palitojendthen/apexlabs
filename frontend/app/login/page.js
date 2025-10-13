@@ -32,8 +32,8 @@ export default function LoginPage() {
     <main className="min-h-screen flex flex-col items-center justify-center px-6 bg-white text-black dark:bg-gradient-to-b dark:from-black dark:to-slate-950 dark:text-white transition-colors duration-300 opacity-80">
       <BackgroundFX />
 
-      <div className="w-full max-w-sm p-8 rounded-2xl bg-white/5 dark:bg-white/5 border dark:border-white/10 backdrop-blur-md shadow-xl">
-        <h1 className="text-2xl font-semibold text-center mb-2">
+      <div className="w-full max-w-lg p-11 rounded-2xl bg-white/5 dark:bg-white/5 border dark:border-white/10 backdrop-blur-md shadow-xl">
+        <h1 className="text-[2rem] font-semibold text-center mb-2">
           Welcome Back!
         </h1>
 
@@ -43,7 +43,7 @@ export default function LoginPage() {
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+            className="w-full p-3 rounded bg-white border border-gray-300 text-gray-800 
                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
             required
           />
@@ -52,7 +52,7 @@ export default function LoginPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 rounded bg-white border border-gray-300 text-gray-800 
+            className="w-full p-3 rounded bg-white border border-gray-300 text-gray-800 
                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
             required
           />
@@ -80,8 +80,8 @@ export default function LoginPage() {
         </div>
 
         {/* Social login buttons with transparent icons */}
-        <div className="flex flex-col gap-2">
-          <button className="flex items-center justify-center gap-2 border border-neutral-700 py-2 rounded hover:bg-neutral-800 transition text-sm">
+        <div className="flex flex-col gap-3">
+          <button className="flex items-center justify-center gap-4 border border-neutral-700 py-4 rounded hover:bg-neutral-800 transition text-sm">
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google"
@@ -89,7 +89,7 @@ export default function LoginPage() {
             />
             Continue with Google
           </button>
-          <button className="flex items-center justify-center gap-2 border border-neutral-700 py-2 rounded hover:bg-neutral-800 transition text-sm">
+          <button className="flex items-center justify-center gap-4 border border-neutral-700 py-4 rounded hover:bg-neutral-800 transition text-sm">
             <img
               src="https://www.svgrepo.com/show/452062/microsoft.svg"
               alt="Microsoft"
@@ -97,11 +97,11 @@ export default function LoginPage() {
             />
             Continue with Microsoft
           </button>
-          <button className="flex items-center justify-center gap-2 border border-neutral-700 py-2 rounded hover:bg-neutral-800 transition text-sm">
+          <button className="flex items-center justify-center gap-4 border border-neutral-700 py-4 rounded hover:bg-neutral-800 transition text-sm">
             <img
-              src="https://www.svgrepo.com/show/506383/apple.svg"
+              src="https://www.svgrepo.com/show/132586/apple.svg"
               alt="Apple"
-              className="w-5 h-5"
+              className="w-7 h-7"
             />
             Continue with Apple
           </button>
