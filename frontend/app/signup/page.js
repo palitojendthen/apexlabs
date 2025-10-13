@@ -82,9 +82,6 @@ export default function SignupPage() {
                        dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
           >
             <option value="Essentials">Essentials</option>
-            <option value="Plus" disabled>
-              Plus 🔒 (coming soon)
-            </option>
           </select>
 
           {/* Background dropdown */}
@@ -97,9 +94,9 @@ export default function SignupPage() {
             <option value="">Select your background</option>
             <option>New to trading</option>
             <option>Actively manual trade</option>
-            <option>A data scientist looking to automate trade</option>
+            <option>A Data Scientist looking to automate trade</option>
             <option>Algorithmic trading experience</option>
-            <option>Quantitative researcher / developer</option>
+            <option>Quantitative Researcher/Developer</option>
           </select>
 
           <button
