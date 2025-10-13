@@ -1,4 +1,10 @@
-export const metadata = { title: "Login • ApexLabs" };
-export default function Layout({ children }) {
-  return <>{children}</>;
+export const metadata = { title: "Login • ApexQuantLabs" };
+
+export default function LoginLayout({ children }) {
+  // intentionally no Navbar here
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
 }
