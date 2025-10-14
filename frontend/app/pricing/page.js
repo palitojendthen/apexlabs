@@ -52,7 +52,7 @@ export default function PricingPage() {
 
       <div className="h-20 md:h-24"/>
 
-      {/* Tagline */}
+      {/* tagline */}
       <div className="text-center mb-14">
         <h1 className="text-3xl md:text-4xl font-semibold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-500">
           Plans for every quantitative trading decision.
@@ -62,7 +62,7 @@ export default function PricingPage() {
         </p>
       </div>
 
-      {/* Toggle Switch */}
+      {/* toggle switch */}
       <div className="flex items-center mb-14 space-x-4">
         <span
           className={`text-sm ${!isAnnual ? "text-teal-400" : "text-neutral-400"}`}
@@ -90,7 +90,7 @@ export default function PricingPage() {
         </span>
       </div>
 
-      {/* Plans Table */}
+      {/* plans table */}
       <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-12">
         {plans.map((plan, i) => (
           <motion.div
