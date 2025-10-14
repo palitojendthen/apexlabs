@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { BriefcaseBusiness, FlaskConical, LineChart, Mail } from "lucide-react";
+import { BriefcaseBusiness, FlaskConical, LineChart } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import BackgroundFX from "../components/BackgroundFX";
@@ -41,7 +41,7 @@ export default function AboutPage() {
 
       <div className="h-20 md:h-24" />
 
-      {/* HERO SECTION */}
+      {/* hero section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -57,14 +57,14 @@ export default function AboutPage() {
         </p>
       </motion.div>
 
-      {/* STORY + DATA SECTION WITH ORGANIC VISUAL BACKDROP */}
+      {/* story + data section */}
       <motion.section
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 1 }}
         className="relative max-w-4xl mx-auto px-6 py-12 mb-24 text-center"
       >
-        {/* Subtle organic gridwave backdrop */}
+        {/* subtle organic gridwave backdrop */}
         <div
           className="absolute inset-0 -z-10 opacity-20"
           style={{
@@ -79,7 +79,7 @@ export default function AboutPage() {
           <p>
             What began as a small attempt to earn extra income through the markets soon became a deeper curiosity —
             <em> can data uncover structure within price noise?</em>  
-            With R and Python, we started building analytical tools, transforming scattered data into structured insight.
+             With R and Python, we started building analytical tools, transforming scattered data into structured insight.
             Inspired by <strong>John F. Ehlers’</strong> <em>“Rocket Science for Traders”</em>, ApexQuantLabs grew from a personal pursuit into
             a commitment to quantitative discipline and systematic design.
           </p>
@@ -89,7 +89,7 @@ export default function AboutPage() {
 
           <p>
             Today, ApexQuantLabs sources market data directly from <strong>Binance Futures</strong>,
-            covering every asset from inception to present with strict data integrity.
+            covering asset from inception to present with strict data integrity.
             Our internal pipelines handle collection, cleaning, and ingestion — ensuring reliable and continuous datasets.
             Future integrations with <strong>Interactive Brokers (IBKR)</strong> and institutional-grade sources
             will expand this foundation even further.
@@ -97,7 +97,7 @@ export default function AboutPage() {
         </div>
       </motion.section>
 
-      {/* FEATURES SECTION */}
+      {/* features section */}
       <motion.section
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -124,8 +124,8 @@ export default function AboutPage() {
         </div>
       </motion.section>
 
-      {/* CONTACT SECTION */}
-        <motion.section
+      {/* contact section */}
+        {/* <motion.section
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35, duration: 0.9 }}
@@ -136,7 +136,7 @@ export default function AboutPage() {
             <h3 className="text-lg font-semibold text-teal-400">Get in Touch</h3>
         </div>
         <p className="text-neutral-400 text-sm md:text-base">
-            We’d love to hear from you — whether it’s feedback, collaboration, or just a hello.  
+            We’d love to hear from you!  
             Write to us at{" "}
             <a
             href="mailto:contact@apexquantlabs.com"
@@ -145,9 +145,9 @@ export default function AboutPage() {
             contact@apexquantlabs.com
             </a>
         </p>
-        </motion.section>
+        </motion.section> */}
 
-      {/* DISCLAIMER SECTION */}
+      {/* disclaimer section */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -161,7 +161,7 @@ export default function AboutPage() {
         </p>
       </motion.div>
 
-      {/* FOOTER */}
+      {/* footer */}
       <footer className="mt-20 text-center text-sm text-neutral-500 pb-8">
         © 2025 ApexQuantLabs — Built for systematic traders.
       </footer>
