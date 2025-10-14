@@ -125,19 +125,14 @@ export default function AboutPage() {
       </motion.section>
 
       {/* contact section */}
-        {/* <motion.section
+        <motion.section
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35, duration: 0.9 }}
         className="text-center mb-24"
         >
-        <div className="flex items-center justify-center gap-3 mb-3">
-            <Mail className="w-5 h-5 text-teal-400" />
-            <h3 className="text-lg font-semibold text-teal-400">Get in Touch</h3>
-        </div>
         <p className="text-neutral-400 text-sm md:text-base">
-            We’d love to hear from you!  
-            Write to us at{" "}
+            Contact Us{" "}
             <a
             href="mailto:contact@apexquantlabs.com"
             className="text-teal-400 hover:text-cyan-400 transition-colors font-medium"
@@ -145,7 +140,7 @@ export default function AboutPage() {
             contact@apexquantlabs.com
             </a>
         </p>
-        </motion.section> */}
+        </motion.section>
 
       {/* disclaimer section */}
       <motion.div
