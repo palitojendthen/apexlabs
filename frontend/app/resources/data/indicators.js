@@ -1,4 +1,5 @@
 // /frontend/data/indicators.js
+
 export const indicators = [
   {
     id: "sma",
@@ -10,21 +11,24 @@ export const indicators = [
     ],
     markdown: `
 
-**Formula**
+**Formula:**
 $$
 SMA = \\frac{P_1 + P_2 + P_3 + \\dots + P_n}{n}
 $$
 
-The **Simple Moving Average (SMA)** smooths out short-term price fluctuations by averaging recent data points.  
-It helps traders identify trend direction and potential reversals.
+&nbsp;
+
+The **Simple Moving Average (SMA)** smooths out short-term price fluctuations by averaging recent data points. It helps traders identify trend direction and potential reversals.
+
+&nbsp;
 
 **Usage:**  
-A bullish signal is generated when price crosses above the SMA line,  
-and a bearish signal when it crosses below.
+A bullish signal (1) is generated when price crosses above the SMA line, and a bearish signal (0) when it crosses below.
+
+&nbsp;
 
 **References:**  
-- [Investopedia: Moving Average](https://www.investopedia.com/terms/m/movingaverage.asp)  
-- [Download PDF](/docs/indicators/sma.pdf)
+- [Investopedia: Moving Average](https://www.investopedia.com/terms/m/movingaverage.asp)
 `
   },
   {
@@ -36,20 +40,34 @@ and a bearish signal when it crosses below.
       { name: "source_ema", type: "string", default: "close", description: "input data source" },
     ],
     markdown: `
-# Exponential Moving Average (EMA)
-**Type:** Trend Following  
 
-**Parameters:**  
-- \`n_ema\`: integer, default=14 (lookback period)  
-- \`source_ema\`: string, default='close' (input data)  
+**Formula:**
 
----
+$$
+EMA_t = (P_t \\times \\alpha) + EMA_{t-1} \\times (1 - \\alpha)
+$$
 
-The **Exponential Moving Average (EMA)** gives more weight to recent prices,  
-making it more responsive to recent market changes than SMA.
+where  
+
+$$
+\\alpha = \\frac{2}{n + 1}
+$$  
+
+and  
+- \( P_t \) = current price  
+- \( n \) = lookback period  
+- \( EMA_{t-1} \) = previous EMA value  
+
+&nbsp;
+
+The **Exponential Moving Average (EMA)** gives more weight to recent prices, making it more responsive to recent market changes than SMA.
+
+&nbsp;
 
 **Usage:**  
 Traders often use EMA crossovers (e.g., 12 vs 26 period) as trend confirmation signals.
+
+&nbsp;
 
 **References:**  
 - [Wikipedia: Exponential Moving Average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average)
@@ -60,24 +78,42 @@ Traders often use EMA crossovers (e.g., 12 vs 26 period) as trend confirmation s
     name: "Relative Strength Index (RSI)",
     type: "Momentum",
     parameters: [
-      { name: "period", type: "integer", default: 14, description: "lookback period" },
+      { name: "n_rsi", type: "integer", default: 14, description: "lookback period" },
+      { name: "overbought_rsi", type: "integer", default: 70, description: "overbought threshold"},
+      { name: "oversold_rsi", type: "integer", default: 30, description: "oversold threshold"},
       { name: "source", type: "string", default: "close", description: "input price" },
     ],
     markdown: `
-# Relative Strength Index (RSI)
-**Type:** Momentum Oscillator  
 
-**Parameters:**  
-- \`period\`: integer, default=14  
-- \`source\`: string, default='close'  
+**Formula:**
 
----
+First compute average gains and losses over the lookback period:
 
-The **RSI** measures the speed and magnitude of price movements to identify overbought or oversold conditions.  
+$$
+RS = \\frac{Average\\ Gain}{Average\\ Loss}
+$$
+
+Then the RSI is:
+
+$$
+RSI = 100 - \\frac{100}{1 + RS}
+$$
+
+where  
+- \( RS \) = Relative Strength  
+- \( RSI \) ranges from 0 to 100  
+
+&nbsp;
+
+The **RSI** measures the speed and magnitude of price movements to identify overbought or oversold conditions.
+
+&nbsp;
 
 **Usage:**  
 - RSI > 70 → Overbought  
-- RSI < 30 → Oversold  
+- RSI < 30 → Oversold
+
+&nbsp;
 
 **References:**  
 - [Investopedia: RSI](https://www.investopedia.com/terms/r/rsi.asp)
@@ -86,29 +122,47 @@ The **RSI** measures the speed and magnitude of price movements to identify over
   {
     id: "macd",
     name: "MACD (Moving Average Convergence Divergence)",
-    type: "Momentum / Trend",
+    type: "Momentum / Trend Following",
     parameters: [
-      { name: "fast_length", type: "integer", default: 12, description: "fast EMA period" },
-      { name: "slow_length", type: "integer", default: 26, description: "slow EMA period" },
-      { name: "signal_length", type: "integer", default: 9, description: "signal EMA period" },
+      { name: "fast_n_macd", type: "integer", default: 12, description: "fast EMA period" },
+      { name: "slow_n_macd", type: "integer", default: 26, description: "slow EMA period" },
+      { name: "signal_n_macd", type: "integer", default: 9, description: "signal EMA period" },
     ],
     markdown: `
-# Moving Average Convergence Divergence (MACD)
-**Type:** Momentum / Trend Following  
+**Formula:**
 
-**Parameters:**  
-- \`fast_length\`: integer, default=12  
-- \`slow_length\`: integer, default=26  
-- \`signal_length\`: integer, default=9  
+$$
+MACD_t = EMA_{fast}(P_t) - EMA_{slow}(P_t)
+$$
 
----
+and  
 
-The **MACD** identifies momentum changes by comparing two EMAs.  
-A bullish crossover occurs when the MACD line crosses above the signal line.
+$$
+Signal_t = EMA_{signal}(MACD_t)
+$$
+
+**Histogram:**
+
+$$
+Histogram_t = MACD_t - Signal_t
+$$
+
+where  
+- \( EMA_{fast} \) = shorter-term EMA (e.g. 12)  
+- \( EMA_{slow} \) = longer-term EMA (e.g. 26)  
+- \( EMA_{signal} \) = signal line EMA (e.g. 9)  
+
+&nbsp;
+
+The **MACD** identifies momentum changes by comparing two EMAs. A bullish crossover occurs when the MACD line crosses above the signal line.
+
+&nbsp;
 
 **Usage:**  
 - MACD > Signal → Bullish momentum  
 - MACD < Signal → Bearish momentum  
+
+&nbsp;
 
 **References:**  
 - [Wikipedia: MACD](https://en.wikipedia.org/wiki/MACD)
