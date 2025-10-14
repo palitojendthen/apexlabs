@@ -78,8 +78,8 @@ export default function AboutPage() {
         <div className="text-neutral-300 leading-relaxed text-sm md:text-base space-y-8 max-w-2xl mx-auto">
           <p>
             What began as a small attempt to earn extra income through the markets soon became a deeper curiosity —
-            <em> can data uncover structure within price noise?</em>  
-             With R and Python, we started building analytical tools, transforming scattered data into structured insight.
+            <em> can data uncover structure within price noise? </em>  
+            With R and Python, we started building analytical tools, transforming scattered data into structured insight.
             Inspired by <strong>John F. Ehlers’</strong> <em>“Rocket Science for Traders”</em>, ApexQuantLabs grew from a personal pursuit into
             a commitment to quantitative discipline and systematic design.
           </p>
@@ -132,12 +132,12 @@ export default function AboutPage() {
         className="text-center mb-24"
         >
         <p className="text-neutral-400 text-sm md:text-base">
-            Contact Us{" "}
+            {/* Contact Us{" "} */}
             <a
-            href="mailto:contact@apexquantlabs.com"
+            href="mailto:support@apexquantlabs.com"
             className="text-teal-400 hover:text-cyan-400 transition-colors font-medium"
             >
-            contact@apexquantlabs.com
+            Contact Us
             </a>
         </p>
         </motion.section>
