@@ -218,7 +218,7 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            {/* Updated button logic */}
+            {/* updated button logic */}
             <button
               onClick={() => {
                 if (plan.name === "Essentials") {
