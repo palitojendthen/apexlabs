@@ -2,10 +2,6 @@ import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-/**
- * creates a stripe checkout session (sandbox mode).
- * expects JSON: { planType: "Essentials", billingCycle: "monthly" | "yearly", email: "..."}
- */
 export async function POST(req) {
   try {
     const { planType, billingCycle, email } = await req.json();
