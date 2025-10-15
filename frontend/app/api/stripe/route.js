@@ -12,8 +12,8 @@ export async function POST(req) {
 
     const priceIds = {
       Essentials: {
-        monthly: "9.9",
-        yearly: "96",
+        monthly: "price_1SIQYc7zV8DYjNNmo0oqcoE0",
+        yearly: "price_1SIRpV7zV8DYjNNm3SehWBq2",
       },
     };
 
@@ -29,7 +29,7 @@ export async function POST(req) {
       mode: "subscription",
       customer_email: email,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/?status=success`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/pricing`,
     });
 

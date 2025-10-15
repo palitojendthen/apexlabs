@@ -91,7 +91,7 @@ export default function PricingPage() {
       </div>
 
       {/* plans table */}
-      <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-12">
+      {/* <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-12">
         {plans.map((plan, i) => (
           <motion.div
             key={i}
@@ -159,7 +159,86 @@ export default function PricingPage() {
             </button>
           </motion.div>
         ))}
+      </div> */}
+
+      {/* plans table */}
+      <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-12">
+        {plans.map((plan, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.15, duration: 0.6, ease: "easeOut" }}
+            className={`relative w-full max-w-xl p-12 rounded-2xl border backdrop-blur-md bg-white/5 dark:bg-white/5 shadow-xl ${
+              plan.highlight
+                ? "border-teal-400/40 ring-1 ring-teal-400/30 scale-105"
+                : "border-white/10"
+            } transition-transform`}
+          >
+            {plan.highlight && (
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-teal-400 to-cyan-500 text-black text-xs font-semibold px-3 py-1 rounded-full">
+                Best Value
+              </div>
+            )}
+
+            <h2 className="text-2xl font-semibold mb-3 text-center">
+              {plan.name}
+            </h2>
+
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={isAnnual ? "annual" : "monthly"}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.3 }}
+                className="text-center text-5xl font-bold mb-6"
+              >
+                {plan.priceMonthly === 0 ? (
+                  "$0"
+                ) : isAnnual ? (
+                  <>
+                    ${plan.priceAnnual}{" "}
+                    <span className="text-sm text-neutral-400">/year</span>
+                  </>
+                ) : (
+                  <>
+                    ${plan.priceMonthly}{" "}
+                    <span className="text-sm text-neutral-400">/month</span>
+                  </>
+                )}
+              </motion.p>
+            </AnimatePresence>
+
+            <ul className="space-y-2 mb-8 text-sm text-neutral-300">
+              {plan.features.map((f, idx) => (
+                <li key={idx} className="flex items-center gap-2">
+                  <span className="text-teal-400">•</span> {f}
+                </li>
+              ))}
+            </ul>
+
+            {/* ✅ Updated button logic */}
+            <button
+              onClick={() => {
+                if (plan.name === "Essentials") {
+                  router.push(`/signup?billing=${isAnnual ? "yearly" : "monthly"}`);
+                } else {
+                  router.push(plan.href);
+                }
+              }}
+              className={`w-full py-3 rounded-md font-semibold hover:opacity-90 transition ${
+                plan.highlight
+                  ? "bg-gradient-to-r from-teal-400 to-cyan-500 text-black"
+                  : "bg-neutral-800 text-white border border-white/10"
+              }`}
+            >
+              {plan.buttonText}
+            </button>
+          </motion.div>
+        ))}
       </div>
+
 
       {/* Footer */}
       <footer className="mt-20 text-center text-sm text-neutral-500 pb-8">
