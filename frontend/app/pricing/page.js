@@ -218,7 +218,7 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            {/* ✅ Updated button logic */}
+            {/* Updated button logic */}
             <button
               onClick={() => {
                 if (plan.name === "Essentials") {
@@ -240,7 +240,7 @@ export default function PricingPage() {
       </div>
 
 
-      {/* Footer */}
+      {/* footer */}
       <footer className="mt-20 text-center text-sm text-neutral-500 pb-8">
         © 2025 ApexQuantLabs — Built for systematic traders.
       </footer>
