@@ -79,7 +79,7 @@ export default function LoginPage() {
           <div className="flex-grow border-t border-white/10" />
         </div>
 
-        {/* Social login buttons with transparent icons */}
+
         <div className="flex flex-col gap-3">
           <button className="flex items-center justify-center gap-4 border border-neutral-700 py-4 rounded hover:bg-neutral-800 transition text-sm">
             <img
@@ -89,7 +89,7 @@ export default function LoginPage() {
             />
             Continue with Google
           </button>
-          <button className="flex items-center justify-center gap-4 border border-neutral-700 py-4 rounded hover:bg-neutral-800 transition text-sm">
+          {/* <button className="flex items-center justify-center gap-4 border border-neutral-700 py-4 rounded hover:bg-neutral-800 transition text-sm">
             <img
               src="https://www.svgrepo.com/show/452062/microsoft.svg"
               alt="Microsoft"
@@ -104,7 +104,7 @@ export default function LoginPage() {
               className="w-7 h-7"
             />
             Continue with Apple
-          </button>
+          </button> */}
         </div>
       </div>
 

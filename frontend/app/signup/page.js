@@ -44,10 +44,19 @@ export default function SignupPage() {
         }),
       });
 
-      const res = await fetch("/api/stripe", {
+      // const res = await fetch("/api/payment", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ planType: "Essentials", billingCycle, email }),
+      // });
+
+      const res = await fetch("/api/payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planType: "Essentials", billingCycle, email }),
+        body: JSON.stringify({
+          email,
+          planType: "Essentials_Beta",
+        }),
       });
 
       const data = await res.json();
