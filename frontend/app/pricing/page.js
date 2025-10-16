@@ -306,10 +306,10 @@ export default function PricingPage() {
       {/* tagline */}
       <div className="text-center mb-14">
         <h1 className="text-3xl md:text-4xl font-semibold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-500">
-          Beta Lifetime Access Offer
+          Plans for every quantitative trading decision.
         </h1>
         <p className="text-neutral-400 text-sm md:text-base mt-3">
-          Get early access to ApexQuantLabs and unlock full features — one-time payment only.
+          Beta Lifetime Access limited offer, get early access to ApexQuantLabs and unlock full features — one-time payment only.
         </p>
       </div>
 
@@ -351,7 +351,7 @@ export default function PricingPage() {
                 ) : (
                   <>
                     ${plan.price}{" "}
-                    <span className="text-sm text-neutral-400">/one-time</span>
+                    <span className="text-sm text-neutral-400"></span>
                   </>
                 )}
               </motion.p>
