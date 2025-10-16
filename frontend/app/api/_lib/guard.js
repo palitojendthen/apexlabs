@@ -1,8 +1,8 @@
 /**
- * Throws an HTTP 403 error if the user's plan
+ * throws an http 403 error if the user's plan
  * is not in the allowed list.
  *
- * @param {string} plan - user's plan_type ("Free", "Essentials", ...)
+ * @param {string} plan - user's plan_type ("free", "essentials")
  * @param {Object} [opts]
  * @param {string[]} [opts.required] - list of plans allowed to continue
  */

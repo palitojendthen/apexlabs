@@ -1,5 +1,3 @@
-// /frontend/data/indicators.js
-
 export const indicators = [
   {
     id: "sma",

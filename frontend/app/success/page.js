@@ -16,8 +16,6 @@
 // }
 
 
-
-
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -35,7 +33,7 @@ export default function SuccessPage() {
       });
     }
 
-    // Redirect to dashboard/backtest page after short delay
+    // redirect to dashboard/backtest page after short delay
     const timer = setTimeout(() => router.push("/"), 2500);
     return () => clearTimeout(timer);
   }, [router]);

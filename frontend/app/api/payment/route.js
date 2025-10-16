@@ -60,7 +60,7 @@
 //     const { email, planType } = await req.json();
 //     const provider = process.env.NEXT_PUBLIC_PAYMENT_PROVIDER || "stripe";
 
-//     // 🔹 PayPal flow
+//     // paypal flow
 //     if (provider === "paypal") {
 //       const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_SECRET}`).toString("base64");
 //       const tokenRes = await fetch(`${PAYPAL_BASE}/v1/oauth2/token`, {
@@ -107,7 +107,7 @@
 //       return NextResponse.json({ url: approvalUrl });
 //     }
 
-//     // 🔹 Stripe flow (for later use)
+//     // stripe flow (for later use)
 //     if (provider === "stripe" && stripe) {
 //       const PRICE_ID = process.env.STRIPE_ONE_TIME_PRICE_ID;
 //       const session = await stripe.checkout.sessions.create({
@@ -129,6 +129,8 @@
 //   }
 // }
 
+
+
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -139,7 +141,7 @@ const stripe = process.env.STRIPE_SECRET_KEY
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const PAYPAL_SECRET = process.env.PAYPAL_SECRET;
 
-// ✅ UPDATED: unified PayPal env switch (live/sandbox override)
+// unified paypal env switch (live/sandbox override)
 const PAYPAL_ENV =
   process.env.PAYPAL_ENV ||
   (process.env.NODE_ENV === "production" ? "live" : "sandbox");
@@ -154,7 +156,7 @@ export async function POST(req) {
     const { email, planType } = await req.json();
     const provider = process.env.NEXT_PUBLIC_PAYMENT_PROVIDER || "stripe";
 
-    // 🔹 PayPal flow
+    // paypal flow
     if (provider === "paypal") {
       const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_SECRET}`).toString(
         "base64"
@@ -206,7 +208,7 @@ export async function POST(req) {
       return NextResponse.json({ url: approvalUrl });
     }
 
-    // 🔹 Stripe flow (for later use)
+    // stripe flow (for later use)
     if (provider === "stripe" && stripe) {
       const PRICE_ID = process.env.STRIPE_ONE_TIME_PRICE_ID;
       const session = await stripe.checkout.sessions.create({

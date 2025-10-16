@@ -1,44 +1,44 @@
 import { BigQuery } from "@google-cloud/bigquery";
 import admin from "firebase-admin";
 
-// Initialize firebase-admin once on the server
+// initialize firebase-admin once on the server
 if (!admin.apps?.length) {
   admin.initializeApp({
     credential: admin.credential.applicationDefault(),
   });
 }
 
-// Initialize BigQuery client
+// initialize bigquery client
 const bigquery = new BigQuery({
   projectId: process.env.GCP_PROJECT_ID,
 });
 
 /**
- * Reads the Firebase ID token from Authorization header,
- * verifies it, and fetches the user's plan_type from BigQuery.
+ * reads the firebase id token from authorization header,
+ * verifies it, and fetches the user's plan_type from bigquery
  *
- * @param {Request} req - Next.js Request object
+ * @param {Request} req - next.js request object
  * @returns {Promise<{decoded: object|null, plan: string}>}
  */
 export async function getUserAndPlan(req) {
-  // 1) Extract Bearer token
+  // extract bearer token
   const authHeader = req.headers.get("authorization") || "";
   const match = authHeader.match(/^Bearer (.+)$/);
   const idToken = match?.[1] || null;
 
-  // If no token, treat as unauthenticated Free user
+  // if no token, treat as unauthenticated free user
   if (!idToken) return { decoded: null, plan: "Free" };
 
-  // 2) Verify the Firebase ID token
+  // verify the firebase id token
   let decoded = null;
   try {
     decoded = await admin.auth().verifyIdToken(idToken);
   } catch (e) {
-    // Invalid/expired token -> treat as Free
+    // invalid/expired token -> treat as free
     return { decoded: null, plan: "Free" };
   }
 
-  // 3) Fetch plan from BigQuery by email
+  // fetch plan from bigquery by email
   try {
     const [rows] = await bigquery.query({
       query: `
@@ -56,7 +56,7 @@ export async function getUserAndPlan(req) {
     return { decoded, plan };
   } catch (err) {
     console.error("BigQuery plan fetch error:", err);
-    // Fail-safe: don’t block users if BQ read fails — default to Free
+    // fail-safe: don’t block users if bq read fails — default to free
     return { decoded, plan: "Free" };
   }
 }

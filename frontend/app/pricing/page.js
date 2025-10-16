@@ -248,6 +248,8 @@
 //   );
 // }
 
+
+
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "next-themes";
@@ -264,7 +266,7 @@ export default function PricingPage() {
     if (savedTheme) setTheme(savedTheme);
   }, [setTheme]);
 
-  // 🔹 Simplified to Beta pricing
+  // simplified to beta pricing
   const plans = [
     {
       name: "Free",
@@ -311,7 +313,7 @@ export default function PricingPage() {
         </p>
       </div>
 
-      {/* 🔹 plans table (no toggle) */}
+      {/* plans table (no toggle) */}
       <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-12">
         {plans.map((plan, i) => (
           <motion.div

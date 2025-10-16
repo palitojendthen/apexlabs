@@ -73,8 +73,6 @@
 import { spawn } from "child_process";
 import { NextResponse } from "next/server";
 import path from "path";
-
-// ✅ Add these imports
 import { getUserAndPlan } from "../_lib/authPlan";
 import { ensurePremium } from "../_lib/guards";
 
@@ -96,16 +94,16 @@ function isPremiumRequest(body) {
 
 export async function POST(req) {
   try {
-    // 🔹 1. Get user + plan
+    // get user + plan
     const { plan } = await getUserAndPlan(req);
     const body = await req.json();
 
-    // 🔹 2. Enforce premium if necessary
+    // enforce premium if necessary
     if (isPremiumRequest(body)) {
       ensurePremium(plan);
     }
 
-    // 🔹 3. Proceed with your existing Python logic
+    // proceed with your existing python logic
     const scriptPath = path.resolve(
       process.cwd(),
       "..",
