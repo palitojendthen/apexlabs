@@ -1,3 +1,4 @@
+"use client";
 import { BigQuery } from "@google-cloud/bigquery";
 import admin from "firebase-admin";
 
