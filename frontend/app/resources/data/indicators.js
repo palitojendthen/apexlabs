@@ -1,5 +1,22 @@
 export const indicators = [
   {
+    id: "available_symbol",
+    name: "Available Symbol",
+    type: "Symbol",
+    parameters: [
+      { no: "1", base: "BTC", quote: "USDT", trade_pairs: "BTCUSDT", name: "Bitcoin" },
+      { no: "2", base: "ETH", quote: "USDT", trade_pairs: "ETHUSDT", name: "Ethereum"},
+      { no: "3", base: "SOL", quote: "USDT", trade_pairs: "SOLUSDT", name: "Solana" },
+      { no: "4", base: "ADA", quote: "USDT", trade_pairs: "ADAUSDT", name: "Cardano" },
+      { no: "5", base: "AVAX", quote: "USDT", trade_pairs: "AVAXUSDT", name: "Avalanche" },      
+      { no: "6", base: "XLM", quote: "USDT", trade_pairs: "XLMUSDT", name: "Stellar" },
+      { no: "7", base: "XRP", quote: "USDT", trade_pairs: "XRPUSDT", name: "XRP" },
+      { no: "8", base: "DOGE", quote: "USDT", trade_pairs: "DOGEUSDT", name: "Dogecoin" },            
+      { no: "9", base: "TRX", quote: "USDT", trade_pairs: "TRXUSDT", name: "Tron" },
+      { no: "10", base: "LINK", quote: "USDT", trade_pairs: "LINKUSDT", name: "Chainlink" },
+    ]
+  },
+  {
     id: "sma",
     name: "Simple Moving Average (SMA)",
     type: "Trend Following",
@@ -68,7 +85,7 @@ Traders often use EMA crossovers (e.g., 12 vs 26 period) as trend confirmation s
 &nbsp;
 
 **References:**  
-- [Wikipedia: Exponential Moving Average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average)
+- [Investopedia: Exponential Moving Average](https://www.investopedia.com/terms/e/ema.asp)
 `
   },
   {
@@ -119,7 +136,7 @@ The **RSI** measures the speed and magnitude of price movements to identify over
   },
   {
     id: "macd",
-    name: "MACD (Moving Average Convergence Divergence)",
+    name: "Moving Average Convergence Divergence (MACD)",
     type: "Momentum / Trend Following",
     parameters: [
       { name: "fast_n_macd", type: "integer", default: 12, description: "fast EMA period" },
@@ -163,7 +180,47 @@ The **MACD** identifies momentum changes by comparing two EMAs. A bullish crosso
 &nbsp;
 
 **References:**  
-- [Wikipedia: MACD](https://en.wikipedia.org/wiki/MACD)
+- [Investopedia: MACD](https://www.investopedia.com/terms/m/macd.asp)
 `
   },
+  {
+    id: "atr",
+    name: "Average True Range (ATR)",
+    type: "Volatility Indicator",
+    parameters: [
+      { name: "n_atr", type: "integer", default: 14, description: "lookback period" },
+    ],
+    markdown: `
+
+  **Formula:**
+
+  First, compute the **True Range (TR)** for each period:
+
+  $$
+  TR_t = \\max(High_t - Low_t, |High_t - Close_{t-1}|, |Low_t - Close_{t-1}|)
+  $$
+
+  Then, the **Average True Range (ATR)** is the moving average of the True Range over *n* periods:
+
+  $$
+  ATR_t = \\frac{1}{n} \\sum_{i=0}^{n-1} TR_{t-i}
+  $$
+
+  &nbsp;
+
+  The **Average True Range (ATR)** measures market volatility by decomposing the entire range of an asset’s price for each period.  
+  A higher ATR indicates increased volatility, while a lower ATR suggests quieter market conditions.
+
+  &nbsp;
+
+  **Usage:**  
+  ATR is often used to set dynamic stop-loss levels or identify breakout conditions.  
+  For example, a trailing stop might be placed at a multiple (e.g., 1.5×ATR) below a long entry price.
+
+  &nbsp;
+
+  **References:**  
+  - [Investopedia: Average True Range (ATR)](https://www.investopedia.com/terms/a/atr.asp)
+  `
+  }
 ];
