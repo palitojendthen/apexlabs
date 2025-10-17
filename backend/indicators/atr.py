@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import pandas as pd
 import numpy as np
 
@@ -9,6 +10,8 @@ def atr(source_atr: pd.DataFrame, n_atr=10) -> pd.Series:
     params:
     @source_atr: DataFrame, ohlc input data
     @n_atr: integer, loockback period (default 10)
+    returns:
+        [true range, average true] aligned with source index
     """
     _src = source_atr.copy()
     n = len(_src)
