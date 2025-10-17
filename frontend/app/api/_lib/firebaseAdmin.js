@@ -1,9 +1,7 @@
-// /app/api/_lib/firebaseAdmin.js
 import admin from "firebase-admin";
 import fs from "fs";
 
 function loadServiceAccount() {
-  // Preferred: FB_ADMIN_CREDENTIALS as a JSON string or path to a JSON file
   const cred = process.env.FB_ADMIN_CREDENTIALS;
   if (cred) {
     try {
@@ -19,7 +17,7 @@ function loadServiceAccount() {
     }
   }
 
-  // Fallback: FIREBASE_* triplet
+  // fallback FIREBASE_* triplet
   if (
     process.env.FIREBASE_PROJECT_ID &&
     process.env.FIREBASE_CLIENT_EMAIL &&
@@ -46,12 +44,12 @@ if (!admin.apps.length) {
       privateKey: sa.private_key,
     }),
   });
-  console.log("✅ Firebase Admin initialized");
+  console.log("Firebase Admin initialized");
 }
 
 export default admin;
 
-// Helper: read and verify session cookie "session"
+// read and verify session cookie session
 export async function getSessionUser(req) {
   const cookieHeader = req.headers.get("cookie") || "";
   const match = cookieHeader.match(/(?:^|;\s*)session=([^;]+)/);
