@@ -1,21 +1,3 @@
-// export default function SuccessPage() {
-//   return (
-//     <main className="min-h-screen flex flex-col items-center justify-center text-center bg-black text-white">
-//       <h1 className="text-3xl font-semibold mb-4">🎉 Payment Successful!</h1>
-//       <p className="text-neutral-400 mb-6">
-//         Thank you for subscribing to <span className="text-teal-400">ApexQuantLabs Essentials Beta</span>.
-//       </p>
-//       <a
-//         href="/"
-//         className="px-5 py-2 rounded-md bg-gradient-to-r from-teal-400 to-cyan-500 text-black font-semibold hover:opacity-90 transition"
-//       >
-//         Go to Research Lab
-//       </a>
-//     </main>
-//   );
-// }
-
-
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
