@@ -384,6 +384,7 @@
 
 
 
+#!/usr/bin/env python3
 import pandas as pd
 import numpy as np
 import json
@@ -494,35 +495,15 @@ def apply_technicals(df, indicators, user_tier="free"):
             signal_cols.append(sig_col)
             continue
 
-        # sma
+        # simple moving average
         if name == "sma" and "sma" in df.columns:
             df[sig_col] = np.where(df["close"] > df["sma"], 1, 0)
-            # df[sig_col] = np.where(
-            #     ((df['close'] > df['sma']) & (df['close'].shift(1) <= df['sma'].shift(1))),
-            #     1,
-            #     np.where(
-            #         ((df['close'] < df['sma']) & (df['close'].shift(1) >= df['sma'].shift(1))),
-            #         0,
-            #         np.nan
-            #     )
-            # )
-            # df[sig_col] = df[sig_col].ffill().fillna(0)
         
-        # ema
+        # exponential moving average
         elif name == "ema" and "ema" in df.columns:
             df[sig_col] = np.where(df["close"] > df["ema"], 1, 0)
-            # df[sig_col] = np.where(
-            #     ((df['close'] > df['ema']) & (df['close'].shift(1) <= df['ema'].shift(1))),
-            #     1,
-            #     np.where(
-            #         ((df['close'] < df['ema']) & (df['close'].shift(1) >= df['ema'].shift(1))),
-            #         0,
-            #         np.nan
-            #     )
-            # )
-            # df[sig_col] = df[sig_col].ffill().fillna(0)
 
-        # adx
+        # average directional index
         elif name == "adx" and "adx" in df.columns:
             df[sig_col] = np.where(df["adx"] > 20, 1, 0)
 
