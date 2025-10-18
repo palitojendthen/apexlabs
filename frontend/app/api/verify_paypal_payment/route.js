@@ -20,7 +20,7 @@ export async function POST(req) {
       );
     }
 
-    // 1️⃣ Get PayPal access token
+    // get paypal access token
     const basicAuth = Buffer.from(
       `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_SECRET}`
     ).toString("base64");
@@ -35,7 +35,7 @@ export async function POST(req) {
     const tokenData = await tokenRes.json();
     const accessToken = tokenData.access_token;
 
-    // 2️⃣ Verify the PayPal order
+    // verify the paypal order
     const verifyRes = await fetch(`${PAYPAL_API}/v2/checkout/orders/${orderID}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
@@ -49,7 +49,7 @@ export async function POST(req) {
       );
     }
 
-    // 3️⃣ Update BigQuery plan_type → Essentials
+    // update bigquery plan_type → essentials
     const query = `
       UPDATE \`${process.env.PROJECT_ID}.${datasetId}.${tableId}\`
       SET plan_type = 'Essentials', status = 'active'
