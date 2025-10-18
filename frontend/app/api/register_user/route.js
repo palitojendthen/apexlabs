@@ -128,14 +128,14 @@ export async function POST(req) {
     const {
       email,
       full_name,
-      plan_type = "Free", // always default to Free/Pending at first
+      plan_type = "Free",
       billing_cycle = null,
       background = "Prefer not to say",
       customer_id = null,
       token,
     } = body;
 
-    // get uid from session cookie first; fallback to token if provided
+    // get uid from session cookie first, fallback to token if provided
     let uid = null;
     const sessionUser = await getSessionUser(req);
     if (sessionUser?.uid) uid = sessionUser.uid;
@@ -156,7 +156,7 @@ export async function POST(req) {
 
     const signup_date = new Date();
 
-    // always default to Free (we'll upgrade later after validation)
+    // always default to free, upgrade plan after validation
     const safePlanType = "Free";
 
     const query = `
