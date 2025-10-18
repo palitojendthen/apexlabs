@@ -44,7 +44,8 @@ if (!admin.apps.length) {
       privateKey: sa.private_key,
     }),
   });
-  console.log("Firebase Admin initialized");
+  console.log("Firebase Admin project:", admin.app().options.credential.projectId);
+  // console.log("Firebase Admin initialized");
 }
 
 export default admin;
