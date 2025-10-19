@@ -62,7 +62,7 @@ export const indicators = [
     type: "Trend Following",
     parameters: [
       { name: "n_sma", type: "integer", default: 14, description: "lookback period" },
-      { name: "source_sma", type: "string", default: "close", description: "input data source" },
+      { name: "source_sma", type: "string", default: "close", description: "input data source" }
     ],
     markdown: `
 
@@ -93,6 +93,7 @@ A bullish signal (1) is generated when price crosses above the SMA line, and a b
     parameters: [
       { name: "n_ema", type: "integer", default: 14, description: "lookback period" },
       { name: "source_ema", type: "string", default: "close", description: "input data source" },
+      { name: "alpha_ema", type: "float", default: 0.14, description: "smoothing" }
     ],
     markdown: `
 
@@ -109,9 +110,9 @@ $$
 $$  
 
 and  
-- \( P_t \) = current price  
+- \( $$P_t$$ \) = current price  
 - \( n \) = lookback period  
-- \( EMA_{t-1} \) = previous EMA value  
+- \( $$EMA_{t-1}$$ \) = previous EMA value  
 
 &nbsp;
 
@@ -136,7 +137,7 @@ Traders often use EMA crossovers (e.g., 12 vs 26 period) as trend confirmation s
       { name: "n_rsi", type: "integer", default: 14, description: "lookback period" },
       { name: "overbought_rsi", type: "integer", default: 70, description: "overbought threshold"},
       { name: "oversold_rsi", type: "integer", default: 30, description: "oversold threshold"},
-      { name: "source", type: "string", default: "close", description: "input price" },
+      { name: "source_rsi", type: "string", default: "close", description: "input price" }
     ],
     markdown: `
 
@@ -179,9 +180,9 @@ The **RSI** measures the speed and magnitude of price movements to identify over
     name: "Moving Average Convergence Divergence (MACD)",
     type: "Momentum / Trend Following",
     parameters: [
-      { name: "fast_n_macd", type: "integer", default: 12, description: "fast EMA period" },
-      { name: "slow_n_macd", type: "integer", default: 26, description: "slow EMA period" },
-      { name: "signal_n_macd", type: "integer", default: 9, description: "signal EMA period" },
+      { name: "n_fast_macd", type: "integer", default: 12, description: "fast EMA period" },
+      { name: "n_slow_nmacd", type: "integer", default: 26, description: "slow EMA period" },
+      { name: "n_signal_macd", type: "integer", default: 9, description: "signal EMA period" }
     ],
     markdown: `
 **Formula:**
@@ -203,9 +204,9 @@ Histogram_t = MACD_t - Signal_t
 $$
 
 where  
-- \( EMA_{fast} \) = shorter-term EMA (e.g. 12)  
-- \( EMA_{slow} \) = longer-term EMA (e.g. 26)  
-- \( EMA_{signal} \) = signal line EMA (e.g. 9)  
+- \( $$EMA_{fast}$$ \) = shorter-term EMA (e.g. 12)  
+- \( $$EMA_{slow}$$ \) = longer-term EMA (e.g. 26)  
+- \( $$EMA_{signal}$$ \) = signal line EMA (e.g. 9)  
 
 &nbsp;
 
@@ -228,7 +229,7 @@ The **MACD** identifies momentum changes by comparing two EMAs. A bullish crosso
     name: "Average True Range (ATR)",
     type: "Volatility Indicator",
     parameters: [
-      { name: "n_atr", type: "integer", default: 14, description: "lookback period" },
+      { name: "n_atr", type: "integer", default: 14, description: "lookback period" }
     ],
     markdown: `
 
@@ -248,8 +249,7 @@ The **MACD** identifies momentum changes by comparing two EMAs. A bullish crosso
 
   &nbsp;
 
-  The **Average True Range (ATR)** measures market volatility by decomposing the entire range of an asset’s price for each period.  
-  A higher ATR indicates increased volatility, while a lower ATR suggests quieter market conditions.
+  The **Average True Range (ATR)** measures market volatility by decomposing the entire range of an asset’s price for each period. A higher ATR indicates increased volatility, while a lower ATR suggests quieter market conditions.
 
   &nbsp;
 
@@ -269,6 +269,7 @@ The **MACD** identifies momentum changes by comparing two EMAs. A bullish crosso
   type: "Trend Strength Indicator",
   parameters: [
     { name: "n_adx", type: "integer", default: 14, description: "lookback period for smoothing" },
+    { name: "threshold_adx", type: "integer", default: 20, description: "strong trend direction threshold" }
   ],
   markdown: `
 
@@ -283,6 +284,7 @@ High_t - High_{t-1}, & \\text{if } High_t - High_{t-1} > Low_{t-1} - Low_t \\\\
 0, & \\text{otherwise}
 \\end{cases}
 $$
+
 
 $$
 DM^-_t = 
@@ -342,7 +344,7 @@ A high ADX indicates a strong trend, while a low ADX signals a weak or ranging m
   type: "Trend Following",
   parameters: [
     { name: "n_wma", type: "integer", default: 14, description: "lookback period" },
-    { name: "source_wma", type: "string", default: "close", description: "input data source" },
+    { name: "source_wma", type: "string", default: "close", description: "input data source" }
   ],
   markdown: `
 
@@ -361,22 +363,20 @@ Older prices contribute less influence as their weights decrease linearly over t
 &nbsp;
 
 **Usage:**  
-A bullish signal (1) is generated when price crosses above the WMA line,  
-and a bearish signal (0) when it crosses below.  
-WMA is often used by traders seeking faster reaction to trend reversals compared to SMA.
+A bullish signal (1) is generated when price crosses above the WMA line, and a bearish signal (0) when it crosses below. WMA is often used by traders seeking faster reaction to trend reversals compared to SMA.
 
 &nbsp;
 
 **References:**  
-- [Investopedia: Weighted Moving Average (WMA)])
+- [Investopedia: Weighted Moving Average (WMA)](https://www.investopedia.com/ask/answers/071414/whats-difference-between-moving-average-and-weighted-moving-average.asp)
 `
 },
 {
-  id: "ehlers_simple_decycler",
+  id: "simple_decycler",
   name: "Ehlers Simple Decycler",
-  type: "Trend / No-Lag Filter",
+  type: "Trend Following",
   parameters: [
-    { name: "HPPeriod", type: "integer", default: 125, description: "look-back period for high-pass filter" }
+    { name: "hp_simple_decycler", type: "integer", default: 48, description: "look-back period for high-pass filter" }
   ],
   markdown: `
 
@@ -404,22 +404,21 @@ $$
 
 &nbsp;
 
-The **Ehlers Simple Decycler** removes high-frequency “cycle” components from the price series, leaving a low-lag trend component.  
-Because the high-pass filter subtracts oscillatory noise, the resulting series tracks the trend with minimal distortion and lag.
+The **Ehlers Simple Decycler** removes high-frequency “cycle” components from the price series, leaving a low-lag trend component. Because the high-pass filter subtracts oscillatory noise, the resulting series tracks the trend with minimal distortion and lag.
 
 &nbsp;
 
 **Usage:**  
 - When the price is above the Decycler line, the trend is considered bullish;  
 - When the price is below the Decycler line, the trend is considered bearish;  
-- Some traders employ bands around the Decycler (e.g., ±0.5% of the Decycler value) to define hysteresis zones and avoid false signals. :contentReference[oaicite:4]{index=4}  
+- Some traders employ bands around the Decycler (e.g., ±0.5% of the Decycler value) to define hysteresis zones and avoid false signals.  
 - Use the HPPeriod parameter to adjust sensitivity: smaller values → more responsive (less filtering), larger values → smoother (more filtering).
 
 &nbsp;
 
 **References:**  
-- John F. Ehlers, “Decyclers”, *Traders’ Tips*, September 2015. :contentReference[oaicite:5]{index=5}  
-- [ThinkOrSwim: Weighted Moving Average (WMA)])
+- [TASC Traders' Tips: Decyclers](https://traders.com/documentation/feedbk_docs/2015/09/traderstips.html)
+- [ThinkOrSwim: EhlersSimpleDecycler](https://toslc.thinkorswim.com/center/reference/Tech-Indicators/studies-library/E-F/EhlersSimpleDecycler)
 `
 }
 ];
