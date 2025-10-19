@@ -44,7 +44,7 @@ def adx(source_adx: pd.DataFrame, n_adx=14, threshold_adx=20):
     returns:
         adx series
     """
-    _src = source_atr.copy()
+    _src = source_adx.copy()
     n = len(_src)
     
     if n < n_adx:
@@ -63,7 +63,7 @@ def adx(source_adx: pd.DataFrame, n_adx=14, threshold_adx=20):
             if i < _periods:
                 _result.append(np.nan)
             elif i == _periods:
-                _seed = series.iloc[:_periods].mean()
+                _seed = _series.iloc[:_periods].mean()
                 _result.append(_seed)
             else:
                 _prev = _result[-1]
@@ -76,10 +76,10 @@ def adx(source_adx: pd.DataFrame, n_adx=14, threshold_adx=20):
     _src['dx_down'] = -(_src['low']-_src['low'].shift(1))
     _src['plus_dm'] = np.where(((_src['dx_up'] > _src['dx_down']) & (_src['dx_up'] > 0)), _src['dx_up'], 0)
     _src['minus_dm'] = np.where(((_src['dx_down'] > _src['dx_up']) & (_src['dx_down'] > 0)), _src['dx_down'], 0)
-    _src['tr'] = atr(_src, n_atr=n_adx)
-    _src['truerange'] = rma(_src['tr'], periods=n_adx)
-    _src['plus'] = (100*rma(_src['plus_dm'],periods=n_adx)/_src['truerange']).fillna(0)
-    _src['minus'] = (100*rma(_src['minus_dm'],periods=n_adx)/_src['truerange']).fillna(0)
-    _src['adx'] = 100*rma(abs(_src['plus']-_src['minus'])/np.where((_src['plus']+_src['minus'])==0, 1, _src['plus']+_src['minus']), periods=n_adx)
+    _src['tr'] = atr(_src, n_atr=n_adx)['tr']
+    _src['truerange'] = rma(_src['tr'], _periods=n_adx)
+    _src['plus'] = (100*rma(_src['plus_dm'],_periods=n_adx)/_src['truerange']).fillna(0)
+    _src['minus'] = (100*rma(_src['minus_dm'],_periods=n_adx)/_src['truerange']).fillna(0)
+    _src['adx'] = 100*rma(abs(_src['plus']-_src['minus'])/np.where((_src['plus']+_src['minus'])==0, 1, _src['plus']+_src['minus']), _periods=n_adx)
 
     return pd.Series(_src['adx'])
