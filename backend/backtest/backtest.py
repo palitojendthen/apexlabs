@@ -502,6 +502,10 @@ def apply_technicals(df, indicators, user_tier="free"):
         # exponential moving average
         elif name == "ema" and "ema" in df.columns:
             df[sig_col] = np.where(df["close"] > df["ema"], 1, 0)
+        
+        # weighted moving average
+        elif name == "wma" and "wma" in df.columns:
+            df[sig_col] = np.where(df["close"] > df["wma"], 1, 0)
 
         # average directional index
         elif name == "adx" and "adx" in df.columns:

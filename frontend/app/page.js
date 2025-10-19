@@ -293,6 +293,7 @@ export default function Home() {
             >
               <option>SMA</option>
               <option>EMA</option>
+              <option>WMA</option>
               <option>ADX</option>
               <option>RSI</option>
               <option>MACD</option>
@@ -301,13 +302,10 @@ export default function Home() {
                 KAMA {isPremium ? "" : "🔒"}
               </option>
               <option disabled={!isPremium}>
-                Predictive Moving Average {isPremium ? "" : "🔒"}
+                (Ehlers) Simple Decycler {isPremium ? "" : "🔒"}
               </option>
               <option disabled={!isPremium}>
-                Instantaneous Trendline {isPremium ? "" : "🔒"}
-              </option>
-              <option disabled={!isPremium}>
-                Even Better Sinewave {isPremium ? "" : "🔒"}
+                (Ehlers) Predictive Moving Average {isPremium ? "" : "🔒"}
               </option>
             </select>
 
@@ -320,6 +318,7 @@ export default function Home() {
               <option>Select Indicator</option>
               <option>SMA</option>
               <option>EMA</option>
+              <option>WMA</option>
               <option>ADX</option>
               <option>RSI</option>
               <option>MACD</option>
@@ -328,13 +327,10 @@ export default function Home() {
                 KAMA {isPremium ? "" : "🔒"}
               </option>
               <option disabled={!isPremium}>
-                Predictive Moving Average {isPremium ? "" : "🔒"}
+                (Ehlers) Simple Decycler {isPremium ? "" : "🔒"}
               </option>
               <option disabled={!isPremium}>
-                Instantaneous Trendline {isPremium ? "" : "🔒"}
-              </option>
-              <option disabled={!isPremium}>
-                Even Better Sinewave {isPremium ? "" : "🔒"}
+                (Ehlers) Predictive Moving Average {isPremium ? "" : "🔒"}
               </option>
             </select>
 
