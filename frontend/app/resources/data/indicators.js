@@ -215,7 +215,7 @@ A bullish signal (1) is generated when price crosses above the WMA line, and a b
   {
   id: "adx",
   name: "Average Directional Index (ADX)",
-  type: "Trend Strength Indicator",
+  type: "Trend Strength",
   parameters: [
     { name: "n_adx", type: "integer", default: 14, description: "lookback period for smoothing" },
     { name: "threshold_adx", type: "integer", default: 20, description: "strong trend direction threshold" }
@@ -334,6 +334,53 @@ The **RSI** measures the speed and magnitude of price movements to identify over
 `
   },
   {
+  id: "stochastic_oscillator",
+  name: "Stochastic Oscillator (Stoch)",
+  type: "Momentum",
+  parameters: [
+    { name: "n_k_stoch", type: "integer", default: 14, description: "lookback period for %K calculation" },
+    { name: "n_d_stoch", type: "integer", default: 3, description: "smoothing period for %D signal line" },
+    { name: "source_stoch", type: "string", default: "close", description: "input data source" },
+  ],
+  markdown: `
+
+**Formula:**
+
+Compute the %K line:
+
+$$
+\\%K_t = 100 \\times \\frac{C_t - L_n}{H_n - L_n}
+$$
+
+where  
+- \( $$C_t$$ \) = current closing price  
+- \( $$H_n$$ \) = highest high over the last *n* periods  
+- \( $$L_n$$ \) = lowest low over the last *n* periods  
+
+Then, compute the %D line as a moving average of %K:
+
+$$
+\\%D_t = SMA(\\%K_t, n_d)
+$$
+
+&nbsp;
+
+The **Stochastic Oscillator** compares a security’s closing price to its price range over a specific period. It is based on the observation that prices tend to close near the highs in an uptrend and near the lows in a downtrend.
+
+&nbsp;
+
+**Usage:**  
+- \`%K\` and \`%D\` oscillate between 0 and 100.  
+- Readings above 80 indicate an **overbought** condition, while readings below 20 indicate **oversold**.  
+- A bullish signal occurs when \`%K\` crosses above \`%D\`; a bearish signal occurs when \`%K\` crosses below \`%D\`.
+
+&nbsp;
+
+**References:**  
+- [Investopedia: Stochastic Oscillator](https://www.investopedia.com/terms/s/stochasticoscillator.asp)
+`
+  },
+  {
     id: "macd",
     name: "Moving Average Convergence Divergence (MACD)",
     type: "Momentum / Trend Following",
@@ -383,9 +430,107 @@ The **MACD** identifies momentum changes by comparing two EMAs. A bullish crosso
 `
   },
   {
+  id: "donchian_channel",
+  name: "Donchian Channel",
+  type: "Volatility",
+  parameters: [
+    { name: "n_donchian", type: "integer", default: 20, description: "lookback period for channel calculation" },
+  ],
+  markdown: `
+
+**Formula:**
+
+Compute the upper, lower, and middle bands:
+
+$$
+\\text{Upper Band}_t = \\max(High_{t-n+1}, \\dots, High_t)
+$$
+
+$$
+\\text{Lower Band}_t = \\min(Low_{t-n+1}, \\dots, Low_t)
+$$
+
+$$
+\\text{Middle Band}_t = \\frac{\\text{Upper Band}_t + \\text{Lower Band}_t}{2}
+$$
+
+&nbsp;
+
+The **Donchian Channel** plots the highest high and lowest low over a specified lookback period, creating a dynamic price envelope that adapts to volatility and trend conditions. It was developed by **Richard Donchian**, a pioneer of mechanical trend-following systems.
+
+&nbsp;
+
+**Usage:**  
+- A **breakout** occurs when price moves above the upper band (bullish) or below the lower band (bearish).  
+- The **middle band** can act as a dynamic support/resistance or mean-reversion reference.  
+- Commonly used in systematic trading for identifying trend entries and exits.
+
+&nbsp;
+
+**References:**  
+- [Investopedia: Donchian Channel](https://www.investopedia.com/terms/d/donchianchannels.asp)
+`
+  },
+  {
+  id: "kama",
+  name: "Kaufman Adaptive Moving Average (KAMA)",
+  type: "Adaptive / Trend Following",
+  parameters: [
+    { name: "n_kama", type: "integer", default: 10, description: "efficiency ratio lookback period" },
+    { name: "n_fast_kama", type: "integer", default: 2, description: "short-term smoothing constant" },
+    { name: "n_slow_kama", type: "integer", default: 30, description: "long-term smoothing constant" },
+    { name: "source_kama", type: "string", default: "close", description: "input data source" },
+  ],
+  markdown: `
+
+**Formula:**
+
+First, calculate the **Efficiency Ratio (ER):**
+
+$$
+ER_t = \\frac{|P_t - P_{t-n}|}{\\sum_{i=1}^{n} |P_i - P_{i-1}|}
+$$
+
+Then compute the **Smoothing Constant (SC):**
+
+$$
+SC_t = [ER_t \\times (SC_{fast} - SC_{slow}) + SC_{slow}]^2
+$$
+
+where  
+
+$$
+SC_{fast} = \\frac{2}{fast\\_period + 1}, \\quad SC_{slow} = \\frac{2}{slow\\_period + 1}
+$$
+
+Finally, compute the **Kaufman Adaptive Moving Average (KAMA):**
+
+$$
+KAMA_t = KAMA_{t-1} + SC_t \\times (P_t - KAMA_{t-1})
+$$
+
+&nbsp;
+
+The **Kaufman Adaptive Moving Average (KAMA)** dynamically adjusts its sensitivity to price movements based on market noise and trend strength. It reacts quickly during strong trends and slows down during sideways or choppy markets.
+
+&nbsp;
+
+**Usage:**  
+- When price is above KAMA, it suggests an **uptrend**; below indicates a **downtrend**.  
+- KAMA can be used to smooth signals for other systems or as a trailing stop reference.  
+- The \`n_kama\` parameter defines responsiveness — shorter periods react faster but with more noise.
+
+&nbsp;
+
+**References:**  
+- [Corporate Finance Institute: Kaufman’s Adaptive Moving Average (KAMA)](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/kaufmans-adaptive-moving-average-kama/)
+- Perry J. Kaufman, Trading Systems and Methods pg. 779
+`
+  },
+  {
     id: "atr",
     name: "Average True Range (ATR)",
-    type: "Volatility Indicator",
+    type: "Volatility",
     parameters: [
       { name: "n_atr", type: "integer", default: 14, description: "lookback period" }
     ],
@@ -412,8 +557,7 @@ The **MACD** identifies momentum changes by comparing two EMAs. A bullish crosso
   &nbsp;
 
   **Usage:**  
-  ATR is often used to set dynamic stop-loss levels or identify breakout conditions.  
-  For example, a trailing stop might be placed at a multiple (e.g., 1.5×ATR) below a long entry price.
+  ATR is often used to set dynamic stop-loss levels or identify breakout conditions. For example, a trailing stop might be placed at a multiple (e.g., 1.5×ATR) below a long entry price.
 
   &nbsp;
 
@@ -469,6 +613,108 @@ The **Ehlers Simple Decycler** removes high-frequency “cycle” components fro
 **References:**  
 - [TASC Traders' Tips: Decyclers](https://traders.com/documentation/feedbk_docs/2015/09/traderstips.html)
 - [ThinkOrSwim: EhlersSimpleDecycler](https://toslc.thinkorswim.com/center/reference/Tech-Indicators/studies-library/E-F/EhlersSimpleDecycler)
+`
+},
+{
+  id: "predictive_moving_average",
+  name: "(Ehlers) Predictive Moving Average",
+  type: "Trend Following",
+  parameters: [
+    { name: "source_pma", type: "string", default: "close", description: "input data source" },
+  ],
+  markdown: `
+
+**Formula:**
+
+Compute two 7-bar weighted moving averages of the price:
+
+$$
+WMA1_t = \\frac{7P_t + 6P_{t-1} + 5P_{t-2} + 4P_{t-3} + 3P_{t-4} + 2P_{t-5} + P_{t-6}}{28}
+$$
+
+$$
+WMA2_t = \\frac{7WMA1_t + 6WMA1_{t-1} + 5WMA1_{t-2} + 4WMA1_{t-3} + 3WMA1_{t-4} + 2WMA1_{t-5} + WMA1_{t-6}}{28}
+$$
+
+Then, derive the **Predictive Moving Average**:
+
+$$
+Predict_t = 2 \\times WMA1_t - WMA2_t
+$$
+
+Finally, compute the **Trigger** line as a 4-bar weighted moving average of \`Predict\`:
+
+$$
+Trigger_t = \\frac{4Predict_t + 3Predict_{t-1} + 2Predict_{t-2} + Predict_{t-3}}{10}
+$$
+
+&nbsp;
+
+The **Ehlers Predictive Moving Average (PMA)** is a fixed-length, two-stage weighted moving average designed to remove lag while maintaining smoothness. By differencing the two 7-bar WMAs, Ehlers effectively cancels phase delay, creating a near zero-lag smoother of the price function.
+
+&nbsp;
+
+**Usage:**  
+- **Bullish signal:** when the *Predict* line crosses **above** the *Trigger* line.  
+- **Bearish signal:** when the *Predict* line crosses **below** the *Trigger* line.  
+- PMA serves as a leading smoother — responsive yet less noisy than a single short-period WMA.
+
+&nbsp;
+
+**References:**  
+- John F. Ehlers, *Rocket Science for Traders: Digital Signal Processing Applications*, 2001, pg. 212
+`
+},
+{
+  id: "ultimate_smoother",
+  name: "(Ehlers) Ultimate Smoother",
+  type: "Digital Filter",
+  parameters: [
+    { name: "n_us", type: "integer", default: 20, description: "lookback period for smoothing" },
+    { name: "source_us", type: "string", default: "close", description: "input data source" },
+  ],
+  markdown: `
+
+**Formula:**
+
+Compute the recursive coefficients based on the smoothing length \( L \):
+
+$$
+\\alpha = e^{-1.414\\pi / L}, \\quad
+c_2 = 2\\alpha\\cos(1.414\\pi / L), \\quad
+c_3 = -\\alpha^2, \\quad
+c_1 = \\frac{1 + c_2 - c_3}{4}
+$$
+
+Then the **Ultimate Smoother** output is computed as:
+
+$$
+US_t = (1 - c_1)P_t + (2c_1 - c_2)P_{t-1} - (c_1 + c_3)P_{t-2}
+       + c_2US_{t-1} + c_3US_{t-2}
+$$
+
+where  
+- \( $$P_t$$ \) = input price (typically \( (High + Low)/2 \))  
+- \( $$US_t$$ \) = Ultimate Smoother output  
+
+&nbsp;
+
+The **Ehlers Ultimate Smoother** is a two-pole digital low-pass filter that achieves *maximum smoothness for the least possible lag*. It is derived analytically rather than empirically and represents an enhancement over Ehlers’ prior **Super Smoother**, delivering a nearly Gaussian response while maintaining consistent phase characteristics across smoothing periods.
+
+&nbsp;
+
+**Usage:**  
+- Provides a smooth, low-lag baseline for price series.  
+- Ideal as a replacement for traditional moving averages in crossover systems.  
+- Frequently used as an input to Ehlers’ cycle, band-pass, or spectral analysis filters.  
+- Shorter lengths → faster reaction (less smooth).  
+- Longer lengths → slower reaction (greater smoothness).
+
+&nbsp;
+
+**References:**
+- [TASC Traders' Tips: Ultimate Smoother](https://traders.com/Documentation/FEEDbk_docs/2024/04/TradersTips.html)
+- [MESA Software: Ultimate Smoother](https://www.mesasoftware.com/papers/UltimateSmoother.pdf)
 `
 }
 ];
