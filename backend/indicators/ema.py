@@ -5,7 +5,7 @@ import numpy as np
 def ema(source_ema: pd.Series, n_ema=14, alpha_ema=None) -> pd.Series:
     """
     technical analysis indicator:
-    compute and return simple moving average (sma) over a given price series,
+    compute and return expoential moving average over a given price series,
     referece: https://www.investopedia.com/terms/e/ema.asp
     params:
     @source_ema: series, input price series (e.g. df['close'])
