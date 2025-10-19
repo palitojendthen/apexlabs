@@ -6,16 +6,14 @@ import numpy as np
 def wma(source_wma: pd.Series, n_wma=14):
     """
     technical analysis indicator:
-    return weighted moving average,
-    reference: https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/wma
-    on a given time-series data
+    return weighted moving average over a given price series,
+    reference: https://www.investopedia.com/ask/answers/071414/whats-difference-between-moving-average-and-weighted-moving-average.asp
     params:
-    @src: series, time-series input data
-    @periods: integer, n lookback period
-    example:
-    >>> arr = np.random.randint(10, 30, 20)
-    >>> df = pd.DataFrame(arr, columns = ['close'])
-    >>> technical_indicator.wma(df['close'])
+    @source_wma: series, input price series (e.g. df['close'])
+    @n_wma: integer, lookback period (default 14)
+    returns:
+    pd.Series
+        wma values aligned with source_wma index
     """
     src = src.dropna()
     n = len(src)
