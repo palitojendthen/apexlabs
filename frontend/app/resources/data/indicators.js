@@ -180,6 +180,114 @@ Traders often use EMA crossovers (e.g., 12 vs 26 period) as trend confirmation s
 `
   },
   {
+  id: "wma",
+  name: "Weighted Moving Average (WMA)",
+  type: "Trend Following",
+  parameters: [
+    { name: "n_wma", type: "integer", default: 14, description: "lookback period" },
+    { name: "source_wma", type: "string", default: "close", description: "input data source" }
+  ],
+  markdown: `
+
+**Formula:**
+
+$$
+WMA = \\frac{P_1 \\times n + P_2 \\times (n - 1) + P_3 \\times (n - 2) + \\dots + P_n \\times 1}{n + (n - 1) + (n - 2) + \\dots + 1}
+$$
+
+&nbsp;
+
+The **Weighted Moving Average (WMA)** assigns greater importance to more recent data points,  
+making it more responsive to current price movements than a Simple Moving Average (SMA).  
+Older prices contribute less influence as their weights decrease linearly over the lookback window.
+
+&nbsp;
+
+**Usage:**  
+A bullish signal (1) is generated when price crosses above the WMA line, and a bearish signal (0) when it crosses below. WMA is often used by traders seeking faster reaction to trend reversals compared to SMA.
+
+&nbsp;
+
+**References:**  
+- [Investopedia: Weighted Moving Average (WMA)](https://www.investopedia.com/ask/answers/071414/whats-difference-between-moving-average-and-weighted-moving-average.asp)
+`
+  },
+  {
+  id: "adx",
+  name: "Average Directional Index (ADX)",
+  type: "Trend Strength Indicator",
+  parameters: [
+    { name: "n_adx", type: "integer", default: 14, description: "lookback period for smoothing" },
+    { name: "threshold_adx", type: "integer", default: 20, description: "strong trend direction threshold" }
+  ],
+  markdown: `
+
+**Formula:**
+
+First, compute the **Directional Movements (DM)**:
+
+$$
+DM^+_t = 
+\\begin{cases} 
+High_t - High_{t-1}, & \\text{if } High_t - High_{t-1} > Low_{t-1} - Low_t \\\\
+0, & \\text{otherwise}
+\\end{cases}
+$$
+
+
+$$
+DM^-_t = 
+\\begin{cases} 
+Low_{t-1} - Low_t, & \\text{if } Low_{t-1} - Low_t > High_t - High_{t-1} \\\\
+0, & \\text{otherwise}
+\\end{cases}
+$$
+
+Then compute the **True Range (TR)**:
+
+$$
+TR_t = \\max(High_t - Low_t, |High_t - Close_{t-1}|, |Low_t - Close_{t-1}|)
+$$
+
+Next, derive the **Directional Indicators (+DI and -DI)**:
+
+$$
++DI_t = 100 \\times \\frac{EMA(DM^+_t, n)}{EMA(TR_t, n)}
+$$
+
+$$
+-DI_t = 100 \\times \\frac{EMA(DM^-_t, n)}{EMA(TR_t, n)}
+$$
+
+Finally, calculate the **ADX** as the smoothed average of the Directional Index (DX):
+
+$$
+DX_t = 100 \\times \\frac{|(+DI_t) - (-DI_t)|}{(+DI_t) + (-DI_t)}
+$$
+
+$$
+ADX_t = EMA(DX_t, n)
+$$
+
+&nbsp;
+
+The **Average Directional Index (ADX)** quantifies the strength of a trend, regardless of direction.  
+A high ADX indicates a strong trend, while a low ADX signals a weak or ranging market.
+
+&nbsp;
+
+**Usage:**  
+- ADX > 25 → Strong trend  
+- ADX < 20 → Weak or ranging market  
+- The +DI and -DI crossovers can signal potential entry or exit points.
+
+&nbsp;
+
+**References:**  
+- [Investopedia: Average Directional Index (ADX)](https://www.investopedia.com/articles/trading/07/adx-trend-indicator.asp)
+`
+  },
+  {
     id: "rsi",
     name: "Relative Strength Index (RSI)",
     type: "Momentum",
@@ -312,118 +420,10 @@ The **MACD** identifies momentum changes by comparing two EMAs. A bullish crosso
   **References:**  
   - [Investopedia: Average True Range (ATR)](https://www.investopedia.com/terms/a/atr.asp)
   `
-  },
-  {
-  id: "adx",
-  name: "Average Directional Index (ADX)",
-  type: "Trend Strength Indicator",
-  parameters: [
-    { name: "n_adx", type: "integer", default: 14, description: "lookback period for smoothing" },
-    { name: "threshold_adx", type: "integer", default: 20, description: "strong trend direction threshold" }
-  ],
-  markdown: `
-
-**Formula:**
-
-First, compute the **Directional Movements (DM)**:
-
-$$
-DM^+_t = 
-\\begin{cases} 
-High_t - High_{t-1}, & \\text{if } High_t - High_{t-1} > Low_{t-1} - Low_t \\\\
-0, & \\text{otherwise}
-\\end{cases}
-$$
-
-
-$$
-DM^-_t = 
-\\begin{cases} 
-Low_{t-1} - Low_t, & \\text{if } Low_{t-1} - Low_t > High_t - High_{t-1} \\\\
-0, & \\text{otherwise}
-\\end{cases}
-$$
-
-Then compute the **True Range (TR)**:
-
-$$
-TR_t = \\max(High_t - Low_t, |High_t - Close_{t-1}|, |Low_t - Close_{t-1}|)
-$$
-
-Next, derive the **Directional Indicators (+DI and -DI)**:
-
-$$
-+DI_t = 100 \\times \\frac{EMA(DM^+_t, n)}{EMA(TR_t, n)}
-$$
-
-$$
--DI_t = 100 \\times \\frac{EMA(DM^-_t, n)}{EMA(TR_t, n)}
-$$
-
-Finally, calculate the **ADX** as the smoothed average of the Directional Index (DX):
-
-$$
-DX_t = 100 \\times \\frac{|(+DI_t) - (-DI_t)|}{(+DI_t) + (-DI_t)}
-$$
-
-$$
-ADX_t = EMA(DX_t, n)
-$$
-
-&nbsp;
-
-The **Average Directional Index (ADX)** quantifies the strength of a trend, regardless of direction.  
-A high ADX indicates a strong trend, while a low ADX signals a weak or ranging market.
-
-&nbsp;
-
-**Usage:**  
-- ADX > 25 → Strong trend  
-- ADX < 20 → Weak or ranging market  
-- The +DI and -DI crossovers can signal potential entry or exit points.
-
-&nbsp;
-
-**References:**  
-- [Investopedia: Average Directional Index (ADX)](https://www.investopedia.com/articles/trading/07/adx-trend-indicator.asp)
-`
-},
-{
-  id: "wma",
-  name: "Weighted Moving Average (WMA)",
-  type: "Trend Following",
-  parameters: [
-    { name: "n_wma", type: "integer", default: 14, description: "lookback period" },
-    { name: "source_wma", type: "string", default: "close", description: "input data source" }
-  ],
-  markdown: `
-
-**Formula:**
-
-$$
-WMA = \\frac{P_1 \\times n + P_2 \\times (n - 1) + P_3 \\times (n - 2) + \\dots + P_n \\times 1}{n + (n - 1) + (n - 2) + \\dots + 1}
-$$
-
-&nbsp;
-
-The **Weighted Moving Average (WMA)** assigns greater importance to more recent data points,  
-making it more responsive to current price movements than a Simple Moving Average (SMA).  
-Older prices contribute less influence as their weights decrease linearly over the lookback window.
-
-&nbsp;
-
-**Usage:**  
-A bullish signal (1) is generated when price crosses above the WMA line, and a bearish signal (0) when it crosses below. WMA is often used by traders seeking faster reaction to trend reversals compared to SMA.
-
-&nbsp;
-
-**References:**  
-- [Investopedia: Weighted Moving Average (WMA)](https://www.investopedia.com/ask/answers/071414/whats-difference-between-moving-average-and-weighted-moving-average.asp)
-`
 },
 {
   id: "simple_decycler",
-  name: "Ehlers Simple Decycler",
+  name: "(Ehlers) Simple Decycler",
   type: "Trend Following",
   parameters: [
     { name: "hp_simple_decycler", type: "integer", default: 48, description: "look-back period for high-pass filter" }
