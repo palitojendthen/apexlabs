@@ -118,7 +118,7 @@ def main():
         try:
             result = append_latest(sym, INTERVAL)
             log(f"{sym}: {result['status']} | {result['message']}")
-            time.sleep(0.3)  # slight cooldown for API stability
+            time.sleep(0.3)
         except Exception as e:
             log(f"{sym}: ERROR - {e}")
     log(f"--- Job for {INTERVAL} completed ---\n")
