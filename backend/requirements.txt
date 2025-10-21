@@ -1,0 +1,17 @@
+pandas
+numpy
+sqlalchemy
+psycopg2-binary
+fastparquet
+binance-futures-connector
+fastapi
+uvicorn[standard]
+pydantic
+google-cloud-bigquery
+google-cloud-storage
+google-auth
+google-auth-oauthlib
+python-dotenv
+requests
+tqdm
+pyarrow
