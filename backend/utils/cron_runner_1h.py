@@ -258,7 +258,7 @@ SYMBOLS = [
 "QTUMUSDT"
 ]
 
-LOG_FILE = f"/home/ubuntu/apexlabs/backend/cron_{INTERVAL}.log"
+LOG_FILE = f"/home/apexquantlabs/apexlabs/backend/cron_{INTERVAL}.log"
 
 def log(msg: str):
     """Append a line to log and truncate if too large."""
