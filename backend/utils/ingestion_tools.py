@@ -84,6 +84,24 @@ def append_latest(symbol: str, interval: str, limit: int = 1000) -> dict:
             subset=["symbol", "interval", "open_time"], keep="first"
         )
 
+        # guard for the close bar
+        if not df_new.empty:
+            now_utc = pd.Timestamp.utcnow()
+            # Estimate the expected close time based on interval
+            interval_to_offset = {
+                "1h": "1H",
+                "2h": "2H",
+                "4h": "4H",
+                "6h": "6H",
+                "12h": "12H",
+                "1d": "1D",
+                "1w": "7D"
+            }
+            offset = interval_to_offset.get(interval, "1H")
+            df_new["expected_close_time"] = df_new["open_time"] + pd.to_timedelta(offset)
+            df_new = df_new[df_new["expected_close_time"] <= now_utc]
+            df_new = df_new.drop(columns=["expected_close_time"])
+
 
         summary["fetched"] = len(df_new)
 
