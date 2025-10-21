@@ -86,8 +86,11 @@ def append_latest(symbol: str, interval: str, limit: int = 1000) -> dict:
 
         # guard for the close bar
         if not df_new.empty:
-            now_utc = pd.Timestamp.utcnow()
-            # Map interval to both a pandas freq (for floor) and a timedelta duration
+            # Ensure open_time is tz-naive (or convert from UTC to naive)
+            if pd.api.types.is_datetime64tz_dtype(df_new["open_time"]):
+                df_new["open_time"] = df_new["open_time"].dt.tz_convert(None)
+
+            # Map interval to pandas freq + duration
             freq_map = {
                 "1h": ("1H", pd.Timedelta(hours=1)),
                 "2h": ("2H", pd.Timedelta(hours=2)),
@@ -99,11 +102,10 @@ def append_latest(symbol: str, interval: str, limit: int = 1000) -> dict:
             }
             freq, delta = freq_map.get(interval, ("1H", pd.Timedelta(hours=1)))
 
-            # The latest fully-closed candle's open_time is:
-            # floor(now, interval) - interval_size
-            last_closed_open = now_utc.floor(freq) - delta
+            # Latest fully-closed candle's open_time in UTC (naive)
+            last_closed_open = (pd.Timestamp.utcnow().floor(freq) - delta).tz_localize(None)
 
-            # Keep only rows whose open_time is <= last_closed_open
+            # Keep only rows whose open_time <= last_closed_open
             df_new = df_new[df_new["open_time"] <= last_closed_open]
 
 
