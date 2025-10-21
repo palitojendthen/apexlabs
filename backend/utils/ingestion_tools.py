@@ -129,6 +129,11 @@ def append_latest(symbol: str, interval: str, limit: int = 1000) -> dict:
         """
         bq.query(merge_sql).result()
 
+        try:
+            bq.query(f"DROP TABLE `{staging_table}`").result()
+        except Exception as drop_err:
+            print(f"Warning: failed to drop staging table {staging_table}: {drop_err}")
+
         summary["inserted"] = len(df_new)
         summary["status"] = "ok"
         summary["message"] = f"Inserted {len(df_new)} rows."
