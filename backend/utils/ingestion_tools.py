@@ -87,20 +87,24 @@ def append_latest(symbol: str, interval: str, limit: int = 1000) -> dict:
         # guard for the close bar
         if not df_new.empty:
             now_utc = pd.Timestamp.utcnow()
-            # Estimate the expected close time based on interval
-            interval_to_offset = {
-                "1h": "1H",
-                "2h": "2H",
-                "4h": "4H",
-                "6h": "6H",
-                "12h": "12H",
-                "1d": "1D",
-                "1w": "7D"
+            # Map interval to both a pandas freq (for floor) and a timedelta duration
+            freq_map = {
+                "1h": ("1H", pd.Timedelta(hours=1)),
+                "2h": ("2H", pd.Timedelta(hours=2)),
+                "4h": ("4H", pd.Timedelta(hours=4)),
+                "6h": ("6H", pd.Timedelta(hours=6)),
+                "12h": ("12H", pd.Timedelta(hours=12)),
+                "1d": ("1D", pd.Timedelta(days=1)),
+                "1w": ("7D", pd.Timedelta(days=7)),
             }
-            offset = interval_to_offset.get(interval, "1H")
-            df_new["expected_close_time"] = df_new["open_time"] + pd.to_timedelta(offset)
-            df_new = df_new[df_new["expected_close_time"] <= now_utc]
-            df_new = df_new.drop(columns=["expected_close_time"])
+            freq, delta = freq_map.get(interval, ("1H", pd.Timedelta(hours=1)))
+
+            # The latest fully-closed candle's open_time is:
+            # floor(now, interval) - interval_size
+            last_closed_open = now_utc.floor(freq) - delta
+
+            # Keep only rows whose open_time is <= last_closed_open
+            df_new = df_new[df_new["open_time"] <= last_closed_open]
 
 
         summary["fetched"] = len(df_new)
