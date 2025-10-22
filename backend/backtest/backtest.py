@@ -486,7 +486,7 @@ def apply_technicals(df, indicators, user_tier="free"):
     signal_cols = []
 
     for idx, ind in enumerate(indicators, start=1):
-        name = str(ind.get("name", "")).strip().lower().replace(" ", "_")
+        name = str(ind.get("name", "")).strip().lower().replace(" ", "_").replace("(", "_").replace(")", "_")
         sig_col = f"sig_{name}_{idx}"
 
         # free plan limit
