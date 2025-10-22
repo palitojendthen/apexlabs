@@ -397,7 +397,7 @@ import inspect
 import io
 
 warnings.filterwarnings("ignore")
-OVERLAY_INDICATORS = {"SMA", "EMA", "PMA", "KAMA", "DEMA", "TEMA", "ITREND"}
+OVERLAY_INDICATORS = {"SMA", "EMA", "PMA", "KAMA", "DEMA", "TEMA", "ITREND", "DONCHIAN_CHANNEL"}
 
 
 # utility function
@@ -510,6 +510,10 @@ def apply_technicals(df, indicators, user_tier="free"):
         # average directional index
         elif name == "adx" and "adx" in df.columns:
             df[sig_col] = np.where(df["adx"] > 20, 1, 0)
+        
+        # donchian channel
+        elif name == 'donchian_channel' and "basis" in df.columns:
+            df[sig_col] = np.where(df['close'] > df['basis'], 1, 0)
 
         # fallback
         else:
