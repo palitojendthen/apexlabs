@@ -434,7 +434,7 @@ The **MACD** identifies momentum changes by comparing two EMAs. A bullish crosso
   name: "Donchian Channel",
   type: "Volatility",
   parameters: [
-    { name: "n_donchian", type: "integer", default: 20, description: "lookback period for channel calculation" },
+    { name: "n_dc", type: "integer", default: 20, description: "lookback period for channel calculation" }
   ],
   markdown: `
 
