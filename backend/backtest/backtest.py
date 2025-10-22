@@ -486,7 +486,7 @@ def apply_technicals(df, indicators, user_tier="free"):
     signal_cols = []
 
     for idx, ind in enumerate(indicators, start=1):
-        name = str(ind.get("name", "")).strip().lower().replace(" ", "_").replace("(", "_").replace(")", "_")
+        name = str(ind.get("name", "")).strip().lower().replace(" ", "_")
         sig_col = f"sig_{name}_{idx}"
 
         # free plan limit
@@ -738,7 +738,8 @@ def main():
     # apply technical/signal generated
     df = apply_technicals(df, indicators, user_tier="free")
 
-    start_idx = max(lookbacks) if lookbacks else 1
+    # start_idx = max(lookbacks) if lookbacks else 1
+    start_idx = max(lookbacks) if lookbacks else 31
 
     use_atr, atr_mult, sl_pct = False, None, None
     if "atr" in stop_loss_text.lower() or "x" in stop_loss_text.lower():
@@ -792,7 +793,7 @@ if __name__ == "__main__":
 
         # reset stdout and print clean json only
         sys.stdout = sys.__stdout__
-        json_output = json.dumps(result, ensure_ascii=False, allow_nan=False, default=str)
+        json_output = json.dumps(result, ensure_ascii=True, allow_nan=False, default=str)
         sys.stdout.write(json_output)
         sys.stdout.flush()
 
