@@ -171,7 +171,7 @@ The **Exponential Moving Average (EMA)** gives more weight to recent prices, mak
 &nbsp;
 
 **Usage:**  
-Traders often use EMA crossovers (e.g., 12 vs 26 period) as trend confirmation signals.
+A bullish signal (1) is generated when price crosses above the EMA line, and a bearish signal (0) when it crosses below.
 
 &nbsp;
 
@@ -516,7 +516,7 @@ The **Kaufman Adaptive Moving Average (KAMA)** dynamically adjusts its sensitivi
 &nbsp;
 
 **Usage:**  
-- When price is above KAMA, it suggests an **uptrend**; below indicates a **downtrend**.  
+- A signal generated (1/long) is when KAMA line is greater than $$KAMA_{t-1}$$, and a signal (0/short) when KAMA line is less than $$KAMA_{t-1}$$.
 - KAMA can be used to smooth signals for other systems or as a trailing stop reference.  
 - The \`n_kama\` parameter defines responsiveness — shorter periods react faster but with more noise.
 

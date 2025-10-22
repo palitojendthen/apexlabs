@@ -515,6 +515,10 @@ def apply_technicals(df, indicators, user_tier="free"):
         elif name == 'donchian_channel' and "basis" in df.columns:
             df[sig_col] = np.where(df['close'] > df['basis'], 1, 0)
 
+        # kama
+        elif name == 'kama' and 'kama' in df.columns:
+            df[sig_col] = np.where(df['kama'] > df['kama'].shift(1), 1, 0)
+
         # fallback
         else:
             df[sig_col] = 0
