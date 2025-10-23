@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import math
 
-def simple_decycler(source_simple_decycler: pd.Series, hp_simple_decycler=48) -> pd.Series:
+def ehlers_simple_decycler(source_simple_decycler: pd.Series, hp_simple_decycler=48) -> pd.Series:
     """
     technical analysis indicator:
     originated by John F. Ehlers, with aim to identified trend,
