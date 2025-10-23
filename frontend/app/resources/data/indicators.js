@@ -570,7 +570,8 @@ The **Kaufman Adaptive Moving Average (KAMA)** dynamically adjusts its sensitivi
   name: "(Ehlers) Simple Decycler",
   type: "Trend Following",
   parameters: [
-    { name: "hp_simple_decycler", type: "integer", default: 48, description: "look-back period for high-pass filter" }
+    { name: "hp_simple_decycler", type: "integer", default: 48, description: "look-back period for high-pass filter" },
+    { name: "source_simple_decycler", type: "string", default: "close", description: "input data source" }    
   ],
   markdown: `
 
