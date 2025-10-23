@@ -44,8 +44,7 @@ def compute_metrics(equity, returns, trades, buyhold_pct=0.0, sl_hits=0):
         return {
             "Final Equity": "0.00","PnL %":"0.00 %","WinRate":"0.00 %",
             "Profit Factor":"0.00","Sharpe":"0.00","MaxDD":"0.00 %",
-            "Total Trades":"0","Buy & Hold":"0.00 %","Largest Loss %":"0.00 %",
-            "Equity Deviation":"0.00 %","SL Hit":"0x"
+            "Total Trades":"0","Buy & Hold":"0.00 %","Largest Loss %":"0.00 %"
         }
 
     pnl_pct = (equity[-1]/equity[0]-1)*100.0
@@ -77,7 +76,6 @@ def compute_metrics(equity, returns, trades, buyhold_pct=0.0, sl_hits=0):
         "Total Trades": len(closed),
         "Buy & Hold": f"{buyhold_pct:.2f} %",
         "Largest Loss %": f"{largest_loss:.2f} %",
-        "Equity Deviation": f"{eq_dev:.2f} %",
         "SL Hit": f"{sl_hits}x",
     }
 
