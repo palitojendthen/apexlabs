@@ -11,7 +11,7 @@ import inspect
 import io
 
 warnings.filterwarnings("ignore")
-OVERLAY_INDICATORS = {"SMA", "EMA", "PMA", "KAMA", "DEMA", "TEMA", "ITREND", "DONCHIAN_CHANNEL"}
+OVERLAY_INDICATORS = {"SMA", "EMA", "PMA", "KAMA", "DEMA", "TEMA", "ITREND", "DONCHIAN_CHANNEL", "EHLERS_SIMPLE_DECYCLER", "SIMPLE_DECYCLER", "(EHLERS)_SIMPLE_DECYCLER", "SIG_EHLERS_SIMPLE_DECYCLER_1", "(ehlers)_simple_decycler", "sig_ehlers_simple_decycler_1", "decycler"}
 
 # ---- helper: dynamic lookback extraction ----
 def _extract_lookbacks(ind):
@@ -124,8 +124,19 @@ def apply_technicals(df, indicators, user_tier="free"):
             df[sig_col]=0
         elif name=="kama" and "kama" in df.columns:
             df[sig_col]=np.where(df["kama"]>df["kama"].shift(1),1,np.where(df["kama"]<df["kama"].shift(1),-1,0))
-        elif name in ("ehlers_simple_decycler","simple_decycler") and "decycler" in df.columns:
-            df[sig_col]=np.where(df["decycler"]>df["decycler"].shift(1),1,np.where(df["decycler"]<df["decycler"].shift(1),-1,0))
+        
+        # print("DEBUG-DECYCLER-HEAD:", df[[c for c in df.columns if "decycler" in c.lower()]].head(10))
+        # elif name in ("ehlers_simple_decycler","simple_decycler") and "decycler" in df.columns:
+        #     df[sig_col]=np.where(df["decycler"]>df["decycler"].shift(1),1,np.where(df["decycler"]<df["decycler"].shift(1),-1,0))
+
+        elif name in ("ehlers_simple_decycler", "simple_decycler"):
+            colname = next((c for c in df.columns if "decycler" in c.lower()), None)
+            if colname:
+                df[sig_col] = np.where(df[colname] > df[colname].shift(1), 1,
+                                    np.where(df[colname] < df[colname].shift(1), -1, 0))
+            else:
+                df[sig_col] = 0
+
         else:
             df[sig_col]=0
 
@@ -216,7 +227,7 @@ def main():
         name=str(ind.get("name","")).strip()
         if not name: continue
         params=dict(ind.get("params",{}))
-        lower_name=name.lower().replace(" ","_")
+        lower_name=name.lower().replace(" ","_").replace("(", "").replace(")", "")
         lookbacks.extend(_extract_lookbacks(ind))
         src_key=None
         for key in list(params.keys()):
@@ -234,11 +245,26 @@ def main():
             valid_start=find_valid_start(df,lower_name,"close",tolerance=0.2)
             stable_starts.append(valid_start)
 
-        if idx==0 and name.upper() in OVERLAY_INDICATORS:
+        # if idx==0 and name.upper() in OVERLAY_INDICATORS:
+        #     plots.append({
+        #         "name":lower_name,"display_name":name.upper(),
+        #         "signal_col":f"sig_{lower_name}_{idx+1}",
+        #         "color_up":"rgba(0,200,0,0.7)","color_down":"rgba(200,0,0,0.7)"
+        #     })
+
+        # --- dynamic overlay detection ---
+        clean_name = name.upper().replace("(", "").replace(")", "").replace(" ", "_")
+        if idx == 0 and (
+            clean_name in OVERLAY_INDICATORS or
+            lower_name in [c.lower() for c in OVERLAY_INDICATORS] or
+            any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema"])
+        ):
             plots.append({
-                "name":lower_name,"display_name":name.upper(),
-                "signal_col":f"sig_{lower_name}_{idx+1}",
-                "color_up":"rgba(0,200,0,0.7)","color_down":"rgba(200,0,0,0.7)"
+                "name": lower_name,
+                "display_name": clean_name,
+                "signal_col": f"sig_{lower_name}_{idx+1}",
+                "color_up": "rgba(0,200,0,0.7)",
+                "color_down": "rgba(200,0,0,0.7)"
             })
 
     df,signal_cols=apply_technicals(df,indicators,user_tier="free")
@@ -272,6 +298,23 @@ def main():
             "metrics":metrics,
             "markers":{"long":long_m,"short":short_m},
             "plots":plots}
+
+    # from pathlib import Path
+
+    # def main2():
+    #     ...
+    #     # Write debug info directly to Desktop (cross-platform safe)
+    #     desktop = Path.home() / "Desktop"
+    #     debug_log = desktop / "debug_backtest_log.txt"
+
+    #     with open(debug_log, "w", encoding="utf-8") as f:
+    #         f.write("\n================ DEBUG RUN ================\n")
+    #         f.write(f"DEBUG-PLOTS: {plots}\n")
+    #         f.write(f"DEBUG-DF COLS: {df.columns.tolist()}\n")
+    #         f.write("==========================================\n")
+
+    #     raise SystemExit(f"DEBUG EXIT — check Desktop: {debug_log}")
+            
     return result
 
 if __name__=="__main__":
@@ -280,9 +323,24 @@ if __name__=="__main__":
             try: sys.stdout.reconfigure(encoding="utf-8")
             except: pass
 
-        sys.stdout=io.StringIO()
+        # sys.stdout=io.StringIO()
         result=main()
-        sys.stdout=sys.__stdout__
+        # sys.stdout=sys.__stdout__
+
+        def _sanitize_for_json(obj):
+            if isinstance(obj, dict):
+                return {k: _sanitize_for_json(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [_sanitize_for_json(v) for v in obj]
+            elif isinstance(obj, (float, np.floating)):
+                if np.isnan(obj) or np.isinf(obj) or obj > 1e308 or obj < -1e308:
+                    return 0.0
+                return float(obj)
+            else:
+                return obj
+
+        result = _sanitize_for_json(result)
+
         json_output=json.dumps(result,ensure_ascii=True,allow_nan=False,default=str)
         sys.stdout.write(json_output); sys.stdout.flush()
     except Exception as e:

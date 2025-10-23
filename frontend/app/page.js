@@ -47,6 +47,20 @@ const indicatorSchemas = {
     n_dc: { default: 20, type: "int", min: 1, max: 500 },
     source_dc: { default: "close", type: "string" },
   },
+  WMA: {
+      n_wma: { default: 14, type: "int", min: 1, max: 500 },
+      source_wma: { default: "close", type: "string" },
+    },
+    KAMA: {
+      n_kama: { default: 14, type: "int", min: 1, max: 500 },
+      n_fast_kama: { default: 2, type: "int", min: 1, max: 100 },
+      n_slow_kama: { default: 30, type: "int", min: 1, max: 500 },
+      source_kama: { default: "close", type: "string" },
+    },
+    "(Ehlers) Simple Decycler": {
+      hp_simple_decycler: { default: 48, type: "int", min: 1, max: 500 },
+      source_simple_decycler: { default: "close", type: "string" },
+  },
 };
 
 function validateParams(input, ind1, ind2) {
@@ -235,6 +249,10 @@ export default function Home() {
   const entryY = markers.long.map((m) => m.y * 1.005);
   const exitX = markers.short.map((m) => m.x);
   const exitY = markers.short.map((m) => m.y * 0.995);
+
+  if (typeof window !== "undefined") {
+    window.backendResult = backendResult;
+  }
 
   // full render
   return (
@@ -478,7 +496,16 @@ export default function Home() {
                           const df = backendResult.df ?? [];
                           if (!df.length) return null;
                           const times = df.map((d) => d.open_time);
-                          const values = df.map((d) => d[p.name] ?? null);
+                          // const values = df.map((d) => d[p.name] ?? null);
+
+                          const values = df.map((d) => {
+                            // robust matching in case backend key casing or symbol differs
+                            const key = Object.keys(d).find(
+                              (k) => k.toLowerCase().replace(/[() ]/g, "_") === p.name.toLowerCase()
+                            );
+                            return key ? d[key] : null;
+                          });
+                          
                           const signals = df.map((d) => d[p.signal_col] ?? 0);
 
                           const longLine = {
