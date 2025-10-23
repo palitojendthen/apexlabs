@@ -57,7 +57,7 @@ const indicatorSchemas = {
       n_slow_kama: { default: 30, type: "int", min: 1, max: 500 },
       source_kama: { default: "close", type: "string" },
     },
-    "(Ehlers) Simple Decycler": {
+  "(Ehlers) Simple Decycler": {
       hp_simple_decycler: { default: 48, type: "int", min: 1, max: 500 },
       source_simple_decycler: { default: "close", type: "string" },
   },
