@@ -492,7 +492,7 @@ export default function Home() {
 
                           const shortLine = {
                             x: times,
-                            y: values.map((v, i) => (signals[i] === 0 ? v : null)),
+                            y: values.map((v, i) => (signals[i] === -1 ? v : null)),
                             type: "scatter",
                             mode: "lines",
                             line: { width: 2, color: p.color_down },
