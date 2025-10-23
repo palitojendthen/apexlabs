@@ -13,7 +13,9 @@ import io
 warnings.filterwarnings("ignore")
 OVERLAY_INDICATORS = {"SMA", "EMA", "PMA", "KAMA", "DEMA", "TEMA", "ITREND", "DONCHIAN_CHANNEL", "EHLERS_SIMPLE_DECYCLER", "SIMPLE_DECYCLER", "(EHLERS)_SIMPLE_DECYCLER", "SIG_EHLERS_SIMPLE_DECYCLER_1", "(ehlers)_simple_decycler", "sig_ehlers_simple_decycler_1", "decycler"}
 
-# ---- helper: dynamic lookback extraction ----
+
+# HELPERS
+# dynamic lookback extraction
 def _extract_lookbacks(ind):
     lb = []
     for k, v in dict(ind.get("params", {})).items():
@@ -25,7 +27,7 @@ def _extract_lookbacks(ind):
                 pass
     return lb
 
-# ---- adaptive valid start detector for unstable filters ----
+# adaptive valid start detector for unstable filters
 def find_valid_start(df, ind_col, close_col="close", tolerance=0.2, min_bars=10):
     """Find first stable index where indicator ratio to close is within ±tolerance."""
     if ind_col not in df.columns or close_col not in df.columns:
@@ -37,7 +39,7 @@ def find_valid_start(df, ind_col, close_col="close", tolerance=0.2, min_bars=10)
         first_valid = min_bars
     return int(first_valid)
 
-# ---- helper: metrics ----
+# metrics
 def compute_metrics(equity, returns, trades, buyhold_pct=0.0, sl_hits=0):
     equity = np.asarray(equity, dtype=float)
     if equity.size == 0:
@@ -101,7 +103,7 @@ def import_indicator(module_basename):
     spec.loader.exec_module(module)
     return getattr(module,base)
 
-# ---- signal generation ----
+# signal generation
 def apply_technicals(df, indicators, user_tier="free"):
     signal_cols = []
     for idx, ind in enumerate(indicators,start=1):
@@ -124,19 +126,12 @@ def apply_technicals(df, indicators, user_tier="free"):
             df[sig_col]=0
         elif name=="kama" and "kama" in df.columns:
             df[sig_col]=np.where(df["kama"]>df["kama"].shift(1),1,np.where(df["kama"]<df["kama"].shift(1),-1,0))
-        
-        # print("DEBUG-DECYCLER-HEAD:", df[[c for c in df.columns if "decycler" in c.lower()]].head(10))
-        # elif name in ("ehlers_simple_decycler","simple_decycler") and "decycler" in df.columns:
-        #     df[sig_col]=np.where(df["decycler"]>df["decycler"].shift(1),1,np.where(df["decycler"]<df["decycler"].shift(1),-1,0))
-
         elif name in ("ehlers_simple_decycler", "simple_decycler"):
             colname = next((c for c in df.columns if "decycler" in c.lower()), None)
             if colname:
-                df[sig_col] = np.where(df[colname] > df[colname].shift(1), 1,
-                                    np.where(df[colname] < df[colname].shift(1), -1, 0))
+                df[sig_col] = np.where(df[colname] > df[colname].shift(1), 1, np.where(df[colname] < df[colname].shift(1), -1, 0))
             else:
                 df[sig_col] = 0
-
         else:
             df[sig_col]=0
 
@@ -152,7 +147,9 @@ def apply_technicals(df, indicators, user_tier="free"):
 
     return df,signal_cols
 
-# ---- long-short engine ----
+
+# BACKTEST ENGINE
+# long-short
 def run_longshort(df,use_atr,atr_mult,sl_pct,capital):
     cash,qty,entry,side=capital,0.0,None,0
     equity,trades,long_m,short_m=[],[],[],[]
@@ -207,7 +204,7 @@ def run_longshort(df,use_atr,atr_mult,sl_pct,capital):
 
     return equity,trades,long_m,short_m,sl_hits
 
-# ---- main ----
+# main
 def main():
     body=json.load(sys.stdin)
     df=pd.DataFrame(body["data"]).reset_index(drop=True)
@@ -245,14 +242,7 @@ def main():
             valid_start=find_valid_start(df,lower_name,"close",tolerance=0.2)
             stable_starts.append(valid_start)
 
-        # if idx==0 and name.upper() in OVERLAY_INDICATORS:
-        #     plots.append({
-        #         "name":lower_name,"display_name":name.upper(),
-        #         "signal_col":f"sig_{lower_name}_{idx+1}",
-        #         "color_up":"rgba(0,200,0,0.7)","color_down":"rgba(200,0,0,0.7)"
-        #     })
-
-        # --- dynamic overlay detection ---
+        # dynamic overlay detection
         clean_name = name.upper().replace("(", "").replace(")", "").replace(" ", "_")
         if idx == 0 and (
             clean_name in OVERLAY_INDICATORS or
@@ -298,22 +288,6 @@ def main():
             "metrics":metrics,
             "markers":{"long":long_m,"short":short_m},
             "plots":plots}
-
-    # from pathlib import Path
-
-    # def main2():
-    #     ...
-    #     # Write debug info directly to Desktop (cross-platform safe)
-    #     desktop = Path.home() / "Desktop"
-    #     debug_log = desktop / "debug_backtest_log.txt"
-
-    #     with open(debug_log, "w", encoding="utf-8") as f:
-    #         f.write("\n================ DEBUG RUN ================\n")
-    #         f.write(f"DEBUG-PLOTS: {plots}\n")
-    #         f.write(f"DEBUG-DF COLS: {df.columns.tolist()}\n")
-    #         f.write("==========================================\n")
-
-    #     raise SystemExit(f"DEBUG EXIT — check Desktop: {debug_log}")
             
     return result
 
@@ -323,9 +297,9 @@ if __name__=="__main__":
             try: sys.stdout.reconfigure(encoding="utf-8")
             except: pass
 
-        # sys.stdout=io.StringIO()
+        sys.stdout=io.StringIO()
         result=main()
-        # sys.stdout=sys.__stdout__
+        sys.stdout=sys.__stdout__
 
         def _sanitize_for_json(obj):
             if isinstance(obj, dict):
