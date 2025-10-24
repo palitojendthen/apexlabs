@@ -125,8 +125,6 @@ def apply_technicals(df, indicators, user_tier="free"):
             df[sig_col]=np.where(df["close"]>df["wma"],1,np.where(df["close"]<df["wma"],-1,0))
         elif name=="donchian_channel" and "basis" in df.columns:
             df[sig_col]=np.where(df["close"]>df["basis"],1,np.where(df["close"]<df["basis"],-1,0))
-        elif name=="adx" and "adx" in df.columns:
-            df[sig_col]=0
         elif name=="kama" and "kama" in df.columns:
             df[sig_col]=np.where(df["kama"]>df["kama"].shift(1),1,np.where(df["kama"]<df["kama"].shift(1),-1,0))
         elif name in ("ehlers_simple_decycler", "simple_decycler"):
@@ -141,6 +139,20 @@ def apply_technicals(df, indicators, user_tier="free"):
                 df[sig_col] = np.where(df[colname] > df[colname].shift(1), 1, np.where(df[colname] < df[colname].shift(1), -1, 0))
             else:
                 df[sig_col] = 0
+        
+        # elif name == "donchian_channel" and "basis" in df.columns:
+        #     df[sig_col] = np.where(df["close"] > df["upper"].shift(1), 1,
+        #                     np.where(df["close"] < df["lower"].shift(1), -1, 0))
+
+        elif name == "donchian_channel":
+            upper_col = next((c for c in df.columns if "donchian_channel_upper" in c.lower()), None)
+            lower_col = next((c for c in df.columns if "donchian_channel_lower" in c.lower()), None)
+            # if upper_col and lower_col:
+            #     df[sig_col] = np.where(df["close"] > df[upper_col].shift(1), 1,
+            #                     np.where(df["close"] < df[lower_col].shift(1), -1, 0))
+            # else:
+            #     df[sig_col] = 0
+            df[sig_col] = np.where(df['close'] > df['donchian_channel_basis'], 1, np.where(df['close'] < df['donchian_channel_basis'], -1, 0))
         
         elif name in ("adx", "average_directional_index"):
             colname = next((c for c in df.columns if "adx" in c.lower()), None)
@@ -288,12 +300,29 @@ def main():
         valid_params = {k: v for k, v in params.items() if k in sig_params and not k.startswith("source")}
 
         # indicators that require full OHLC dataframe
-        df_source_indicators = {"adx", "atr", "stochastic", "macd", "rsi", "cci", "bollinger_bands"}
+        df_source_indicators = {"adx", "atr", "stochastic", "macd", "rsi", "cci", "bollinger_bands", "donchian_channel"}
 
-        if lower_name in df_source_indicators:
-            df[lower_name] = func(df, **valid_params)
+        # if lower_name in df_source_indicators:
+        #     df[lower_name] = func(df, **valid_params)
+        # else:
+        #     df[lower_name] = func(df[src], **valid_params)
+
+        # --- run indicator safely ---
+        if lower_name in {"donchian_channel", "adx", "atr", "stochastic", "macd", "rsi", "cci", "bollinger_bands"}:
+            result = func(df, **valid_params)
         else:
-            df[lower_name] = func(df[src], **valid_params)
+            result = func(df[src], **valid_params)
+
+        # --- assign multi-column / single-column results correctly ---
+        if isinstance(result, pd.DataFrame):
+            # e.g. Donchian Channel returns multiple columns (lower, basis, upper)
+            for col in result.columns:
+                df[f"{lower_name}_{col}"] = result[col]
+        elif isinstance(result, pd.Series):
+            df[lower_name] = result
+        else:
+            raise ValueError(f"Unexpected return type for {lower_name}: {type(result)}")
+
 
         # dynamic stability detection
         lower_name_lst = ["kama","ehlers_simple_decycler","simple_decycler", "ehlers_predictive_moving_average","pma","predictive_moving_average"]
@@ -302,19 +331,50 @@ def main():
             stable_starts.append(valid_start)
 
         # dynamic overlay detection
+        # clean_name = name.upper().replace("(", "").replace(")", "").replace(" ", "_")
+        # if idx == 0 and (
+        #     clean_name in OVERLAY_INDICATORS or
+        #     lower_name in [c.lower() for c in OVERLAY_INDICATORS] or
+        #     any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema","pma"])
+        # ):
+        #     plots.append({
+        #         "name": lower_name,
+        #         "display_name": clean_name,
+        #         "signal_col": f"sig_{lower_name}_{idx+1}",
+        #         "color_up": "rgba(0,200,0,0.7)",
+        #         "color_down": "rgba(200,0,0,0.7)"
+        #     })
+
+        # dynamic overlay detection (supports multi-column envelopes)
         clean_name = name.upper().replace("(", "").replace(")", "").replace(" ", "_")
+        created_cols = [c for c in df.columns if c.startswith(lower_name)]
+
         if idx == 0 and (
-            clean_name in OVERLAY_INDICATORS or
-            lower_name in [c.lower() for c in OVERLAY_INDICATORS] or
-            any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema","pma"])
+            clean_name in OVERLAY_INDICATORS
+            or lower_name in [c.lower() for c in OVERLAY_INDICATORS]
+            or any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema", "pma", "donchian"])
         ):
-            plots.append({
-                "name": lower_name,
-                "display_name": clean_name,
-                "signal_col": f"sig_{lower_name}_{idx+1}",
-                "color_up": "rgba(0,200,0,0.7)",
-                "color_down": "rgba(200,0,0,0.7)"
-            })
+            if any("donchian" in c for c in created_cols):
+                # Donchian or any envelope-style multi-line indicator
+                for col in created_cols:
+                    plots.append({
+                        "name": col,
+                        "display_name": f"{clean_name}_{col.split('_')[-1].upper()}",
+                        "signal_col": f"sig_{lower_name}_{idx+1}",
+                        "color_up": "rgba(0,255,255,0.7)",
+                        "color_down": "rgba(255,165,0,0.7)",
+                        "is_envelope": True
+                    })
+            else:
+                # Standard single-line overlay
+                plots.append({
+                    "name": lower_name,
+                    "display_name": clean_name,
+                    "signal_col": f"sig_{lower_name}_{idx+1}",
+                    "color_up": "rgba(0,200,0,0.7)",
+                    "color_down": "rgba(200,0,0,0.7)",
+                    "is_envelope": False
+                })
 
     df,signal_cols=apply_technicals(df,indicators,user_tier="free")
 

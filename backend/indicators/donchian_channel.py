@@ -25,3 +25,38 @@ def donchian_channel(source_dc: pd.DataFrame, n_dc=10):
     _src['basis'] = (_src['lower']+_src['upper'])/2
 
     return _src[['lower', 'basis', 'upper']]
+
+
+
+# #!/usr/bin/env python3
+# import pandas as pd
+# import numpy as np
+
+# def donchian_channel(source_dc: pd.Series, n_dc: int = 20) -> pd.DataFrame:
+#     """
+#     technical analysis indicator:
+#     Donchian Channel (Upper, Lower, Basis)
+#     reference: Richard Donchian, "Trading Rules"
+#     params:
+#     @source_dc: pd.Series, input price series (e.g. df['close'])
+#     @n_dc: integer, lookback period (default 20)
+#     returns:
+#         pd.DataFrame with ['upper', 'lower', 'basis']
+#     """
+#     if not isinstance(source_dc, pd.Series):
+#         source_dc = pd.Series(source_dc)
+
+#     if len(source_dc) < n_dc:
+#         raise ValueError("Data length can't be lower than lookback")
+
+#     upper = source_dc.rolling(window=n_dc).max()
+#     lower = source_dc.rolling(window=n_dc).min()
+#     basis = (upper + lower) / 2
+
+#     _df = pd.DataFrame({
+#         "upper": upper,
+#         "lower": lower,
+#         "basis": basis
+#     }, index=source_dc.index)
+
+#     return _df

@@ -498,6 +498,47 @@ export default function Home() {
                     name: "Price",
                   },
 
+                  // ...(backendResult?.plots?.length
+                  //   ? backendResult.plots
+                  //       .map((p) => {
+                  //         const df = backendResult.df ?? [];
+                  //         if (!df.length) return null;
+                  //         const times = df.map((d) => d.open_time);
+
+                  //         const values = df.map((d) => {
+                  //           // robust matching in case backend key casing or symbol differs
+                  //           const key = Object.keys(d).find(
+                  //             (k) => k.toLowerCase().replace(/[() ]/g, "_") === p.name.toLowerCase()
+                  //           );
+                  //           return key ? d[key] : null;
+                  //         });
+                          
+                  //         const signals = df.map((d) => d[p.signal_col] ?? 0);
+
+                  //         const longLine = {
+                  //           x: times,
+                  //           y: values.map((v, i) => (signals[i] === 1 ? v : null)),
+                  //           type: "scatter",
+                  //           mode: "lines",
+                  //           line: { width: 2, color: p.color_up },
+                  //           name: `${p.display_name || p.name.toUpperCase()} (Long)`,
+                  //         };
+
+                  //         const shortLine = {
+                  //           x: times,
+                  //           y: values.map((v, i) => (signals[i] === -1 ? v : null)),
+                  //           type: "scatter",
+                  //           mode: "lines",
+                  //           line: { width: 2, color: p.color_down },
+                  //           name: `${p.display_name || p.name.toUpperCase()} (Short)`,
+                  //         };
+
+                  //         return [longLine, shortLine];
+                  //       })
+                  //       .flat()
+                  //   : []),
+
+
                   ...(backendResult?.plots?.length
                     ? backendResult.plots
                         .map((p) => {
@@ -505,14 +546,75 @@ export default function Home() {
                           if (!df.length) return null;
                           const times = df.map((d) => d.open_time);
 
+                          const nameLower = (p.name || "").toLowerCase();
+
+                          // ============ 1) Envelope family (e.g., Donchian) ============
+                          // Expect columns: <base>_upper, <base>_lower, <base>_basis
+                          // We render the envelope exactly once:
+                          //  - if this item is the BASIS member, render now
+                          //  - else if it is the UPPER member (and there's no basis), render now
+                          const suffixMatch = nameLower.match(/_(upper|lower|basis)$/);
+                          const suffix = suffixMatch ? suffixMatch[1] : "";
+                          const base =
+                            suffix ? nameLower.replace(/_(upper|lower|basis)$/, "") : "";
+
+                          const isEnvelope = Boolean(base) &&
+                            (base.includes("donchian_channel") || base.includes("bollinger"));
+
+                          if (
+                            isEnvelope &&
+                            (suffix === "basis" || (suffix === "upper" && !df[0][`${base}_basis`]))
+                          ) {
+                            const upperKey = `${base}_upper`;
+                            const lowerKey = `${base}_lower`;
+                            const basisKey = `${base}_basis`;
+
+                            const upper = df.map((d) => (upperKey in d ? d[upperKey] : null));
+                            const lower = df.map((d) => (lowerKey in d ? d[lowerKey] : null));
+                            const basis = df.map((d) => (basisKey in d ? d[basisKey] : null));
+
+                            const traces = [];
+                            if (upperKey in (df[0] || {}) && lowerKey in (df[0] || {})) {
+                              traces.push({
+                                x: times,
+                                y: upper,
+                                type: "scatter",
+                                mode: "lines",
+                                line: { width: 1.4, color: "rgba(0,255,255,0.9)" },
+                                name: "Donchian Upper",
+                              });
+                              traces.push({
+                                x: times,
+                                y: lower,
+                                type: "scatter",
+                                mode: "lines",
+                                line: { width: 1.4, color: "rgba(0,255,255,0.9)" },
+                                name: "Donchian Lower",
+                                fill: "tonexty",
+                                fillcolor: "rgba(0,255,255,0.15)",
+                              });
+                            }
+                            if (basisKey in (df[0] || {})) {
+                              traces.push({
+                                x: times,
+                                y: basis,
+                                type: "scatter",
+                                mode: "lines",
+                                line: { width: 1.4, color: "rgba(255,165,0,0.9)" },
+                                name: "Donchian Basis",
+                              });
+                            }
+                            return traces;
+                          }
+
+                          // ============ 2) Normal overlays (SMA/EMA/KAMA/etc.) ============
                           const values = df.map((d) => {
-                            // robust matching in case backend key casing or symbol differs
                             const key = Object.keys(d).find(
-                              (k) => k.toLowerCase().replace(/[() ]/g, "_") === p.name.toLowerCase()
+                              (k) =>
+                                k.toLowerCase().replace(/[() ]/g, "_") === nameLower
                             );
                             return key ? d[key] : null;
                           });
-                          
                           const signals = df.map((d) => d[p.signal_col] ?? 0);
 
                           const longLine = {
@@ -537,6 +639,8 @@ export default function Home() {
                         })
                         .flat()
                     : []),
+
+
 
                   ...(entryX.length
                     ? [
