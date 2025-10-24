@@ -11,7 +11,10 @@ import inspect
 import io
 
 warnings.filterwarnings("ignore")
-OVERLAY_INDICATORS = {"SMA", "EMA", "PMA", "KAMA", "DEMA", "TEMA", "ITREND", "DONCHIAN_CHANNEL", "EHLERS_SIMPLE_DECYCLER", "SIMPLE_DECYCLER", "(EHLERS)_SIMPLE_DECYCLER", "SIG_EHLERS_SIMPLE_DECYCLER_1", "(ehlers)_simple_decycler", "sig_ehlers_simple_decycler_1", "decycler"}
+OVERLAY_INDICATORS = {
+    "SMA", "EMA", "KAMA", "DEMA", "TEMA", "ITREND", "DONCHIAN_CHANNEL", 
+    "EHLERS_SIMPLE_DECYCLER", "EHLERS_PREDICTIVE_MOVING_AVERAGE"
+    }
 
 
 # HELPERS
@@ -132,6 +135,12 @@ def apply_technicals(df, indicators, user_tier="free"):
                 df[sig_col] = np.where(df[colname] > df[colname].shift(1), 1, np.where(df[colname] < df[colname].shift(1), -1, 0))
             else:
                 df[sig_col] = 0
+        elif name in ("ehlers_predictive_moving_average", "predictive_moving_average", "pma"):
+            colname = next((c for c in df.columns if "predictive_moving_average" in c.lower()), None)
+            if colname:
+                df[sig_col] = np.where(df[colname] > df[colname].shift(1), 1, np.where(df[colname] < df[colname].shift(1), -1, 0))
+            else:
+                df[sig_col] = 0
         else:
             df[sig_col]=0
 
@@ -238,7 +247,8 @@ def main():
         df[lower_name]=func(df[src],**valid_params)
 
         # dynamic stability detection
-        if lower_name in ["kama","ehlers_simple_decycler","simple_decycler"]:
+        lower_name_lst = ["kama","ehlers_simple_decycler","simple_decycler", "ehlers_predictive_moving_average","pma","predictive_moving_average"]
+        if lower_name in lower_name_lst:
             valid_start=find_valid_start(df,lower_name,"close",tolerance=0.2)
             stable_starts.append(valid_start)
 
@@ -247,7 +257,7 @@ def main():
         if idx == 0 and (
             clean_name in OVERLAY_INDICATORS or
             lower_name in [c.lower() for c in OVERLAY_INDICATORS] or
-            any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema"])
+            any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema","pma"])
         ):
             plots.append({
                 "name": lower_name,
@@ -259,8 +269,9 @@ def main():
 
     df,signal_cols=apply_technicals(df,indicators,user_tier="free")
 
-    base_start=max(lookbacks) if lookbacks else 1
-    stability_start=max(stable_starts) if stable_starts else 0
+    # base_start=max(lookbacks) if lookbacks else 1
+    base_start=max(lookbacks) if lookbacks else 10
+    stability_start=max(stable_starts) if stable_starts else 10
     calc_start=max(base_start,stability_start)
     df=df.iloc[calc_start:].reset_index(drop=True)
 
@@ -320,3 +331,4 @@ if __name__=="__main__":
     except Exception as e:
         import traceback; traceback.print_exc(file=sys.stderr)
         sys.stderr.write(f"[BACKTEST ERROR] {e}\n"); sys.exit(1)
+        sys.stderr.write(f"[DEBUG-PLOTS] {plots}\n")
