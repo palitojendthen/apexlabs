@@ -61,6 +61,10 @@ const indicatorSchemas = {
       hp_simple_decycler: { default: 48, type: "int", min: 1, max: 500 },
       source_simple_decycler: { default: "close", type: "string" },
   },
+    "(Ehlers) Predictive Moving Average": {
+      hp_simple_decycler: { default: 48, type: "int", min: 1, max: 500 },
+      source_simple_decycler: { default: "close", type: "string" },
+  },
 };
 
 function validateParams(input, ind1, ind2) {
