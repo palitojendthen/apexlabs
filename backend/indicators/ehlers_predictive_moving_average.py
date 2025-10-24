@@ -37,12 +37,7 @@ def ehlers_predictive_moving_average(source_pma: pd.Series) -> pd.Series:
         _df.iloc[i,1] = (7*_df.iloc[i,0]+6*_df.iloc[i-1,0]+5*_df.iloc[i-2,0]+4*_df.iloc[i-3,0]+3*_df.iloc[i-4,0]+2*_df.iloc[i-5,0]+_df.iloc[i-6,0])/28
         _df.iloc[i,2] = (2*_df.iloc[i,0])-_df.iloc[i,1]
         _df.iloc[i,3] = (4*_df.iloc[i,2]+3*_df.iloc[i-1,2]+2*_df.iloc[i-2,2]+_df.iloc[i,2])/10
-        # if _df.iloc[i,2] > _df.iloc[i,3]:
-        #     _df.iloc[i,4] = _df.iloc[i,2]
-        # else:
-        #     _df.iloc[i,4] = _df.iloc[i,3]
         _df.iloc[i,4] = _df.iloc[i,2] if _df.iloc[i,2] > _df.iloc[i,3] else _df.iloc[i,3]
     
-    # _df['pma'] = _df['pma'].fillna(method='bfill').fillna(source_pma)
     _df['pma'] = _df['pma'].replace(0.00,np.nan).fillna(method='bfill').fillna(source_pma)
     return pd.Series(_df['pma'])
