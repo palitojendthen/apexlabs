@@ -269,7 +269,6 @@ def main():
 
     df,signal_cols=apply_technicals(df,indicators,user_tier="free")
 
-    # base_start=max(lookbacks) if lookbacks else 1
     base_start=max(lookbacks) if lookbacks else 10
     stability_start=max(stable_starts) if stable_starts else 10
     calc_start=max(base_start,stability_start)
@@ -331,4 +330,3 @@ if __name__=="__main__":
     except Exception as e:
         import traceback; traceback.print_exc(file=sys.stderr)
         sys.stderr.write(f"[BACKTEST ERROR] {e}\n"); sys.exit(1)
-        sys.stderr.write(f"[DEBUG-PLOTS] {plots}\n")
