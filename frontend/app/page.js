@@ -45,7 +45,6 @@ const indicatorSchemas = {
   },
   Donchian_Channel: {
     n_dc: { default: 20, type: "int", min: 1, max: 500 },
-    source_dc: { default: "close", type: "string" },
   },
   WMA: {
       n_wma: { default: 14, type: "int", min: 1, max: 500 },
@@ -548,11 +547,10 @@ export default function Home() {
 
                           const nameLower = (p.name || "").toLowerCase();
 
-                          // ============ 1) Envelope family (e.g., Donchian) ============
-                          // Expect columns: <base>_upper, <base>_lower, <base>_basis
-                          // We render the envelope exactly once:
-                          //  - if this item is the BASIS member, render now
-                          //  - else if it is the UPPER member (and there's no basis), render now
+                          // envelope/multiple line overlay e.g donchian channel
+                          // render the envelope exactly once:
+                          //  - if this item is the basis member
+                          //  - else if it is the upper member (and there's no basis)
                           const suffixMatch = nameLower.match(/_(upper|lower|basis)$/);
                           const suffix = suffixMatch ? suffixMatch[1] : "";
                           const base =
@@ -607,7 +605,7 @@ export default function Home() {
                             return traces;
                           }
 
-                          // ============ 2) Normal overlays (SMA/EMA/KAMA/etc.) ============
+                          // normal overlay e.g. sma,ema,wma,kama,decycler
                           const values = df.map((d) => {
                             const key = Object.keys(d).find(
                               (k) =>
@@ -639,7 +637,6 @@ export default function Home() {
                         })
                         .flat()
                     : []),
-
 
 
                   ...(entryX.length
