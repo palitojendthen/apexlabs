@@ -1,36 +1,45 @@
 #!/usr/bin/env python3
 import pandas as pd
 import numpy as np
+import importlib.util
+from pathlib import Path
 
-def atr(source_atr: pd.DataFrame, n_atr=10) -> pd.Series:
-    """
-    technical analysis indicator:
-    return average true range, over a given dataframe
-    reference: https://www.investopedia.com/terms/a/atr.asp
-    params:
-    @source_atr: DataFrame, ohlc input data
-    @n_atr: integer, loockback period (default 10)
-    returns:
-        [true range, average true] aligned with source index
-    """
-    _src = source_atr.copy()
-    n = len(_src)
+# def atr(source_atr: pd.DataFrame, n_atr=10) -> pd.Series:
+#     """
+#     technical analysis indicator:
+#     return average true range, over a given dataframe
+#     reference: https://www.investopedia.com/terms/a/atr.asp
+#     params:
+#     @source_atr: DataFrame, ohlc input data
+#     @n_atr: integer, loockback period (default 10)
+#     returns:
+#         [true range, average true] aligned with source index
+#     """
+#     _src = source_atr.copy()
+#     n = len(_src)
     
-    if n < n_atr:
-        raise ValueError('Periods cant be greater than data length')
+#     if n < n_atr:
+#         raise ValueError('Periods cant be greater than data length')
 
-    _src['hl'] = _src['high']-_src['low']
-    _src['hc1'] = _src['high']-_src['close'].shift(1)
-    _src['lc1'] = _src['low']-_src['close'].shift(1)
-    _src['tr'] = .00
+#     _src['hl'] = _src['high']-_src['low']
+#     _src['hc1'] = _src['high']-_src['close'].shift(1)
+#     _src['lc1'] = _src['low']-_src['close'].shift(1)
+#     _src['tr'] = .00
 
-    for i in range(0, n):
-        _src.iloc[i, _src.columns.get_loc('tr')] = np.max([_src.iloc[i, _src.columns.get_loc('hl')], _src.iloc[i, _src.columns.get_loc('hc1')], _src.iloc[i, _src.columns.get_loc('lc1')]], axis=0)
+#     for i in range(0, n):
+#         _src.iloc[i, _src.columns.get_loc('tr')] = np.max([_src.iloc[i, _src.columns.get_loc('hl')], _src.iloc[i, _src.columns.get_loc('hc1')], _src.iloc[i, _src.columns.get_loc('lc1')]], axis=0)
     
-    _src['atr'] = _src['tr'].rolling(window=n_atr).mean()
+#     _src['atr'] = _src['tr'].rolling(window=n_atr).mean()
     
-    return _src[['tr', 'atr']]
+#     return _src[['tr', 'atr']]
 
+
+def load_atr_module():
+    module_path = Path(__file__).resolve().parents[0]/"atr.py"
+    spec = importlib.util.spec_from_file_location("atr", module_path)
+    atr_mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(atr_mod)
+    return atr_mod.atr
 
 def adx(source_adx: pd.DataFrame, n_adx=14, threshold_adx=20):
     """
@@ -76,7 +85,8 @@ def adx(source_adx: pd.DataFrame, n_adx=14, threshold_adx=20):
     _src['dx_down'] = -(_src['low']-_src['low'].shift(1))
     _src['plus_dm'] = np.where(((_src['dx_up'] > _src['dx_down']) & (_src['dx_up'] > 0)), _src['dx_up'], 0)
     _src['minus_dm'] = np.where(((_src['dx_down'] > _src['dx_up']) & (_src['dx_down'] > 0)), _src['dx_down'], 0)
-    _src['tr'] = atr(_src, n_atr=n_adx)['tr']
+    atr_func = load_atr_module()
+    _src['tr'] = atr_func(_src, n_atr=n_adx)['tr']
     _src['truerange'] = rma(_src['tr'], _periods=n_adx)
     _src['plus'] = (100*rma(_src['plus_dm'],_periods=n_adx)/_src['truerange']).fillna(0)
     _src['minus'] = (100*rma(_src['minus_dm'],_periods=n_adx)/_src['truerange']).fillna(0)

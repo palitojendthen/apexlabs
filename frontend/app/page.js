@@ -37,7 +37,7 @@ const indicatorSchemas = {
   },
   ADX: {
     n_adx: { default: 14, type: "int", min: 1, max: 500 },
-    threshold_adx: { default: 20, type: "float", min: 0, max: 100 },
+    threshold_adx: { default: 20, type: "int", min: 0, max: 100 },
   },
   RSI: {
     n_rsi: { default: 14, type: "int", min: 1, max: 500 },
@@ -174,29 +174,78 @@ export default function Home() {
     }
   }
 
+  // async function runBacktest(dataRows, conf) {
+  //   try {
+  //     const { params1 } = validateParams(conf.params, conf.ind1, conf.ind2);
+
+  //     const payload = {
+  //       data: dataRows,
+  //       indicators: [{ name: conf.ind1, params: params1 }],
+  //       stop_loss: conf.stop,
+  //       capital: 1000,
+  //       mode: conf.mode,
+  //     };
+
+  //     const res = await fetch("/api/run_backtest", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(payload),
+  //     });
+
+  //     const result = await res.json();
+  //     setBackendResult(result);
+  //   } catch (err) {
+  //     console.error("Backtest failed:", err);
+  //   }
+  // }
+
   async function runBacktest(dataRows, conf) {
-    try {
-      const { params1 } = validateParams(conf.params, conf.ind1, conf.ind2);
+  try {
+    const { params1, params2 } = validateParams(conf.params, conf.ind1, conf.ind2);
 
-      const payload = {
-        data: dataRows,
-        indicators: [{ name: conf.ind1, params: params1 }],
-        stop_loss: conf.stop,
-        capital: 1000,
-        mode: conf.mode,
-      };
+    const indicators = [];
 
-      const res = await fetch("/api/run_backtest", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+    // if (conf.ind1 && conf.ind1 !== "Select Indicator") {
+    //   indicators.push({ name: conf.ind1, params: params1 });
+    // }
+    // if (conf.ind2 && conf.ind2 !== "Select Indicator") {
+    //   indicators.push({ name: conf.ind2, params: params2 });
+    // }
+    // if (conf.ind3 && conf.ind3 !== "Select Indicator") {
+    //   indicators.push({ name: conf.ind3, params: {} }); // optional for now
+    // }
 
-      const result = await res.json();
-      setBackendResult(result);
-    } catch (err) {
-      console.error("Backtest failed:", err);
+    const skipNames = ["Select Indicator", "Select an indicator", "", null, undefined];
+
+    if (conf.ind1 && !skipNames.includes(conf.ind1)) {
+      indicators.push({ name: conf.ind1, params: params1 });
     }
+    if (conf.ind2 && !skipNames.includes(conf.ind2)) {
+      indicators.push({ name: conf.ind2, params: params2 });
+    }
+    if (conf.ind3 && !skipNames.includes(conf.ind3)) {
+      indicators.push({ name: conf.ind3, params: {} });
+    }
+
+    const payload = {
+      data: dataRows,
+      indicators,
+      stop_loss: conf.stop,
+      capital: 1000,
+      mode: conf.mode,
+    };
+
+    const res = await fetch("/api/run_backtest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await res.json();
+    setBackendResult(result);
+  } catch (err) {
+    console.error("Backtest failed:", err);
+  }
   }
 
   useEffect(() => {
@@ -376,8 +425,22 @@ export default function Home() {
                           ${!isPremium ? "opacity-70 pointer-events-none" : "bg-white"}`}
               title={!isPremium ? "Unlock more indicators" : ""}
             >
-              <option>
-                {!isPremium ? "Unlock more indicators 🔒" : "Select an indicator"}
+              <option>Select Indicator</option>
+              <option>SMA</option>
+              <option>EMA</option>
+              <option>WMA</option>
+              <option>ADX</option>
+              <option>RSI</option>
+              <option>MACD</option>
+              <option>Donchian Channel</option>
+              <option disabled={!isPremium}>
+                KAMA {isPremium ? "" : "🔒"}
+              </option>
+              <option disabled={!isPremium}>
+                (Ehlers) Simple Decycler {isPremium ? "" : "🔒"}
+              </option>
+              <option disabled={!isPremium}>
+                (Ehlers) Predictive Moving Average {isPremium ? "" : "🔒"}
               </option>
             </select>
 

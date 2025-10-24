@@ -141,20 +141,56 @@ def apply_technicals(df, indicators, user_tier="free"):
                 df[sig_col] = np.where(df[colname] > df[colname].shift(1), 1, np.where(df[colname] < df[colname].shift(1), -1, 0))
             else:
                 df[sig_col] = 0
+        
+        elif name in ("adx", "average_directional_index"):
+            colname = next((c for c in df.columns if "adx" in c.lower()), None)
+            threshold = 20
+            try:
+                threshold = float(ind.get("params", {}).get("threshold_adx", 20))
+            except Exception:
+                pass
+            if colname and colname in df.columns:
+                df[sig_col] = np.where(df[colname] >= threshold, 1, 0)
+            else:
+                df[sig_col] = 0        
         else:
             df[sig_col]=0
 
         signal_cols.append(sig_col)
 
-    active=[c for c in signal_cols if c in df.columns]
-    if not active:
-        df["final_signal"]=0
-    else:
-        all_long=(df[active]==1).all(axis=1)
-        all_short=(df[active]==-1).all(axis=1)
-        df["final_signal"]=np.select([all_long,all_short],[1,-1],default=0)
+    # active=[c for c in signal_cols if c in df.columns]
+    # if not active:
+    #     df["final_signal"]=0
+    # else:
+    #     all_long=(df[active]==1).all(axis=1)
+    #     all_short=(df[active]==-1).all(axis=1)
+    #     df["final_signal"]=np.select([all_long,all_short],[1,-1],default=0)
 
-    return df,signal_cols
+    # return df,signal_cols
+
+    active = [c for c in signal_cols if c in df.columns]
+
+    # Identify if ADX is included
+    adx_cols = [c for c in active if "adx" in c.lower()]
+    non_adx_cols = [c for c in active if c not in adx_cols]
+
+    if not non_adx_cols:
+        df["final_signal"] = 0
+    else:
+        all_long = (df[non_adx_cols] == 1).all(axis=1)
+        all_short = (df[non_adx_cols] == -1).all(axis=1)
+        df["final_signal"] = np.select([all_long, all_short], [1, -1], default=0)
+
+    # Apply ADX filter (turn off signals if ADX < threshold)
+    if adx_cols:
+        adx_sig = adx_cols[0]
+        # Find the numeric threshold column or raw ADX column
+        adx_val_col = next((c for c in df.columns if c.lower() == "adx"), None)
+        if adx_val_col and "threshold_adx" in ind.get("params", {}):
+            threshold = float(ind["params"]["threshold_adx"])
+            df["final_signal"] = np.where(df[adx_val_col] < threshold, 0, df["final_signal"])
+
+    return df, signal_cols
 
 
 # BACKTEST ENGINE
@@ -240,11 +276,24 @@ def main():
             if key.startswith("source_"): src_key=params.pop(key); break
         if not src_key and "source" in params: src_key=params.pop("source")
 
-        src=ensure_derived_sources(df,src_key or "close")
-        func=import_indicator(lower_name)
-        sig_params=inspect.signature(func).parameters
-        valid_params={k:v for k,v in params.items() if k in sig_params and not k.startswith("source")}
-        df[lower_name]=func(df[src],**valid_params)
+        # src=ensure_derived_sources(df,src_key or "close")
+        # func=import_indicator(lower_name)
+        # sig_params=inspect.signature(func).parameters
+        # valid_params={k:v for k,v in params.items() if k in sig_params and not k.startswith("source")}
+        # df[lower_name]=func(df[src],**valid_params)
+
+        src = ensure_derived_sources(df, src_key or "close")
+        func = import_indicator(lower_name)
+        sig_params = inspect.signature(func).parameters
+        valid_params = {k: v for k, v in params.items() if k in sig_params and not k.startswith("source")}
+
+        # indicators that require full OHLC dataframe
+        df_source_indicators = {"adx", "atr", "stochastic", "macd", "rsi", "cci", "bollinger_bands"}
+
+        if lower_name in df_source_indicators:
+            df[lower_name] = func(df, **valid_params)
+        else:
+            df[lower_name] = func(df[src], **valid_params)
 
         # dynamic stability detection
         lower_name_lst = ["kama","ehlers_simple_decycler","simple_decycler", "ehlers_predictive_moving_average","pma","predictive_moving_average"]
@@ -298,7 +347,8 @@ def main():
             "metrics":metrics,
             "markers":{"long":long_m,"short":short_m},
             "plots":plots}
-            
+
+    # return df.iloc[-10:,6:]
     return result
 
 if __name__=="__main__":
