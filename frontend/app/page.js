@@ -174,46 +174,11 @@ export default function Home() {
     }
   }
 
-  // async function runBacktest(dataRows, conf) {
-  //   try {
-  //     const { params1 } = validateParams(conf.params, conf.ind1, conf.ind2);
-
-  //     const payload = {
-  //       data: dataRows,
-  //       indicators: [{ name: conf.ind1, params: params1 }],
-  //       stop_loss: conf.stop,
-  //       capital: 1000,
-  //       mode: conf.mode,
-  //     };
-
-  //     const res = await fetch("/api/run_backtest", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(payload),
-  //     });
-
-  //     const result = await res.json();
-  //     setBackendResult(result);
-  //   } catch (err) {
-  //     console.error("Backtest failed:", err);
-  //   }
-  // }
-
   async function runBacktest(dataRows, conf) {
   try {
     const { params1, params2 } = validateParams(conf.params, conf.ind1, conf.ind2);
 
     const indicators = [];
-
-    // if (conf.ind1 && conf.ind1 !== "Select Indicator") {
-    //   indicators.push({ name: conf.ind1, params: params1 });
-    // }
-    // if (conf.ind2 && conf.ind2 !== "Select Indicator") {
-    //   indicators.push({ name: conf.ind2, params: params2 });
-    // }
-    // if (conf.ind3 && conf.ind3 !== "Select Indicator") {
-    //   indicators.push({ name: conf.ind3, params: {} }); // optional for now
-    // }
 
     const skipNames = ["Select Indicator", "Select an indicator", "", null, undefined];
 
@@ -404,19 +369,6 @@ export default function Home() {
               </option>
             </select>
 
-            {/* <select
-              name="ind3"
-              defaultValue={formState.ind3}
-              className="p-2 rounded bg-white border border-gray-300 text-gray-800 cursor-not-allowed
-                         dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
-              title="Unlock more indicators"
-              disabled={!isPremium}
-            >
-              <option disabled={!isPremium}>
-                Unlock more indicator {isPremium ? "" : "🔒"}
-              </option>
-            </select> */}
-
             <select
               name="ind3"
               defaultValue={formState.ind3}
@@ -443,16 +395,6 @@ export default function Home() {
                 (Ehlers) Predictive Moving Average {isPremium ? "" : "🔒"}
               </option>
             </select>
-
-            {/* <select
-              disabled
-              className="p-2 rounded bg-neutral-200 border border-gray-300 text-gray-500 cursor-not-allowed
-                         dark:bg-neutral-800 dark:border-neutral-700 dark:text-gray-600"
-              title="Unlock premium indicators on paid plan"
-            >
-              <option>🔒 Unlock more indicators</option>
-            </select> */}
-
 
             {/* indicator parameters */}
             <div className="bg-white/10 dark:bg-neutral-800 rounded-md p-3 border border-white/10 text-sm">
@@ -562,7 +504,6 @@ export default function Home() {
                           const df = backendResult.df ?? [];
                           if (!df.length) return null;
                           const times = df.map((d) => d.open_time);
-                          // const values = df.map((d) => d[p.name] ?? null);
 
                           const values = df.map((d) => {
                             // robust matching in case backend key casing or symbol differs
