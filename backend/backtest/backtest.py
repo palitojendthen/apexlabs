@@ -158,37 +158,37 @@ def apply_technicals(df, indicators, user_tier="free"):
 
         signal_cols.append(sig_col)
 
-    # active=[c for c in signal_cols if c in df.columns]
-    # if not active:
-    #     df["final_signal"]=0
-    # else:
-    #     all_long=(df[active]==1).all(axis=1)
-    #     all_short=(df[active]==-1).all(axis=1)
-    #     df["final_signal"]=np.select([all_long,all_short],[1,-1],default=0)
-
-    # return df,signal_cols
-
+    # regime-aware final signal composition
     active = [c for c in signal_cols if c in df.columns]
 
-    # Identify if ADX is included
-    adx_cols = [c for c in active if "adx" in c.lower()]
-    non_adx_cols = [c for c in active if c not in adx_cols]
+    # Step 1: identify which are regime filters (adx, hmm, etc.)
+    regime_filter_lst = ["adx", "hmm", "market_state", "regime"]
+    regime_filter_cols = [c for c in active if any(tag in c.lower() for tag in regime_filter_lst)]
+    non_regime_filter_cols = [c for c in active if c not in regime_filter_cols]
 
-    if not non_adx_cols:
+    # baseline directional signal (from non-filters)
+    if not non_regime_filter_cols:
         df["final_signal"] = 0
     else:
-        all_long = (df[non_adx_cols] == 1).all(axis=1)
-        all_short = (df[non_adx_cols] == -1).all(axis=1)
+        all_long = (df[non_regime_filter_cols] == 1).all(axis=1)
+        all_short = (df[non_regime_filter_cols] == -1).all(axis=1)
         df["final_signal"] = np.select([all_long, all_short], [1, -1], default=0)
 
-    # Apply ADX filter (turn off signals if ADX < threshold)
-    if adx_cols:
-        adx_sig = adx_cols[0]
-        # Find the numeric threshold column or raw ADX column
-        adx_val_col = next((c for c in df.columns if c.lower() == "adx"), None)
-        if adx_val_col and "threshold_adx" in ind.get("params", {}):
-            threshold = float(ind["params"]["threshold_adx"])
-            df["final_signal"] = np.where(df[adx_val_col] < threshold, 0, df["final_signal"])
+    # apply regime filters
+    for filt in regime_filter_cols:
+        # adx
+        if "adx" in filt.lower():
+            adx_val_col = next((c for c in df.columns if "adx" in c.lower() and not c.startswith("sig_")), None)
+            if adx_val_col:
+                threshold = float(next((ind.get("params", {}).get("threshold_adx", 20)
+                                        for ind in indicators if ind["name"].lower() == "adx"), 20))
+                df["final_signal"] = np.where(df[adx_val_col] < threshold, 0, df["final_signal"])
+        # hmm
+        elif "hmm" in filt.lower() or "market_state" in filt.lower() or "regime" in filt.lower():
+            # any generic regime filter (1 = active, 0 = off)
+            reg_col = next((c for c in df.columns if c.lower() in [filt.lower(), "hmm", "market_state", "regime"]), None)
+            if reg_col:
+                df["final_signal"] = np.where(df[reg_col] == 0, 0, df["final_signal"])
 
     return df, signal_cols
 
