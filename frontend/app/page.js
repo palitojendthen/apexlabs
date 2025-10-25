@@ -239,7 +239,7 @@ export default function Home() {
       ind3: t.ind3?.value || "Select Indicator",
       params: t.params.value,
       stop: t.stop.value,
-      mode: t.mode.value || "long",
+      mode: t.mode.value || "longshort",
     };
 
     setFormState(conf);
@@ -497,148 +497,6 @@ export default function Home() {
                     name: "Price",
                   },
 
-                  // ...(backendResult?.plots?.length
-                  //   ? backendResult.plots
-                  //       .map((p) => {
-                  //         const df = backendResult.df ?? [];
-                  //         if (!df.length) return null;
-                  //         const times = df.map((d) => d.open_time);
-
-                  //         const values = df.map((d) => {
-                  //           // robust matching in case backend key casing or symbol differs
-                  //           const key = Object.keys(d).find(
-                  //             (k) => k.toLowerCase().replace(/[() ]/g, "_") === p.name.toLowerCase()
-                  //           );
-                  //           return key ? d[key] : null;
-                  //         });
-                          
-                  //         const signals = df.map((d) => d[p.signal_col] ?? 0);
-
-                  //         const longLine = {
-                  //           x: times,
-                  //           y: values.map((v, i) => (signals[i] === 1 ? v : null)),
-                  //           type: "scatter",
-                  //           mode: "lines",
-                  //           line: { width: 2, color: p.color_up },
-                  //           name: `${p.display_name || p.name.toUpperCase()} (Long)`,
-                  //         };
-
-                  //         const shortLine = {
-                  //           x: times,
-                  //           y: values.map((v, i) => (signals[i] === -1 ? v : null)),
-                  //           type: "scatter",
-                  //           mode: "lines",
-                  //           line: { width: 2, color: p.color_down },
-                  //           name: `${p.display_name || p.name.toUpperCase()} (Short)`,
-                  //         };
-
-                  //         return [longLine, shortLine];
-                  //       })
-                  //       .flat()
-                  //   : []),
-
-
-                  // ...(backendResult?.plots?.length
-                  //   ? backendResult.plots
-                  //       .map((p) => {
-                  //         const df = backendResult.df ?? [];
-                  //         if (!df.length) return null;
-                  //         const times = df.map((d) => d.open_time);
-
-                  //         const nameLower = (p.name || "").toLowerCase();
-
-                  //         // envelope/multiple line overlay e.g donchian channel
-                  //         // render the envelope exactly once:
-                  //         //  - if this item is the basis member
-                  //         //  - else if it is the upper member (and there's no basis)
-                  //         const suffixMatch = nameLower.match(/_(upper|lower|basis)$/);
-                  //         const suffix = suffixMatch ? suffixMatch[1] : "";
-                  //         const base =
-                  //           suffix ? nameLower.replace(/_(upper|lower|basis)$/, "") : "";
-
-                  //         const isEnvelope = Boolean(base) &&
-                  //           (base.includes("donchian_channel") || base.includes("bollinger"));
-
-                  //         if (
-                  //           isEnvelope &&
-                  //           (suffix === "basis" || (suffix === "upper" && !df[0][`${base}_basis`]))
-                  //         ) {
-                  //           const upperKey = `${base}_upper`;
-                  //           const lowerKey = `${base}_lower`;
-                  //           const basisKey = `${base}_basis`;
-
-                  //           const upper = df.map((d) => (upperKey in d ? d[upperKey] : null));
-                  //           const lower = df.map((d) => (lowerKey in d ? d[lowerKey] : null));
-                  //           const basis = df.map((d) => (basisKey in d ? d[basisKey] : null));
-
-                  //           const traces = [];
-                  //           if (upperKey in (df[0] || {}) && lowerKey in (df[0] || {})) {
-                  //             traces.push({
-                  //               x: times,
-                  //               y: upper,
-                  //               type: "scatter",
-                  //               mode: "lines",
-                  //               line: { width: 1.4, color: "rgba(0,255,255,0.9)" },
-                  //               name: "Donchian Upper",
-                  //             });
-                  //             traces.push({
-                  //               x: times,
-                  //               y: lower,
-                  //               type: "scatter",
-                  //               mode: "lines",
-                  //               line: { width: 1.4, color: "rgba(0,255,255,0.9)" },
-                  //               name: "Donchian Lower",
-                  //               fill: "tonexty",
-                  //               fillcolor: "rgba(0,255,255,0.15)",
-                  //             });
-                  //           }
-                  //           if (basisKey in (df[0] || {})) {
-                  //             traces.push({
-                  //               x: times,
-                  //               y: basis,
-                  //               type: "scatter",
-                  //               mode: "lines",
-                  //               line: { width: 1.4, color: "rgba(255,165,0,0.9)" },
-                  //               name: "Donchian Basis",
-                  //             });
-                  //           }
-                  //           return traces;
-                  //         }
-
-                  //         // normal overlay e.g. sma,ema,wma,kama,decycler
-                  //         const values = df.map((d) => {
-                  //           const key = Object.keys(d).find(
-                  //             (k) =>
-                  //               k.toLowerCase().replace(/[() ]/g, "_") === nameLower
-                  //           );
-                  //           return key ? d[key] : null;
-                  //         });
-                  //         const signals = df.map((d) => d[p.signal_col] ?? 0);
-
-                  //         const longLine = {
-                  //           x: times,
-                  //           y: values.map((v, i) => (signals[i] === 1 ? v : null)),
-                  //           type: "scatter",
-                  //           mode: "lines",
-                  //           line: { width: 2, color: p.color_up },
-                  //           name: `${p.display_name || p.name.toUpperCase()} (Long)`,
-                  //         };
-
-                  //         const shortLine = {
-                  //           x: times,
-                  //           y: values.map((v, i) => (signals[i] === -1 ? v : null)),
-                  //           type: "scatter",
-                  //           mode: "lines",
-                  //           line: { width: 2, color: p.color_down },
-                  //           name: `${p.display_name || p.name.toUpperCase()} (Short)`,
-                  //         };
-
-                  //         return [longLine, shortLine];
-                  //       })
-                  //       .flat()
-                  //   : []),
-
-
                   ...(backendResult?.plots?.length
                   ? backendResult.plots
                       .map((p) => {
@@ -646,17 +504,17 @@ export default function Home() {
                         if (!df.length) return null;
                         const times = df.map((d) => d.open_time);
 
-                        // === 1️⃣ Multi-line indicators (envelopes, MACD, etc.) ===
+                        // multi-line indicators (envelopes, bollinger, etc)
                         if (p.is_multiline && p.cols?.length) {
                           const colorMap = (col) => {
                             const c = col.toLowerCase();
                             // only apply special colors if envelope-like naming is detected
                             if (/(upper|lower|basis|middle)/.test(c)) {
-                              if (c.includes("upper")) return "darkred";            // red = upper band
-                              if (c.includes("lower")) return "darkgreen";          // cyan = lower band
-                              if (c.includes("basis") || c.includes("middle")) return "rgba(255,165,0,0.9)"; // orange = center
+                              if (c.includes("upper")) return "darkred";
+                              if (c.includes("lower")) return "darkgreen";
+                              if (c.includes("basis") || c.includes("middle")) return "rgba(255,165,0,0.9)";
                             }
-                            // fallback neutral color for unknown multi-col indicators (e.g. MACD lines)
+                            // fallback neutral color for unknown multi-col indicators (e.g. mama lines)
                             return "rgba(200,200,200,0.7)";
                           };
 
@@ -667,7 +525,7 @@ export default function Home() {
                             type: "scatter",
                             mode: "lines",
                             line: { width: 1.6, color: colorMap(col) },
-                            name: `${p.display_name} • ${col
+                            name: `${p.display_name}_${col
                               .replace(p.name + "_", "")
                               .replace(/_/g, " ")
                               .toUpperCase()}`,
@@ -676,7 +534,7 @@ export default function Home() {
                           return traces;
                         }
 
-                        // === 2️⃣ Standard single-line overlays (SMA, EMA, etc.) ===
+                        // standard single-line overlays (sma, ema, wma, kama etc)
                         const values = df.map((d) => d[p.name] ?? null);
                         const signals = df.map((d) => d[p.signal_col] ?? 0);
 
