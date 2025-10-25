@@ -228,59 +228,151 @@ def apply_technicals(df, indicators, user_tier="free"):
 
 # BACKTEST ENGINE
 # long-short
-def run_longshort(df,use_atr,atr_mult,sl_pct,capital):
-    cash,qty,entry,side=capital,0.0,None,0
-    equity,trades,long_m,short_m=[],[],[],[]
-    sl_hits=0
+# def run_longshort(df,use_atr,atr_mult,sl_pct,capital):
+#     cash,qty,entry,side=capital,0.0,None,0
+#     equity,trades,long_m,short_m=[],[],[],[]
+#     sl_hits=0
+
+#     for i in range(len(df)):
+#         px=float(df.loc[i,"close"])
+#         sig=int(df.loc[i,"final_signal"])
+#         ts=str(df.loc[i,"open_time"])
+
+#         # stop-loss
+#         if side!=0 and entry is not None:
+#             if use_atr and "atr" in df.columns:
+#                 stop=entry*(1-atr_mult*df.loc[i,"atr"]/entry) if side>0 else entry*(1+atr_mult*df.loc[i,"atr"]/entry)
+#             elif sl_pct:
+#                 stop=entry*(1-sl_pct) if side>0 else entry*(1+sl_pct)
+#             else:
+#                 stop=None
+#             if stop is not None:
+#                 if (side>0 and px<=stop) or (side<0 and px>=stop):
+#                     exit_px=stop
+#                     if side>0:
+#                         cash=qty*exit_px; pnl=(exit_px/entry)-1
+#                         short_m.append({"x":ts,"y":float(df.loc[i,"high"])*1.02})
+#                     else:
+#                         cash=qty*(2*entry-exit_px); pnl=(entry/exit_px)-1
+#                         long_m.append({"x":ts,"y":float(df.loc[i,"low"])*0.98})
+#                     trades.append({"entry":entry,"exit":exit_px,"pnl":pnl,"side":"long" if side>0 else "short","stop":True})
+#                     sl_hits+=1; qty,entry,side=0.0,None,0
+
+#         prev_side=side
+#         if sig!=prev_side:
+#             if prev_side!=0 and entry is not None:
+#                 if prev_side>0:
+#                     cash=qty*px; pnl=(px/entry)-1
+#                     short_m.append({"x":ts,"y":float(df.loc[i,"high"])*1.02})
+#                 else:
+#                     cash=qty*(2*entry-px); pnl=(entry/px)-1
+#                     long_m.append({"x":ts,"y":float(df.loc[i,"low"])*0.98})
+#                 trades.append({"entry":entry,"exit":px,"pnl":pnl,"side":"long" if prev_side>0 else "short","stop":False})
+#                 qty,entry,side=0.0,None,0
+
+#             if sig!=0 and cash>0:
+#                 qty=cash/px; entry=px; side=sig; cash=0.0
+#                 if side>0:
+#                     long_m.append({"x":ts,"y":float(df.loc[i,"low"])*0.98})
+#                 else:
+#                     short_m.append({"x":ts,"y":float(df.loc[i,"high"])*1.02})
+
+#         eq=cash if side==0 or entry is None else cash+qty*(2*entry-px if side<0 else px)
+#         equity.append(eq)
+
+#     return equity,trades,long_m,short_m,sl_hits
+
+
+# improvement from above longshort engine, to include long/short only strategies
+def run_backtest_mode(df, mode, use_atr, atr_mult, sl_pct, capital):
+    """
+    Unified backtest engine supporting long-only, short-only, and long-short modes
+    keeps same return structure as previous run_longshort()
+    """
+    cash, qty, entry, side = capital, 0.0, None, 0
+    equity, trades, long_m, short_m = [], [], [], []
+    sl_hits = 0
 
     for i in range(len(df)):
-        px=float(df.loc[i,"close"])
-        sig=int(df.loc[i,"final_signal"])
-        ts=str(df.loc[i,"open_time"])
+        px = float(df.loc[i, "close"])
+        sig = int(df.loc[i, "final_signal"])
+        ts = str(df.loc[i, "open_time"])
 
-        # stop-loss
-        if side!=0 and entry is not None:
+        # mode filtering
+        # in long-only mode, ignore short signals
+        if mode == "long" and sig == -1:
+            sig = 0
+        # in short-only mode, ignore long signals
+        elif mode == "short" and sig == 1:
+            sig = 0
+
+        # stop-loss check
+        if side != 0 and entry is not None:
             if use_atr and "atr" in df.columns:
-                stop=entry*(1-atr_mult*df.loc[i,"atr"]/entry) if side>0 else entry*(1+atr_mult*df.loc[i,"atr"]/entry)
+                stop = entry * (1 - atr_mult * df.loc[i, "atr"] / entry) if side > 0 else entry * (1 + atr_mult * df.loc[i, "atr"] / entry)
             elif sl_pct:
-                stop=entry*(1-sl_pct) if side>0 else entry*(1+sl_pct)
+                stop = entry * (1 - sl_pct) if side > 0 else entry * (1 + sl_pct)
             else:
-                stop=None
+                stop = None
+
             if stop is not None:
-                if (side>0 and px<=stop) or (side<0 and px>=stop):
-                    exit_px=stop
-                    if side>0:
-                        cash=qty*exit_px; pnl=(exit_px/entry)-1
-                        short_m.append({"x":ts,"y":float(df.loc[i,"high"])*1.02})
-                    else:
-                        cash=qty*(2*entry-exit_px); pnl=(entry/exit_px)-1
-                        long_m.append({"x":ts,"y":float(df.loc[i,"low"])*0.98})
-                    trades.append({"entry":entry,"exit":exit_px,"pnl":pnl,"side":"long" if side>0 else "short","stop":True})
-                    sl_hits+=1; qty,entry,side=0.0,None,0
+                # long stop trigger
+                if side > 0 and px <= stop:
+                    exit_px = stop
+                    cash = qty * exit_px
+                    pnl = (exit_px / entry) - 1
+                    trades.append({"entry": entry, "exit": exit_px, "pnl": pnl, "side": "long", "stop": True})
+                    short_m.append({"x": ts, "y": float(df.loc[i, "high"]) * 1.02})
+                    sl_hits += 1
+                    qty, entry, side = 0.0, None, 0
 
-        prev_side=side
-        if sig!=prev_side:
-            if prev_side!=0 and entry is not None:
-                if prev_side>0:
-                    cash=qty*px; pnl=(px/entry)-1
-                    short_m.append({"x":ts,"y":float(df.loc[i,"high"])*1.02})
+                # short stop trigger
+                elif side < 0 and px >= stop:
+                    exit_px = stop
+                    cash = qty * (2 * entry - exit_px)
+                    pnl = (entry / exit_px) - 1
+                    trades.append({"entry": entry, "exit": exit_px, "pnl": pnl, "side": "short", "stop": True})
+                    long_m.append({"x": ts, "y": float(df.loc[i, "low"]) * 0.98})
+                    sl_hits += 1
+                    qty, entry, side = 0.0, None, 0
+
+        # signal crossover logic
+        prev_side = side
+        if sig != prev_side:
+            # close existing position
+            if prev_side != 0 and entry is not None:
+                if prev_side > 0:
+                    cash = qty * px
+                    pnl = (px / entry) - 1
+                    trades.append({"entry": entry, "exit": px, "pnl": pnl, "side": "long", "stop": False})
+                    short_m.append({"x": ts, "y": float(df.loc[i, "high"]) * 1.02})
                 else:
-                    cash=qty*(2*entry-px); pnl=(entry/px)-1
-                    long_m.append({"x":ts,"y":float(df.loc[i,"low"])*0.98})
-                trades.append({"entry":entry,"exit":px,"pnl":pnl,"side":"long" if prev_side>0 else "short","stop":False})
-                qty,entry,side=0.0,None,0
+                    cash = qty * (2 * entry - px)
+                    pnl = (entry / px) - 1
+                    trades.append({"entry": entry, "exit": px, "pnl": pnl, "side": "short", "stop": False})
+                    long_m.append({"x": ts, "y": float(df.loc[i, "low"]) * 0.98})
+                qty, entry, side = 0.0, None, 0
 
-            if sig!=0 and cash>0:
-                qty=cash/px; entry=px; side=sig; cash=0.0
-                if side>0:
-                    long_m.append({"x":ts,"y":float(df.loc[i,"low"])*0.98})
+            # open new position (if allowed by mode)
+            if sig != 0 and cash > 0:
+                qty = cash / px
+                entry = px
+                side = sig
+                cash = 0.0
+                if side > 0:
+                    long_m.append({"x": ts, "y": float(df.loc[i, "low"]) * 0.98})
                 else:
-                    short_m.append({"x":ts,"y":float(df.loc[i,"high"])*1.02})
+                    short_m.append({"x": ts, "y": float(df.loc[i, "high"]) * 1.02})
 
-        eq=cash if side==0 or entry is None else cash+qty*(2*entry-px if side<0 else px)
+        # compute equity
+        if side == 0 or entry is None:
+            eq = cash
+        else:
+            eq = cash + qty * (2 * entry - px if side < 0 else px)
+
         equity.append(eq)
 
-    return equity,trades,long_m,short_m,sl_hits
+    return equity, trades, long_m, short_m, sl_hits
 
 # main
 def main():
@@ -396,7 +488,8 @@ def main():
         atr_df=atr_mod(df,n_atr=10)
         df=df.join(atr_df[["tr","atr"]])
 
-    eq,trades,long_m,short_m,sl_hits=run_longshort(df,use_atr,atr_mult,sl_pct,capital)
+    # eq,trades,long_m,short_m,sl_hits=run_longshort(df,use_atr,atr_mult,sl_pct,capital)
+    eq, trades, long_m, short_m, sl_hits = run_backtest_mode(df, mode, use_atr, atr_mult, sl_pct, capital)
 
     df["equity"]=eq
     rets=pd.Series(df["equity"]).pct_change().fillna(0).values
