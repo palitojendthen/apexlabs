@@ -54,7 +54,7 @@ const indicatorSchemas = {
     n_fast_macd: { default: 12, type: "int", min:1, max:500 },
     n_slow_macd: { default: 26, type: "int", min:1, max:500 },
     n_signal_macd: { default: 9, type: "int", min:1, max:500 },
-    ma_type_macd: { default: "ema", type: "string"},
+    ma_type_macd: { default: "sma", type: "string"},
   },
   Donchian_Channel: {
     n_dc: { default: 20, type: "int", min: 1, max: 500 },
