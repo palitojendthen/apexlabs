@@ -13,7 +13,7 @@ import io
 warnings.filterwarnings("ignore")
 OVERLAY_INDICATORS = {
     "SMA", "EMA", "WMA", "KAMA", "DEMA", "TEMA", "ITREND", "DONCHIAN_CHANNEL", 
-    "EHLERS_SIMPLE_DECYCLER", "EHLERS_PREDICTIVE_MOVING_AVERAGE", "EHLERS_ULTIMATE_SMOOTHER", "ULTIMATE_SMOOTHER"
+    "EHLERS_SIMPLE_DECYCLER", "EHLERS_PREDICTIVE_MOVING_AVERAGE", "EHLERS_ULTIMATE_SMOOTHER", "ULTIMATE_SMOOTHER", "SUPERTREND"
     }
 
 
@@ -185,6 +185,9 @@ def apply_technicals(df, indicators, user_tier="free"):
                 df[sig_col] = np.where(df[colname] > df[colname].shift(1), 1, np.where(df[colname] < df[colname].shift(1), -1, 0))
             else:
                 df[sig_col] = 0
+        elif name == "supertrend" and "supertrend" in df.columns:
+            df[sig_col] = np.where(df["close"] > df["supertrend"], 1,
+                            np.where(df["close"] < df["supertrend"], -1, 0))
 
         else:
             df[sig_col]=0
@@ -413,10 +416,10 @@ def main():
         valid_params = {k: v for k, v in params.items() if k in sig_params and not k.startswith("source")}
 
         # indicators that require full ohlc dataframe
-        df_source_indicators = {"adx", "atr", "stochastic", "cci", "bollinger_bands", "donchian_channel"}
+        df_source_indicators = {"adx", "atr", "stochastic", "cci", "bollinger_bands", "donchian_channel", "supertrend"}
 
         # run indicator safely
-        if lower_name in {"adx", "atr", "stochastic", "cci", "bollinger_bands", "donchian_channel"}:
+        if lower_name in {"adx", "atr", "stochastic", "cci", "bollinger_bands", "donchian_channel", "supertrend"}:
             result = func(df, **valid_params)
         else:
             result = func(df[src], **valid_params)

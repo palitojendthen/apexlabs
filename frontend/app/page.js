@@ -77,6 +77,10 @@ const indicatorSchemas = {
       source_us: { default: "hl2", type: "string" },
       n_us: { default: 20, type: "int", min:1, max:100 },
   },
+  "supertrend": {
+    n_atr: { default: 10, type: "int", min:1, max:100 },
+    mult_atr: { default: 3, type: "int", min:1, max:10 },
+  },
 };
 
 function validateParams(input, ind1, ind2) {
@@ -347,6 +351,7 @@ export default function Home() {
               <option>MACD</option>
               <option>Donchian Channel</option>
               <option>KAMA</option>
+              <option>Supertrend</option>
               <option disabled={!isPremium}>
                 (Ehlers) Simple Decycler {isPremium ? "" : "🔒"}
               </option>
@@ -373,6 +378,7 @@ export default function Home() {
               <option>MACD</option>
               <option>Donchian Channel</option>
               <option>KAMA</option>
+              <option>Supertrend</option>
               <option disabled={!isPremium}>
                 (Ehlers) Simple Decycler {isPremium ? "" : "🔒"}
               </option>
@@ -401,6 +407,7 @@ export default function Home() {
               <option>MACD</option>
               <option>Donchian Channel</option>
               <option>KAMA</option>
+              <option>Supertrend</option>
               <option disabled={!isPremium}>
                 (Ehlers) Simple Decycler {isPremium ? "" : "🔒"}
               </option>
