@@ -173,7 +173,6 @@ def apply_technicals(df, indicators, user_tier="free"):
         elif name in ("macd", "moving_average_convergence_divergence"):
             macd_line_col = next((c for c in df.columns if "macd_line" in c.lower()), None)
             signal_line_col = next((c for c in df.columns if "signal_line" in c.lower()), None)
-
             if macd_line_col and signal_line_col:
                 df[sig_col] = np.where(df[macd_line_col] > df[signal_line_col], 1, np.where(df[macd_line_col] < df[signal_line_col], -1, 0))
             # elif hist_col:
