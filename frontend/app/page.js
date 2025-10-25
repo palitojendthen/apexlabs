@@ -332,9 +332,7 @@ export default function Home() {
               <option>RSI</option>
               <option>MACD</option>
               <option>Donchian Channel</option>
-              <option disabled={!isPremium}>
-                KAMA {isPremium ? "" : "🔒"}
-              </option>
+              <option>KAMA</option>
               <option disabled={!isPremium}>
                 (Ehlers) Simple Decycler {isPremium ? "" : "🔒"}
               </option>
@@ -357,9 +355,7 @@ export default function Home() {
               <option>RSI</option>
               <option>MACD</option>
               <option>Donchian Channel</option>
-              <option disabled={!isPremium}>
-                KAMA {isPremium ? "" : "🔒"}
-              </option>
+              <option>KAMA</option>
               <option disabled={!isPremium}>
                 (Ehlers) Simple Decycler {isPremium ? "" : "🔒"}
               </option>
@@ -384,9 +380,7 @@ export default function Home() {
               <option>RSI</option>
               <option>MACD</option>
               <option>Donchian Channel</option>
-              <option disabled={!isPremium}>
-                KAMA {isPremium ? "" : "🔒"}
-              </option>
+              <option>KAMA</option>
               <option disabled={!isPremium}>
                 (Ehlers) Simple Decycler {isPremium ? "" : "🔒"}
               </option>
