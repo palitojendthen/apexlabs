@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import math
 
-def ehlers_ultimate_smoother(source_us: pd.Series, n_us=14):
+def ehlers_ultimate_smoother(source_us: pd.Series, n_us=20):
     """
     technical analysis indicator:
     originated by John F. Ehlers, 
