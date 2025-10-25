@@ -1,42 +1,51 @@
-def ultimate_smoother(src, _length = 20, return_df = False):
+#!/usr/bin/env python3
+import pandas as pd
+import numpy as np
+import math
+
+def ehlers_ultimate_smoother(source_us: pd.Series, n_us=20):
     """
     technical analysis indicator:
     originated by John F. Ehlers, 
     an enhanced smoother, as an evolution of his previously developed SuperSmoother,
     reference: https://traders.com/Documentation/FEEDbk_docs/2024/04/TradersTips.html
     params:
-    @src: series, time-series input data
-    @_length: integer, length of lookback period
-    @return_df: boolean, whether to return include input dataframe or result only
-    example:
-    >>> technical_indicator.ultimate_smoother(src=df['ohlc4'], _length=14, return_df=True)
+    @source_us: series, input price series (e.g. df['close'])
+    @n_us: integer, n lookback period (e.g. n_us=20)
+    returns:
+    pd.Series
+        ultimate smoother aligned with source_pma index
     """
-    src = src.dropna()
-    n = len(src)
     
-    if n < _length:
-        raise ValueError('Periods cant be greater than data length')
+    if not isinstance(source_us, pd.Series):
+        source_us = pd.Series(source_us)
+
+    if len(source_us) < n_us:
+        raise ValueError("Periods cant be greater than data length")
     
     _df = pd.DataFrame({
-        'close':src,
+        'close':source_us,
         'a1':0.00,
         'c2':0.00,
         'c3':0.00,
         'c1':0.00,
-        'ultimate_smooth': 0.00
-    }, index = src.index)
+        'ultimate_smoother': 0.00
+    }, index = source_us.index)
     
     _pi = 2*np.arcsin(1)
-    _df['a1'] = math.exp(-1.414*_pi/_length)
-    _df['c2'] = 2.0*_df['a1']*math.cos(1.414*_pi/_length)
+    _df['a1'] = math.exp(-1.414*_pi/n_us)
+    _df['c2'] = 2.0*_df['a1']*math.cos(1.414*_pi/n_us)
     _df['c3'] = -_df['a1']*_df['a1']
     _df['c1'] = (1.0+_df['c2']-_df['c3'])/4.0
-    _df['ultimate_smooth'] = _df['close']
+    _df['ultimate_smoother'] = source_us
     
-    for i in range(4, n):
-        _df['ultimate_smooth'][i] = (1.0-_df['c1'][i])*_df['close'][i]+(2.0*_df['c1'][i]-_df['c2'][i])*_df['close'][i-1]-(_df['c1'][i]+_df['c3'][i])*_df['close'][i-2]+_df['c2'][i]*_df['ultimate_smooth'][i-1]+_df['c3'][i]*_df['ultimate_smooth'][i-2]
+    for i in range(4, len(source_us)):
+        _df.iloc[i, _df.columns.get_loc('ultimate_smoother')] = (
+            (1.0 - _df.iloc[i]['c1']) * _df.iloc[i]['close']
+            + (2.0 * _df.iloc[i]['c1'] - _df.iloc[i]['c2']) * _df.iloc[i - 1]['close']
+            - (_df.iloc[i]['c1'] + _df.iloc[i]['c3']) * _df.iloc[i - 2]['close']
+            + _df.iloc[i]['c2'] * _df.iloc[i - 1]['ultimate_smoother']
+            + _df.iloc[i]['c3'] * _df.iloc[i - 2]['ultimate_smoother']
+        )
 
-    if return_df:
-        return _df.iloc[_length:, :]
-    else:
-        return _df['ultimate_smooth'][_length:]
+    return pd.Series(_df['ultimate_smoother'])

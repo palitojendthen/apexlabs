@@ -73,6 +73,10 @@ const indicatorSchemas = {
     "(Ehlers) Predictive Moving Average": {
       source_pma: { default: "close", type: "string" },
   },
+    "(Ehlers) Ultimate Smoother": {
+      source_us: { default: "close", type: "string" },
+      n_us: { default: 20, type: "int", min:1, max:100 },
+  },
 };
 
 function validateParams(input, ind1, ind2) {

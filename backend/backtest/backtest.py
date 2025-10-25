@@ -13,7 +13,7 @@ import io
 warnings.filterwarnings("ignore")
 OVERLAY_INDICATORS = {
     "SMA", "EMA", "WMA", "KAMA", "DEMA", "TEMA", "ITREND", "DONCHIAN_CHANNEL", 
-    "EHLERS_SIMPLE_DECYCLER", "EHLERS_PREDICTIVE_MOVING_AVERAGE"
+    "EHLERS_SIMPLE_DECYCLER", "EHLERS_PREDICTIVE_MOVING_AVERAGE", "EHLERS_ULTIMATE_SMOOTHER", "ULTIMATE_SMOOTHER"
     }
 
 
@@ -177,6 +177,12 @@ def apply_technicals(df, indicators, user_tier="free"):
                 df[sig_col] = np.where(df[macd_line_col] > df[signal_line_col], 1, np.where(df[macd_line_col] < df[signal_line_col], -1, 0))
             # elif hist_col:
             #     df[sig_col] = np.where(df[hist_col] > 0, 1, np.where(df[hist_col] < 0, -1, 0))
+            else:
+                df[sig_col] = 0
+        elif name in ("ehlers_ultimate_smoother", "ultimate_smoother", "ultimate", "smoother"):
+            colname = next((c for c in df.columns if "ultimate_smoother" in c.lower()), None)
+            if colname:
+                df[sig_col] = np.where(df[colname] > df[colname].shift(1), 1, np.where(df[colname] < df[colname].shift(1), -1, 0))
             else:
                 df[sig_col] = 0
 
@@ -433,7 +439,7 @@ def main():
             "kama", "ehlers_simple_decycler", "simple_decycler",
             "ehlers_predictive_moving_average", "pma", "predictive_moving_average",
             "ultimate_smoother", "ehlers_ultimate_smoother",
-            "super_smoother", "ehlers_super_smoother"
+            "super_smoother", "ehlers_super_smoother","ultimate_smoother","ehlers_ultimate_smoother"
         ]
         if lower_name in lower_name_lst:
             valid_start = find_valid_start(df, lower_name, "close", tolerance=0.2)
@@ -445,7 +451,7 @@ def main():
         if idx == 0 and (
             clean_name in OVERLAY_INDICATORS
             or lower_name in [c.lower() for c in OVERLAY_INDICATORS]
-            or any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema", "pma", "donchian"])
+            or any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema", "pma", "donchian", "ultimate_smoother"])
         ):
             # multi-column indicators get one grouped entry
             if len(created_cols) > 1:
