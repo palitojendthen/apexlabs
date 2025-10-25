@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 
-def macd(source_macd: pd.Series, n_fast_macd=14, n_slow_macd=26, n_signal_macd=9, ma_type_macd="ema") -> pd.DataFrame:
+def macd(source_macd: pd.Series, n_fast_macd=12, n_slow_macd=26, n_signal_macd=9, ma_type_macd="ema") -> pd.DataFrame:
     """
     technical analysis indicator:
     MACD identifies momentum changes by comparing two EMAs.
