@@ -48,13 +48,8 @@ def macd(source_macd: pd.Series, n_fast_macd=12, n_slow_macd=26, n_signal_macd=9
     signal_line = _ma(macd_line, signal_period)
     histogram = macd_line - signal_line
 
-    # return pd.DataFrame({
-    #     "macd_line": macd_line,
-    #     "signal_line": signal_line,
-    #     "histogram": histogram
-    # })
-
     return pd.DataFrame({
-        "macd_line":macd_line,
-        "signal_line":signal_line,
+        "macd_line": macd_line,
+        "signal_line": signal_line
+        # "histogram": histogram
     })
