@@ -167,7 +167,7 @@ def apply_technicals(df, indicators, user_tier="free"):
     # regime-aware final signal composition
     active = [c for c in signal_cols if c in df.columns]
 
-    # Step 1: identify which are regime filters (adx, hmm, etc.)
+    # identify which are regime filters (adx, hmm, etc)
     regime_filter_lst = ["adx", "hmm", "market_state", "regime"]
     regime_filter_cols = [c for c in active if any(tag in c.lower() for tag in regime_filter_lst)]
     non_regime_filter_cols = [c for c in active if c not in regime_filter_cols]
@@ -282,18 +282,12 @@ def main():
             if key.startswith("source_"): src_key=params.pop(key); break
         if not src_key and "source" in params: src_key=params.pop("source")
 
-        # src=ensure_derived_sources(df,src_key or "close")
-        # func=import_indicator(lower_name)
-        # sig_params=inspect.signature(func).parameters
-        # valid_params={k:v for k,v in params.items() if k in sig_params and not k.startswith("source")}
-        # df[lower_name]=func(df[src],**valid_params)
-
         src = ensure_derived_sources(df, src_key or "close")
         func = import_indicator(lower_name)
         sig_params = inspect.signature(func).parameters
         valid_params = {k: v for k, v in params.items() if k in sig_params and not k.startswith("source")}
 
-        # indicators that require full OHLC dataframe
+        # indicators that require full ohlc dataframe
         df_source_indicators = {"adx", "atr", "stochastic", "macd", "rsi", "cci", "bollinger_bands", "donchian_channel"}
 
         # run indicator safely
@@ -302,59 +296,7 @@ def main():
         else:
             result = func(df[src], **valid_params)
 
-        # # assign multi-column/single-column results correctly
-        # if isinstance(result, pd.DataFrame):
-        #     # e.g. Donchian Channel returns multiple columns (lower, basis, upper)
-        #     for col in result.columns:
-        #         df[f"{lower_name}_{col}"] = result[col] # could be this part, duplicating overlay chart
-        # elif isinstance(result, pd.Series):
-        #     df[lower_name] = result
-        # else:
-        #     raise ValueError(f"Unexpected return type for {lower_name}: {type(result)}")
-
-        # # dynamic stability detection
-        # lower_name_lst = [
-        #     "kama","ehlers_simple_decycler","simple_decycler", "ehlers_predictive_moving_average","pma","predictive_moving_average",
-        #     "ultimate_smoother","ehlers_ultimate_smoother","super_smoother","ehlers_super_smoother"
-        # ]
-        
-        # if lower_name in lower_name_lst:
-        #     valid_start=find_valid_start(df,lower_name,"close",tolerance=0.2)
-        #     stable_starts.append(valid_start)
-
-        # # dynamic overlay detection (supports multi-column envelopes)
-        # clean_name = name.upper().replace("(", "").replace(")", "").replace(" ", "_")
-        # created_cols = [c for c in df.columns if c.startswith(lower_name)] # this part should be the duplication multiple col
-
-        # if idx == 0 and (
-        #     clean_name in OVERLAY_INDICATORS
-        #     or lower_name in [c.lower() for c in OVERLAY_INDICATORS]
-        #     or any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema", "pma", "donchian"])
-        # ):
-        #     if any("donchian" in c for c in created_cols):
-        #         # donchian or any envelope-style multi-line indicator
-        #         # this part should be the duplication multiple col
-        #         for col in created_cols:
-        #             plots.append({
-        #                 "name": col,
-        #                 "display_name": f"{clean_name}_{col.split('_')[-1].upper()}",
-        #                 "signal_col": f"sig_{lower_name}_{idx+1}",
-        #                 "color_up": "rgba(0,255,255,0.7)",
-        #                 "color_down": "rgba(255,165,0,0.7)",
-        #                 "is_envelope": True
-        #             })
-        #     else:
-        #         # standard single-line overlay
-        #         plots.append({
-        #             "name": lower_name,
-        #             "display_name": clean_name,
-        #             "signal_col": f"sig_{lower_name}_{idx+1}",
-        #             "color_up": "rgba(0,200,0,0.7)",
-        #             "color_down": "rgba(200,0,0,0.7)",
-        #             "is_envelope": False
-        #         })
-
-        # --- assign multi-column / single-column results correctly ---
+        # assign multi-column/single-column results correctly
         created_cols = []
         if isinstance(result, pd.DataFrame):
             for col in result.columns:
@@ -367,7 +309,7 @@ def main():
         else:
             raise ValueError(f"Unexpected return type for {lower_name}: {type(result)}")
 
-        # --- dynamic stability detection (unchanged) ---
+        # dynamic stability detection (unchanged)
         lower_name_lst = [
             "kama", "ehlers_simple_decycler", "simple_decycler",
             "ehlers_predictive_moving_average", "pma", "predictive_moving_average",
@@ -378,7 +320,7 @@ def main():
             valid_start = find_valid_start(df, lower_name, "close", tolerance=0.2)
             stable_starts.append(valid_start)
 
-        # --- dynamic overlay detection ---
+        # dynamic overlay detection
         clean_name = name.upper().replace("(", "").replace(")", "").replace(" ", "_")
 
         if idx == 0 and (
@@ -386,7 +328,7 @@ def main():
             or lower_name in [c.lower() for c in OVERLAY_INDICATORS]
             or any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema", "pma", "donchian"])
         ):
-            # Generic logic: multi-column indicators get one grouped entry
+            # multi-column indicators get one grouped entry
             if len(created_cols) > 1:
                 plots.append({
                     "name": lower_name,
