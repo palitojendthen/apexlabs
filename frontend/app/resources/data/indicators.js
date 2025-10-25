@@ -385,9 +385,11 @@ The **Stochastic Oscillator** compares a security’s closing price to its price
     name: "Moving Average Convergence Divergence (MACD)",
     type: "Momentum / Trend Following",
     parameters: [
+      { name: "source_macd", type: "string", default: "close", description: "input price series" },
       { name: "n_fast_macd", type: "integer", default: 12, description: "fast EMA period" },
-      { name: "n_slow_nmacd", type: "integer", default: 26, description: "slow EMA period" },
-      { name: "n_signal_macd", type: "integer", default: 9, description: "signal EMA period" }
+      { name: "n_slow_macd", type: "integer", default: 26, description: "slow EMA period" },
+      { name: "n_signal_macd", type: "integer", default: 9, description: "signal EMA period" },
+      { name: "ma_type_macd", type: "string", default: "ema", description: "moving average type", option: "[sma, ema, rma]" }      
     ],
     markdown: `
 **Formula:**
