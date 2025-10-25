@@ -148,7 +148,6 @@ def apply_technicals(df, indicators, user_tier="free"):
                 df[sig_col] = np.where(df[colname] >= threshold, 1, 0)
             else:
                 df[sig_col] = 0
-
         elif name == "donchian_channel":
             upper_col = next((c for c in df.columns if "donchian_channel_upper" in c.lower()), None)
             lower_col = next((c for c in df.columns if "donchian_channel_lower" in c.lower()), None)
@@ -159,6 +158,20 @@ def apply_technicals(df, indicators, user_tier="free"):
             #     df[sig_col] = 0
             df[sig_col] = np.where(df['close'] > df['donchian_channel_basis'], 1, np.where(df['close'] < df['donchian_channel_basis'], -1, 0))
 
+        elif name in ("relative_strength_index", "rsi"):
+            colname = next((c for c in df.columns if "rsi" in c.lower()), None)
+            overbought_rsi = 70
+            oversold_rsi=30
+            try:
+                overbought_rsi = float(ind.get("params", {}).get("overbought_rsi", 70))
+                oversold_rsi = float(ind.get("params", {}).get("oversold_rsi", 30))
+            except Exception:
+                pass
+            if colname and colname in df.columns:
+                df[sig_col] = np.where(((df[colname] > oversold_rsi) & (df[colname] < overbought_rsi)) , 1, 0)
+            else:
+                df[sig_col] = 0
+
         else:
             df[sig_col]=0
 
@@ -168,7 +181,7 @@ def apply_technicals(df, indicators, user_tier="free"):
     active = [c for c in signal_cols if c in df.columns]
 
     # identify which are regime filters (adx, hmm, etc)
-    regime_filter_lst = ["adx", "hmm", "market_state", "regime"]
+    regime_filter_lst = ["adx", "hmm", "market_state", "regime","rsi"]
     regime_filter_cols = [c for c in active if any(tag in c.lower() for tag in regime_filter_lst)]
     non_regime_filter_cols = [c for c in active if c not in regime_filter_cols]
 
@@ -189,6 +202,12 @@ def apply_technicals(df, indicators, user_tier="free"):
                 threshold = float(next((ind.get("params", {}).get("threshold_adx", 20)
                                         for ind in indicators if ind["name"].lower() == "adx"), 20))
                 df["final_signal"] = np.where(df[adx_val_col] < threshold, 0, df["final_signal"])
+        elif "rsi" in filt.lower():
+            rsi_val_col = next((c for c in df.columns if "rsi" in c.lower() and not c.startswith("sig_")), None)
+            if rsi_val_col:
+                overbought_rsi = float(next((ind.get("params", {}).get("overbought_rsi", 70) for ind in indicators if ind["name"].lower() == "rsi"), 70))
+                oversold_rsi = float(next((ind.get("params", {}).get("oversold_rsi", 30) for ind in indicators if ind["name"].lower() == "rsi"), 30))
+                df["final_signal"] = np.where(((df[rsi_val_col] >= overbought_rsi) | (df[rsi_val_col] <= oversold_rsi)), 0, df["final_signal"])
         # hmm
         elif "hmm" in filt.lower() or "market_state" in filt.lower() or "regime" in filt.lower():
             # any generic regime filter (1 = active, 0 = off)
@@ -288,10 +307,10 @@ def main():
         valid_params = {k: v for k, v in params.items() if k in sig_params and not k.startswith("source")}
 
         # indicators that require full ohlc dataframe
-        df_source_indicators = {"adx", "atr", "stochastic", "macd", "rsi", "cci", "bollinger_bands", "donchian_channel"}
+        df_source_indicators = {"adx", "atr", "stochastic", "macd", "cci", "bollinger_bands", "donchian_channel"}
 
         # run indicator safely
-        if lower_name in {"adx", "atr", "stochastic", "macd", "rsi", "cci", "bollinger_bands", "donchian_channel"}:
+        if lower_name in {"adx", "atr", "stochastic", "macd", "cci", "bollinger_bands", "donchian_channel"}:
             result = func(df, **valid_params)
         else:
             result = func(df[src], **valid_params)

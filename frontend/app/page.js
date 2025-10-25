@@ -42,6 +42,8 @@ const indicatorSchemas = {
   RSI: {
     n_rsi: { default: 14, type: "int", min: 1, max: 500 },
     source_rsi: { default: "close", type: "string" },
+    overbought_rsi: { default: 70, type: "int", min:51, max:100 },
+    oversold_rsi: { default: 30, type: "int", min:1, max:49 },
   },
   Donchian_Channel: {
     n_dc: { default: 20, type: "int", min: 1, max: 500 },
