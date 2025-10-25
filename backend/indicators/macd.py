@@ -41,11 +41,11 @@ def macd(source_macd: pd.Series, n_fast_macd=12, n_slow_macd=26, n_signal_macd=9
             # default to EMA
             return series.ewm(span=period, adjust=False).mean()
 
-    fast_ma = _ma(source_macd, fast_period)
-    slow_ma = _ma(source_macd, slow_period)
+    fast_ma = _ma(source_macd, n_fast_macd)
+    slow_ma = _ma(source_macd, n_slow_macd)
 
     macd_line = fast_ma - slow_ma
-    signal_line = _ma(macd_line, signal_period)
+    signal_line = _ma(macd_line, n_signal_macd)
     histogram = macd_line - signal_line
 
     return pd.DataFrame({

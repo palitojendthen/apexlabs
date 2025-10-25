@@ -35,6 +35,10 @@ const indicatorSchemas = {
     alpha_ema: { default: 0.14, type: "float", min: 0, max: 1 },
     source_ema: { default: "close", type: "string" },
   },
+  WMA: {
+      n_wma: { default: 14, type: "int", min: 1, max: 500 },
+      source_wma: { default: "close", type: "string" },
+  },
   ADX: {
     n_adx: { default: 14, type: "int", min: 1, max: 500 },
     threshold_adx: { default: 20, type: "int", min: 0, max: 100 },
@@ -45,13 +49,17 @@ const indicatorSchemas = {
     overbought_rsi: { default: 70, type: "int", min:51, max:100 },
     oversold_rsi: { default: 30, type: "int", min:1, max:49 },
   },
+  MACD: {
+    source_macd: { default: "close", type: "string"}, 
+    n_fast_macd: { default: 12, type: "int", min:1, max:500 },
+    n_slow_macd: { default: 26, type: "int", min:1, max:500 },
+    n_signal_macd: { default: 9, type: "int", min:1, max:500 },
+    ma_type_macd: { default: "ema", type: "string"},
+  },
   Donchian_Channel: {
     n_dc: { default: 20, type: "int", min: 1, max: 500 },
   },
-  WMA: {
-      n_wma: { default: 14, type: "int", min: 1, max: 500 },
-      source_wma: { default: "close", type: "string" },
-    },
+
     KAMA: {
       n_kama: { default: 14, type: "int", min: 1, max: 500 },
       n_fast_kama: { default: 2, type: "int", min: 1, max: 100 },

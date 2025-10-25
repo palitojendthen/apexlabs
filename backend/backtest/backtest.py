@@ -316,10 +316,10 @@ def main():
         valid_params = {k: v for k, v in params.items() if k in sig_params and not k.startswith("source")}
 
         # indicators that require full ohlc dataframe
-        df_source_indicators = {"adx", "atr", "stochastic", "macd", "cci", "bollinger_bands", "donchian_channel"}
+        df_source_indicators = {"adx", "atr", "stochastic", "cci", "bollinger_bands", "donchian_channel"}
 
         # run indicator safely
-        if lower_name in {"adx", "atr", "stochastic", "macd", "cci", "bollinger_bands", "donchian_channel"}:
+        if lower_name in {"adx", "atr", "stochastic", "cci", "bollinger_bands", "donchian_channel"}:
             result = func(df, **valid_params)
         else:
             result = func(df[src], **valid_params)
