@@ -302,56 +302,109 @@ def main():
         else:
             result = func(df[src], **valid_params)
 
-        # assign multi-column/single-column results correctly
+        # # assign multi-column/single-column results correctly
+        # if isinstance(result, pd.DataFrame):
+        #     # e.g. Donchian Channel returns multiple columns (lower, basis, upper)
+        #     for col in result.columns:
+        #         df[f"{lower_name}_{col}"] = result[col] # could be this part, duplicating overlay chart
+        # elif isinstance(result, pd.Series):
+        #     df[lower_name] = result
+        # else:
+        #     raise ValueError(f"Unexpected return type for {lower_name}: {type(result)}")
+
+        # # dynamic stability detection
+        # lower_name_lst = [
+        #     "kama","ehlers_simple_decycler","simple_decycler", "ehlers_predictive_moving_average","pma","predictive_moving_average",
+        #     "ultimate_smoother","ehlers_ultimate_smoother","super_smoother","ehlers_super_smoother"
+        # ]
+        
+        # if lower_name in lower_name_lst:
+        #     valid_start=find_valid_start(df,lower_name,"close",tolerance=0.2)
+        #     stable_starts.append(valid_start)
+
+        # # dynamic overlay detection (supports multi-column envelopes)
+        # clean_name = name.upper().replace("(", "").replace(")", "").replace(" ", "_")
+        # created_cols = [c for c in df.columns if c.startswith(lower_name)] # this part should be the duplication multiple col
+
+        # if idx == 0 and (
+        #     clean_name in OVERLAY_INDICATORS
+        #     or lower_name in [c.lower() for c in OVERLAY_INDICATORS]
+        #     or any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema", "pma", "donchian"])
+        # ):
+        #     if any("donchian" in c for c in created_cols):
+        #         # donchian or any envelope-style multi-line indicator
+        #         # this part should be the duplication multiple col
+        #         for col in created_cols:
+        #             plots.append({
+        #                 "name": col,
+        #                 "display_name": f"{clean_name}_{col.split('_')[-1].upper()}",
+        #                 "signal_col": f"sig_{lower_name}_{idx+1}",
+        #                 "color_up": "rgba(0,255,255,0.7)",
+        #                 "color_down": "rgba(255,165,0,0.7)",
+        #                 "is_envelope": True
+        #             })
+        #     else:
+        #         # standard single-line overlay
+        #         plots.append({
+        #             "name": lower_name,
+        #             "display_name": clean_name,
+        #             "signal_col": f"sig_{lower_name}_{idx+1}",
+        #             "color_up": "rgba(0,200,0,0.7)",
+        #             "color_down": "rgba(200,0,0,0.7)",
+        #             "is_envelope": False
+        #         })
+
+        # --- assign multi-column / single-column results correctly ---
+        created_cols = []
         if isinstance(result, pd.DataFrame):
-            # e.g. Donchian Channel returns multiple columns (lower, basis, upper)
             for col in result.columns:
-                df[f"{lower_name}_{col}"] = result[col] # could be this part, duplicating overlay chart
+                full_col = f"{lower_name}_{col}"
+                df[full_col] = result[col]
+                created_cols.append(full_col)
         elif isinstance(result, pd.Series):
             df[lower_name] = result
+            created_cols.append(lower_name)
         else:
             raise ValueError(f"Unexpected return type for {lower_name}: {type(result)}")
 
-        # dynamic stability detection
+        # --- dynamic stability detection (unchanged) ---
         lower_name_lst = [
-            "kama","ehlers_simple_decycler","simple_decycler", "ehlers_predictive_moving_average","pma","predictive_moving_average",
-            "ultimate_smoother","ehlers_ultimate_smoother","super_smoother","ehlers_super_smoother"
+            "kama", "ehlers_simple_decycler", "simple_decycler",
+            "ehlers_predictive_moving_average", "pma", "predictive_moving_average",
+            "ultimate_smoother", "ehlers_ultimate_smoother",
+            "super_smoother", "ehlers_super_smoother"
         ]
-        
         if lower_name in lower_name_lst:
-            valid_start=find_valid_start(df,lower_name,"close",tolerance=0.2)
+            valid_start = find_valid_start(df, lower_name, "close", tolerance=0.2)
             stable_starts.append(valid_start)
 
-        # dynamic overlay detection (supports multi-column envelopes)
+        # --- dynamic overlay detection ---
         clean_name = name.upper().replace("(", "").replace(")", "").replace(" ", "_")
-        created_cols = [c for c in df.columns if c.startswith(lower_name)] # this part should be the duplication multiple col
 
         if idx == 0 and (
             clean_name in OVERLAY_INDICATORS
             or lower_name in [c.lower() for c in OVERLAY_INDICATORS]
             or any(k in lower_name for k in ["decycler", "kama", "sma", "ema", "wma", "tema", "dema", "pma", "donchian"])
         ):
-            if any("donchian" in c for c in created_cols):
-                # donchian or any envelope-style multi-line indicator
-                # this part should be the duplication multiple col
-                for col in created_cols:
-                    plots.append({
-                        "name": col,
-                        "display_name": f"{clean_name}_{col.split('_')[-1].upper()}",
-                        "signal_col": f"sig_{lower_name}_{idx+1}",
-                        "color_up": "rgba(0,255,255,0.7)",
-                        "color_down": "rgba(255,165,0,0.7)",
-                        "is_envelope": True
-                    })
+            # Generic logic: multi-column indicators get one grouped entry
+            if len(created_cols) > 1:
+                plots.append({
+                    "name": lower_name,
+                    "display_name": clean_name,
+                    "cols": created_cols,
+                    "signal_col": f"sig_{lower_name}_{idx+1}",
+                    "is_multiline": True,
+                    "color_up": "rgba(0,255,255,0.7)",
+                    "color_down": "rgba(255,165,0,0.7)"
+                })
             else:
-                # standard single-line overlay
                 plots.append({
                     "name": lower_name,
                     "display_name": clean_name,
                     "signal_col": f"sig_{lower_name}_{idx+1}",
+                    "is_multiline": False,
                     "color_up": "rgba(0,200,0,0.7)",
-                    "color_down": "rgba(200,0,0,0.7)",
-                    "is_envelope": False
+                    "color_down": "rgba(200,0,0,0.7)"
                 })
 
     df,signal_cols=apply_technicals(df,indicators,user_tier="free")
