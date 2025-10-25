@@ -74,7 +74,7 @@ const indicatorSchemas = {
       source_pma: { default: "close", type: "string" },
   },
     "(Ehlers) Ultimate Smoother": {
-      source_us: { default: "close", type: "string" },
+      source_us: { default: "hl2", type: "string" },
       n_us: { default: 20, type: "int", min:1, max:100 },
   },
 };
