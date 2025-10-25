@@ -674,7 +674,7 @@ The **Ehlers Predictive Moving Average (PMA)** is a fixed-length, two-stage weig
   type: "Digital Filter",
   parameters: [
     { name: "n_us", type: "integer", default: 20, description: "lookback period for smoothing" },
-    { name: "source_us", type: "string", default: "close", description: "input data source" },
+    { name: "source_us", type: "string", default: "hl2", description: "input data source" },
   ],
   markdown: `
 
