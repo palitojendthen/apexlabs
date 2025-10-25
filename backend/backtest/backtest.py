@@ -157,7 +157,6 @@ def apply_technicals(df, indicators, user_tier="free"):
             # else:
             #     df[sig_col] = 0
             df[sig_col] = np.where(df['close'] > df['donchian_channel_basis'], 1, np.where(df['close'] < df['donchian_channel_basis'], -1, 0))
-
         elif name in ("relative_strength_index", "rsi"):
             colname = next((c for c in df.columns if "rsi" in c.lower()), None)
             overbought_rsi = 70

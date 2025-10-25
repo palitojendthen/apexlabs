@@ -19,7 +19,7 @@ def rsi(source_rsi: pd.Series, n_rsi=14) -> pd.Series:
         source_rsi = pd.Series(source_rsi)
 
     if len(source_rsi) < n_rsi:
-        raise ValueError("Data length can't be lower than 10")
+        raise ValueError("Periods cant be greater than data length")
 
     _df = pd.DataFrame({
         'diff': 0.00,
