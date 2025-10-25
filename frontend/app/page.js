@@ -349,6 +349,9 @@ export default function Home() {
               <option disabled={!isPremium}>
                 (Ehlers) Predictive Moving Average {isPremium ? "" : "🔒"}
               </option>
+              <option disabled={!isPremium}>
+                (Ehlers) Ultimate Smoother {isPremium ? "" : "🔒"}
+              </option>
             </select>
 
             <select
@@ -371,6 +374,9 @@ export default function Home() {
               </option>
               <option disabled={!isPremium}>
                 (Ehlers) Predictive Moving Average {isPremium ? "" : "🔒"}
+              </option>
+              <option disabled={!isPremium}>
+                (Ehlers) Ultimate Smoother {isPremium ? "" : "🔒"}
               </option>
             </select>
 
@@ -396,6 +402,9 @@ export default function Home() {
               </option>
               <option disabled={!isPremium}>
                 (Ehlers) Predictive Moving Average {isPremium ? "" : "🔒"}
+              </option>
+              <option disabled={!isPremium}>
+                (Ehlers) Ultimate Smoother {isPremium ? "" : "🔒"}
               </option>
             </select>
 
